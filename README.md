@@ -77,7 +77,7 @@ O VS Code completa e valida os campos pelo `$schema` (gerado por `pnpm video bui
 ## Repositório
 
 - O índice de jobs do Studio (`src/jobs.generated.ts`) e os `jobs/<slug>/_build/` são gerados: `pnpm install` cria o índice e `pnpm video build` atualiza.
-- As composições antigas feitas à mão (CmsTis, AcaiMg, Intro) saíram do motor; estão na tag `legado`.
+- As composições antigas feitas à mão (CmsTis, AcaiMg, Intro) saíram do motor; estão no ramo `legado`.
 - Próximos passos: [docs/backlog.md](docs/backlog.md). Mudanças: [CHANGELOG.md](CHANGELOG.md).
 
 ## Licença do Remotion
