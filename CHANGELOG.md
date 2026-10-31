@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2 (2026-10-31)
+
+- Testes do motor puro em `src/core/*.test.ts` (timeline, srt, schema): duração por cena, ritmo, `duration` forçada, locução, cortes no tempo da música (bpm do job e da marca), encadeamento das cenas, espaçamento dos efeitos, legendas da locução e de vídeo falado (com trim), SRT/VTT e mensagens de erro do schema por campo.
+- Todo `jobs/*/job.json` e `brands/*.json` do repositório é validado pelo schema no `pnpm test`.
+- `src/core/testing.ts`: fábricas de marca, job e props para os testes.
+
 ## 0.2.1 (2026-10-31)
 
 - Folha de contato: no Windows o ffmpeg era chamado pelo cmd.exe e o `|` do layout do xstack virava pipe. `run` e `has` agora chamam executáveis sem shell em qualquer sistema; só atalhos `.cmd`/`.bat` passam pelo shell, com aspas.

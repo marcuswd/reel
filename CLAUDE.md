@@ -35,6 +35,7 @@ pnpm video stills <slug> [--format all] [--lang all]   # 1 quadro por cena + fol
 pnpm video render <slug> [--format all] [--lang all] [--draft] [--dest pasta]
 pnpm video translate <slug> --to en [--auto]
 pnpm video doctor                 # ferramentas, chaves (só presença) e rede
+pnpm test                         # testes do motor (src/core) e dos scripts, runner do Node
 
 pnpm media search --type photo|video --q "termo" --orientation portrait --sheet
 pnpm media get --source pixabay|unsplash|pexels|openverse --id <id> --out public/<slug>/stock/<nome>.jpg
@@ -109,7 +110,7 @@ Campos comuns: `id`, `voice`, `duration`, `transition`, `camera`, `background`, 
 
 - Vai para o git: motor, scripts, schemas, marcas, jobs (JSON) e os exemplos próprios (`public/demo-30s`, `public/showcase`).
 - Fica só na máquina: `public/<job>/` de clientes, `clientes/`, `out/`, `.env`. O `.gitignore` de `public/` é por lista de permitidos: material novo de cliente nunca entra por engano.
-- Mudança no motor: `pnpm typecheck` e `pnpm video stills demo-30s` (renderiza na nuvem também) e olhe a folha de contato.
+- Mudança no motor: `pnpm typecheck`, `pnpm test` e `pnpm video stills demo-30s` (renderiza na nuvem também) e olhe a folha de contato.
 - Commits em inglês; registe a mudança no `CHANGELOG.md` e suba a versão do `package.json`.
 
 ## Regras de Remotion
