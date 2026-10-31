@@ -1,6 +1,4 @@
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
 import { describe, test } from "node:test";
 import { AA, CAPTION_PLATE, contrast, inkOn, over } from "./color";
 
@@ -15,11 +13,10 @@ describe("contraste", () => {
       assert.ok(contrast("#ffffff", over("#000000", CAPTION_PLATE, fundo)) >= AA, fundo);
     }
   });
-  test("texto da palavra ativa passa no AA sobre a cor de destaque de todas as marcas", () => {
-    const root = resolve(import.meta.dirname, "..", "..", "brands");
-    for (const f of readdirSync(root).filter((f) => f.endsWith(".json"))) {
-      const h = JSON.parse(readFileSync(join(root, f), "utf8").replace(/^﻿/, "")).colors.highlight as string;
-      assert.ok(contrast(inkOn(h), h) >= AA, `${f}: ${h}`);
+  test("texto da palavra ativa passa no AA sobre qualquer cor de destaque", () => {
+    for (let r = 0; r < 256; r += 51) for (let g = 0; g < 256; g += 51) for (let b = 0; b < 256; b += 51) {
+      const h = "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("");
+      assert.ok(contrast(inkOn(h), h) >= AA, h);
     }
   });
   test("inkOn escolhe preto em cor clara e branco em cor escura", () => {

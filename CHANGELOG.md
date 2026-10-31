@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 (2026-10-31)
+
+- O repositório passa a levar só o motor. Saem todas as marcas (`brands/*.json`), todos os jobs (`jobs/*`, inclusive os exemplos `demo-30s` e `showcase`) e o material versionado (`public/brands/marcuswd`, `public/demo-30s`, `public/showcase`). O `.gitignore` exclui `jobs/`, `brands/` e `public/*` (menos `_lib`).
+- A composição padrão do Studio (`src/template/demo.ts`) usa uma marca neutra embutida em vez da marca MARCUSWD.
+- `pnpm video new` exige `--brand`.
+- CI: typecheck e testes (sem build de exemplos).
+- Documentação: entrega na pasta do cliente com `render --dest`; verificação visual do motor pelo still da composição padrão.
+
 ## 0.3.0 (2026-10-31)
 
 - Legenda queimada só quando acrescenta: a legenda da locução não é queimada nas cenas em que 60% ou mais das palavras faladas já estão escritas na tela (`captions.whenOnScreen`, padrão `"hide"`; `"show"` volta ao comportamento anterior). O `.srt`/`.vtt` continua completo; vídeo falado é sempre queimado. Sem nada para queimar, a faixa reservada embaixo some.

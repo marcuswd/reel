@@ -1,4 +1,0 @@
-- showcase/stock/dev-1.jpg: Foto de Caspar Camille Rubin no Unsplash (https://unsplash.com/photos/macbook-pro-with-images-of-computer-language-codes-fPkvU7RDmCo?utm_source=marcuswd_video&utm_medium=referral) · Unsplash License
-- showcase/stock/dev-2.jpg: Foto de Mohammad Rahmani no Unsplash (https://unsplash.com/photos/black-flat-screen-computer-monitor-CDBkMNZmd7o?utm_source=marcuswd_video&utm_medium=referral) · Unsplash License
-- showcase/stock/edit-1.jpg: Foto de Harsh Gadhiya no Unsplash (https://unsplash.com/photos/a-man-sitting-in-front-of-a-computer-with-headphones-on-1XwEmRKIzig?utm_source=marcuswd_video&utm_medium=referral) · Unsplash License
-- showcase/stock/edit-2.jpg: Foto de Pavel Herceg no Unsplash (https://unsplash.com/photos/a-man-sitting-at-a-desk-with-several-monitors-xiY8LOJYUwk?utm_source=marcuswd_video&utm_medium=referral) · Unsplash License

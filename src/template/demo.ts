@@ -1,6 +1,16 @@
 // Props de exemplo para a composição "Video" quando ainda não há job construído.
-import brand from "../../brands/marcuswd.json";
+// Marca neutra embutida: o motor não depende de nenhuma marca de cliente.
 import { brandSchema, jobSchema, type VideoProps } from "../core/schema";
+
+const brand = {
+  slug: "padrao",
+  name: "Padrão",
+  colors: {
+    bg: "#0f1115", bg2: "#1b2030", surface: "#1f2430", text: "#f5f6f8", textOnSurface: "#f5f6f8",
+    muted: "#9aa3b2", primary: "#3b82f6", accent: "#22d3ee", highlight: "#facc15", palette: ["#3b82f6", "#22d3ee", "#facc15"],
+  },
+  fonts: { heading: { family: "Inter" }, body: { family: "Inter" } },
+};
 
 export const DEMO: VideoProps = {
   brand: brandSchema.parse(brand),
@@ -11,7 +21,7 @@ export const DEMO: VideoProps = {
   musicSrc: null,
   job: jobSchema.parse({
     slug: "demo",
-    brand: "marcuswd",
+    brand: "padrao",
     music: { mode: "none" },
     scenes: [
       { id: "capa", type: "cover", eyebrow: "Gerador de vídeo", title: "Vídeo como [código]", subtitle: "Roteiro em JSON, marca em JSON, render em um comando" },

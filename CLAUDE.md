@@ -10,17 +10,17 @@ nesse caso, crie no template (genérico, configurável por props), nunca em uma 
 ## Estrutura
 
 ```
-brands/<marca>.json        identidade: cores, fontes, logo, energia de movimento, BPM, contato
-jobs/<slug>/job.json       roteiro: cenas, formatos, idiomas, trilha, locução, legendas, overlays
+brands/<marca>.json        identidade: cores, fontes, logo, energia de movimento, BPM, contato   (não versionado)
+jobs/<slug>/job.json       roteiro: cenas, formatos, idiomas, trilha, locução, legendas, overlays (não versionado)
 jobs/<slug>/i18n/<lang>.json  traduções ("<idCena>.<campo>": "texto")
 jobs/<slug>/_build/        gerado pelo build (não editar)
-public/<slug>/             assets do job (img/, video/, stock/, voice/, audio/generated/)
+public/<slug>/             assets do job (img/, video/, stock/, voice/, audio/generated/)   (não versionado)
 public/_lib/sfx/           pack de efeitos próprio (pnpm sfx regera)
 src/core/                  motor: schema (zod), timeline (plano puro), câmera, transições, texto, mídia, legendas, áudio
 src/template/              composição "Video" + 11 tipos de cena
 src/jobs.generated.ts      gerado e não versionado: jobs no Studio (pasta "Jobs"); pnpm video index recria
 scripts/                   CLI (video, media, brand, transcribe), trilha (music.py), efeitos (sfx.py)
-clientes/<client>/<slug>/<data>/  entrega (mp4, thumb, srt, vtt, CREDITOS.md)
+clientes/<client>/<slug>/<data>/  entrega padrão sem --dest (não versionado; prefira --dest na pasta do cliente)
 docs/backlog.md            próximos itens (o modo autónomo da equipa lê daqui)
 ```
 
@@ -61,7 +61,8 @@ pnpm dev                          # Studio
 5. `pnpm video voice` (se houver locução) → `pnpm video stills` → **olhe a folha de contato** e corrija
    (texto cortado, legenda sobre conteúdo, contraste, foto ruim) → `pnpm video render`.
 6. Confira o mp4 extraindo quadros nas transições (ffmpeg) e o loudness informado (alvo -14 a -16 LUFS).
-7. Entregue: informe o caminho em `clientes/...` e envie o mp4. Se houver créditos CC-BY, avise.
+7. Entregue na pasta do cliente (`render --dest <pasta do cliente>`), informe o caminho e envie o mp4.
+   Se houver créditos CC-BY, avise. Depois da entrega, nada do cliente fica neste repositório.
 
 ## Tipos de cena (campo "type")
 
@@ -110,9 +111,11 @@ Campos comuns: `id`, `voice`, `duration`, `transition`, `camera`, `background`, 
 
 ## Repositório (github.com/marcuswd/reel, privado)
 
-- Vai para o git: motor, scripts, schemas, marcas, jobs (JSON) e os exemplos próprios (`public/demo-30s`, `public/showcase`).
-- Fica só na máquina: `public/<job>/` de clientes, `clientes/`, `out/`, `.env`. O `.gitignore` de `public/` é por lista de permitidos: material novo de cliente nunca entra por engano.
-- Mudança no motor: `pnpm typecheck`, `pnpm test` e `pnpm video stills demo-30s` (renderiza na nuvem também) e olhe a folha de contato.
+- Vai para o git só o motor: `src`, `scripts`, `schemas`, `public/_lib` (efeitos), docs e testes. Nenhuma marca, job,
+  material, render ou entrega, nem como exemplo. O `.gitignore` exclui `jobs/`, `brands/`, `public/*` (menos `_lib`),
+  `clientes/`, `out/` e `.env`.
+- Mudança no motor: `pnpm typecheck`, `pnpm test` e um still da composição padrão (marca neutra de `src/template/demo.ts`):
+  `pnpm exec remotion still src/index.ts Video out/smoke.png --frame=60 --scale=0.5`. Olhe a imagem.
 - Commits em inglês; registe a mudança no `CHANGELOG.md` e suba a versão do `package.json`.
 
 ## Regras de Remotion

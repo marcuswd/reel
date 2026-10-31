@@ -20,16 +20,16 @@ Requer Node 20+, ffmpeg e Python 3. Chaves opcionais no `.env` (veja `.env.examp
 ## Em 5 comandos
 
 ```bash
-pnpm video new promo-x --brand marcuswd --client cliente-x --format 9:16
+pnpm video new promo-x --brand <marca> --client cliente-x --format 9:16
 # edite jobs/promo-x/job.json (cenas) e coloque os assets em public/promo-x/
 pnpm video voice promo-x            # se tiver locução
 pnpm video stills promo-x           # confere um quadro por cena (out/promo-x/sheet-*.jpg)
 pnpm video render promo-x --format all --lang all
 ```
 
-O repositório leva o motor, as marcas e os exemplos próprios (`demo-30s`, `showcase`). Material e entregas de clientes (`public/<job>/`, `clientes/`, `out/`) ficam só na máquina: o `.gitignore` já os exclui.
+O repositório leva só o motor. Marcas, jobs, material e entregas (`brands/`, `jobs/`, `public/<job>/`, `clientes/`, `out/`) nunca entram: o `.gitignore` já os exclui.
 
-A entrega vai para `clientes/<client>/<slug>/<AAAA-MM-DD>/` (ou `EXPORT_DIR`): mp4, thumb, `.srt`, `.vtt` e créditos.
+A entrega vai para a pasta do cliente com `--dest` (sem ele, `clientes/<client>/<slug>/<AAAA-MM-DD>/` ou `EXPORT_DIR`): mp4, thumb, `.srt`, `.vtt` e créditos.
 Nada é sobrescrito (cria `-v2`).
 
 ## Job (jobs/<slug>/job.json)

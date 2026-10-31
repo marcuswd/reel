@@ -1,12 +1,8 @@
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
 import { describe, test } from "node:test";
 import { brandSchema, jobSchema } from "./schema";
 import { brand, job } from "./testing";
 
-const ROOT = resolve(import.meta.dirname, "..", "..");
-const read = (f: string) => JSON.parse(readFileSync(f, "utf8").replace(/^﻿/, ""));
 const issues = (r: { success: boolean; error?: { issues: { path: PropertyKey[] }[] } }) => r.error?.issues.map((i) => i.path.join(".")) ?? [];
 
 describe("job", () => {
@@ -42,21 +38,4 @@ describe("marca", () => {
     const r = brandSchema.safeParse({ ...brand(), colors: { ...brand().colors, bg: "azul" } });
     assert.deepEqual(issues(r), ["colors.bg"]);
   });
-});
-
-// Tudo que está no repositório precisa passar no schema (o build depende disso).
-describe("arquivos do repositório", () => {
-  for (const d of readdirSync(join(ROOT, "jobs"), { withFileTypes: true }).filter((d) => d.isDirectory())) {
-    test(`jobs/${d.name}/job.json`, () => {
-      const r = jobSchema.safeParse(read(join(ROOT, "jobs", d.name, "job.json")));
-      assert.ok(r.success, issues(r).join(", "));
-      assert.equal(r.data!.slug, d.name);
-    });
-  }
-  for (const f of readdirSync(join(ROOT, "brands")).filter((f) => f.endsWith(".json"))) {
-    test(`brands/${f}`, () => {
-      const r = brandSchema.safeParse(read(join(ROOT, "brands", f)));
-      assert.ok(r.success, issues(r).join(", "));
-    });
-  }
 });

@@ -220,7 +220,7 @@ const main = async () => {
       if (!/^[a-z0-9-]+$/.test(slug)) die("slug só com a-z, 0-9 e hífen");
       const f = p("jobs", slug, "job.json");
       if (existsSync(f)) die(`jobs/${slug}/job.json já existe`);
-      const brand = str("brand") ?? "marcuswd";
+      const brand = str("brand") ?? die("informe a marca: --brand <marca> (brands/<marca>.json)");
       loadBrand(brand);
       const formats = (str("format") ?? "16:9").split(",");
       writeJson(f, {
