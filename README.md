@@ -1,4 +1,4 @@
-# remotion-base
+# reel
 
 Gerador de vídeos da MARCUSWD sobre Remotion 4. Um vídeo é um **job em JSON** (roteiro) + uma **marca em JSON**
 (identidade). O motor monta cenas, câmera, transições, trilha sincronizada, efeitos, locução, legendas e idiomas,
@@ -74,10 +74,11 @@ O VS Code completa e valida os campos pelo `$schema` (gerado por `pnpm video bui
 | Mídia | busca e download com crédito: Pixabay, Unsplash, Pexels, Openverse; folha de contato para escolher |
 | Marca | rascunho a partir do site (cores, fontes, logo) e fontes do @fontsource |
 
-## Legado
+## Repositório
 
-As composições antigas (CmsTis, CmsTisV2/V4, AcaiMg, Intro) continuam na pasta "Legado" do Studio
-(`pnpm legacy:*`). Não use como modelo para vídeos novos.
+- O índice de jobs do Studio (`src/jobs.generated.ts`) e os `jobs/<slug>/_build/` são gerados: `pnpm install` cria o índice e `pnpm video build` atualiza.
+- As composições antigas feitas à mão (CmsTis, AcaiMg, Intro) saíram do motor; estão na tag `legado`.
+- Próximos passos: [docs/backlog.md](docs/backlog.md). Mudanças: [CHANGELOG.md](CHANGELOG.md).
 
 ## Licença do Remotion
 

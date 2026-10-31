@@ -1,10 +1,10 @@
 {
-  "name": "remotion-base",
-  "version": "1.0.0",
+  "name": "reel",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "postinstall": "node scripts/copy-fonts.mjs",
+    "postinstall": "node scripts/copy-fonts.mjs && tsx scripts/video.ts index",
     "dev": "remotion studio",
     "typecheck": "tsc --noEmit",
     "video": "tsx scripts/video.ts",
@@ -16,12 +16,6 @@
     "audio:search": "node scripts/audio.mjs search",
     "audio:get": "node scripts/audio.mjs get",
     "skills": "npx -y skills add remotion-dev/skills --agent claude-code --yes",
-    "legacy:render": "remotion render Intro out/intro.mp4",
-    "legacy:cms": "remotion render CmsTis out/cms-tis.mp4",
-    "legacy:cms2": "remotion render CmsTisV2 out/cms-tis-v2.mp4",
-    "legacy:cms4": "remotion render CmsTisV4 out/cms-tis-v4.mp4",
-    "legacy:acai-mg": "remotion render AcaiMg out/acai-mg.mp4",
-    "legacy:audio-acai-mg": "python scripts/synth-acai-mg.py",
     "export": "node scripts/export.mjs"
   },
   "dependencies": {

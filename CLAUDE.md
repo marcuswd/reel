@@ -1,4 +1,4 @@
-# remotion-base: gerador de vídeos
+# reel: gerador de vídeos
 
 Ferramenta do Marcus (MARCUSWD) para produzir vídeos de clientes com Remotion 4 + TypeScript + pnpm.
 Responda em português. Não use travessão (—) em textos do vídeo nem em textos para o usuário.
@@ -18,10 +18,10 @@ public/<slug>/             assets do job (img/, video/, stock/, voice/, audio/ge
 public/_lib/sfx/           pack de efeitos próprio (pnpm sfx regera)
 src/core/                  motor: schema (zod), timeline (plano puro), câmera, transições, texto, mídia, legendas, áudio
 src/template/              composição "Video" + 11 tipos de cena
-src/jobs.generated.ts      gerado: jobs no Studio (pasta "Jobs")
+src/jobs.generated.ts      gerado e não versionado: jobs no Studio (pasta "Jobs"); pnpm video index recria
 scripts/                   CLI (video, media, brand, transcribe), trilha (music.py), efeitos (sfx.py)
 clientes/<client>/<slug>/<data>/  entrega (mp4, thumb, srt, vtt, CREDITOS.md)
-src/cms*, src/acai-mg      vídeos antigos (pasta "Legado" no Studio). Não usar como modelo.
+docs/backlog.md            próximos itens (o modo autónomo da equipa lê daqui)
 ```
 
 ## Comandos
@@ -104,6 +104,13 @@ Campos comuns: `id`, `voice`, `duration`, `transition`, `camera`, `background`, 
   Chromium de `/opt/pw-browsers` (detectado sozinho). Chamadas de API que precisam de chave rodam no PC do usuário
   (`node scripts/media.ts ...` no shell do dispositivo, que lê o `.env` local). Sites bloqueados por proxy: não
   contorne; peça ao usuário para liberar o domínio em Settings > Capabilities ou use outra fonte.
+
+## Repositório (github.com/marcuswd/reel, privado)
+
+- Vai para o git: motor, scripts, schemas, marcas, jobs (JSON) e os exemplos próprios (`public/demo-30s`, `public/showcase`).
+- Fica só na máquina: `public/<job>/` de clientes, `clientes/`, `out/`, `.env`. O `.gitignore` de `public/` é por lista de permitidos: material novo de cliente nunca entra por engano.
+- Mudança no motor: `pnpm typecheck` e `pnpm video stills demo-30s` (renderiza na nuvem também) e olhe a folha de contato.
+- Commits em inglês; registe a mudança no `CHANGELOG.md` e suba a versão do `package.json`.
 
 ## Regras de Remotion
 

@@ -244,6 +244,11 @@ const main = async () => {
       build(slug);
       break;
     }
+    case "index": {
+      // Índice dos jobs para o Studio (src/jobs.generated.ts, não versionado). Roda no postinstall.
+      log(`${writeIndex()} composição(ões) no índice`);
+      break;
+    }
     case "build": {
       await writeSchemas();
       const slugs = pos[0] ? [pos[0]] : listJobs();

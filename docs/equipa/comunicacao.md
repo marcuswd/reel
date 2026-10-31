@@ -10,4 +10,3 @@ Referência obrigatória: `CLAUDE.md` deste repositório (princípio "um vídeo 
 - **Montagem:** `pnpm video build`, `stills`, `render [--format all] [--lang all] [--draft]`; QC com quadros nas transições e loudness -14 a -16 LUFS; entrega em `clientes/<client>/<slug>/<data>/` (nunca sobrescreve; `-v2`). `pnpm video doctor` quando algo falha.
 - **Produção:** registra cada passagem em `jobs/<slug>/producao.md`.
 - Componente novo no motor só se um tipo de cena não existir, no `src/template`, genérico por props, nunca por cliente: isso é decisão do Marcus, registrar em `docs/equipa/dividas.md`.
-- `src/cms*`, `src/acai-mg`: legado, não usar como modelo.

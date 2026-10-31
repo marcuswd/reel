@@ -16,3 +16,4 @@ public/brands/*
 !public/brands/marcuswd/
 !public/demo-30s/
 !public/showcase/
+src/jobs.generated.ts
