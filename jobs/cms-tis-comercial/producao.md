@@ -13,3 +13,4 @@ Briefing fechado com o dono (não repetir perguntas):
 
 ## Passagens
 - Produtor: abriu o job, briefing registado.
+- Montagem: build e stills dos dois jobs feitos (16:9 com 15 cenas, 9:16 com 7); folhas de contacto em out/<slug>/folha-contacto-cenas.jpg (a folha automática falha no ffmpeg, folhas montadas à mão). Sem ajustes no job.json. Render final por fazer.
