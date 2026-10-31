@@ -52,7 +52,6 @@ export const Video: React.FC<VideoProps> = (props) => {
   loadBrandFonts(props.brand);
   const plan = useMemo(() => planTimeline(props), [props]);
   const { job, brand } = props;
-  const burn = job.captions.mode === "burn" || job.captions.mode === "both";
   return (
     <VideoProvider value={{ ...props, plan }}>
       <AbsoluteFill style={{ background: brand.colors.bg }}>
@@ -82,7 +81,7 @@ export const Video: React.FC<VideoProps> = (props) => {
         {job.overlays.grain ? <Grain /> : null}
         <LogoBug />
         <Progress />
-        {burn && plan.captions.length ? <Captions captions={plan.captions} style={job.captions.style} /> : null}
+        {plan.burn.length ? <Captions captions={plan.burn} style={job.captions.style} /> : null}
         <Soundtrack />
       </AbsoluteFill>
     </VideoProvider>

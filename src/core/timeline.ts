@@ -35,8 +35,10 @@ export type Plan = {
   sfx: SfxEvent[];
   /** trechos com fala (frames globais), para ducking da trilha */
   speech: { from: number; to: number }[];
-  /** legendas globais (ms), já com offsets */
+  /** legendas globais (ms), já com offsets: vão para o .srt/.vtt */
   captions: CaptionItem[];
+  /** legendas queimadas no vídeo: sem as cenas cuja fala já está escrita na tela */
+  burn: CaptionItem[];
 };
 
 // ── Texto ──
@@ -44,22 +46,35 @@ export const stripMarks = (s: string) => s.replace(/[[\]]/g, "");
 export const countWords = (...texts: (string | undefined)[]) =>
   texts.filter(Boolean).join(" ").replace(/[[\]]/g, "").split(/\s+/).filter(Boolean).length;
 
-/** Palavras visíveis de uma cena (o que precisa de tempo de leitura). */
-export const sceneWords = (s: Scene): number => {
+/** Textos visíveis de uma cena. */
+export const sceneTexts = (s: Scene): (string | undefined)[] => {
   switch (s.type) {
-    case "cover": return countWords(s.eyebrow, s.title, s.subtitle);
-    case "statement": return countWords(s.eyebrow, s.text);
-    case "media": return countWords(s.eyebrow, s.title, s.text);
-    case "split": return countWords(s.eyebrow, s.title, s.text, ...(s.bullets ?? []));
-    case "screen": return countWords(s.eyebrow, s.title, s.text);
-    case "list": return countWords(s.eyebrow, s.title, ...s.items);
-    case "stats": return countWords(s.eyebrow, s.title, ...s.items.map((i) => i.label)) + s.items.length;
-    case "gallery": return countWords(s.eyebrow, s.title);
-    case "quote": return countWords(s.text, s.author, s.role);
-    case "cta": return countWords(s.eyebrow, s.title, s.text, s.button, ...(s.contact ?? []).map((c) => c.value));
-    case "logo": return countWords(s.tagline);
+    case "cover": return [s.eyebrow, s.title, s.subtitle];
+    case "statement": return [s.eyebrow, s.text];
+    case "media": return [s.eyebrow, s.title, s.text];
+    case "split": return [s.eyebrow, s.title, s.text, ...(s.bullets ?? [])];
+    case "screen": return [s.eyebrow, s.title, s.text];
+    case "list": return [s.eyebrow, s.title, ...s.items];
+    case "stats": return [s.eyebrow, s.title, ...s.items.flatMap((i) => [`${i.prefix ?? ""}${i.value}${i.suffix ?? ""}`, i.label])];
+    case "gallery": return [s.eyebrow, s.title];
+    case "quote": return [s.text, s.author, s.role];
+    case "cta": return [s.eyebrow, s.title, s.text, s.button, ...(s.contact ?? []).map((c) => c.value)];
+    case "logo": return [s.tagline];
   }
 };
+
+/** Palavras visíveis de uma cena (o que precisa de tempo de leitura). */
+export const sceneWords = (s: Scene): number => countWords(...sceneTexts(s));
+
+const norm = (w: string) => w.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\p{L}\p{N}]/gu, "");
+/** Fração das palavras faladas que já estão escritas na tela (0 a 1). */
+export const onScreenShare = (spoken: string[], s: Scene) => {
+  const seen = new Set(sceneTexts(s).filter(Boolean).join(" ").split(/\s+/).map(norm).filter(Boolean));
+  const said = spoken.map(norm).filter(Boolean);
+  return said.length ? said.filter((w) => seen.has(w)).length / said.length : 0;
+};
+/** A partir desta fração, a legenda da locução repetiria a tela e não é queimada. */
+export const ON_SCREEN = 0.6;
 
 const MIN_SECONDS: Record<Scene["type"], number> = {
   cover: 2.6, statement: 2.4, media: 3, split: 3.5, screen: 4.5, list: 3, stats: 3.6, gallery: 3.2, quote: 4, cta: 4, logo: 2.6,
@@ -186,13 +201,18 @@ export const planTimeline = (props: VideoProps): Plan => {
   // Fala e legendas
   const speech: Plan["speech"] = [];
   const captions: CaptionItem[] = [];
+  const burn: CaptionItem[] = [];
+  const burnMode = job.captions.mode === "burn" || job.captions.mode === "both";
   const ms = (f: number) => (f / fps) * 1000;
   for (const p of scenes) {
     const v = props.voice[p.id];
     if (v) {
       const from = p.start + p.voiceAt;
       speech.push({ from, to: from + Math.ceil(v.seconds * fps) });
-      for (const w of v.words) captions.push({ ...w, startMs: w.startMs + ms(from), endMs: w.endMs + ms(from), timestampMs: w.timestampMs === null ? null : w.timestampMs + ms(from) });
+      const ws = v.words.map((w) => ({ ...w, startMs: w.startMs + ms(from), endMs: w.endMs + ms(from), timestampMs: w.timestampMs === null ? null : w.timestampMs + ms(from) }));
+      captions.push(...ws);
+      const repeats = job.captions.whenOnScreen === "hide" && onScreenShare(v.words.map((w) => w.text), p.scene) >= ON_SCREEN;
+      if (burnMode && !repeats) burn.push(...ws);
     }
     const clip = props.clipCaptions[p.id];
     if (clip && p.scene.type === "media" && typeof p.scene.media !== "string") {
@@ -201,12 +221,15 @@ export const planTimeline = (props: VideoProps): Plan => {
       speech.push({ from: p.start, to: p.start + p.frames });
       for (const w of clip) {
         const c = { ...w, startMs: w.startMs + off, endMs: w.endMs + off, timestampMs: w.timestampMs === null ? null : w.timestampMs + off };
-        if (c.startMs >= ms(p.start) && c.startMs < endMs) captions.push(c);
+        if (c.startMs >= ms(p.start) && c.startMs < endMs) {
+          captions.push(c);
+          if (burnMode) burn.push(c);
+        }
       }
     }
   }
 
-  return { fps, bpm, beat, T, total, scenes, sfx, speech, captions };
+  return { fps, bpm, beat, T, total, scenes, sfx, speech, captions, burn };
 };
 
 /** Resumo serializável para o gerador de trilha (scripts/music.py). */

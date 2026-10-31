@@ -49,7 +49,7 @@ export const useLayout = (): Layout => {
   const x = (vertical ? 80 : square ? 90 : 130) * u;
   const y = (vertical ? 150 : 90) * u;
   // faixa reservada para legendas queimadas: o conteúdo nunca fica embaixo delas
-  const burn = plan.captions.length > 0 && (job.captions.mode === "burn" || job.captions.mode === "both");
+  const burn = plan.burn.length > 0;
   const band = burn ? (vertical ? h * 0.2 : square ? 170 * u : 120 * u) : 0;
   return { w, h, u, vertical, square, captionBand: band, pad: { x, top: y + job.safe.top, bottom: y + job.safe.bottom + band } };
 };

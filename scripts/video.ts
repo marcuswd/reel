@@ -306,7 +306,7 @@ const main = async () => {
         for (const s of plan.scenes)
           console.log(`  ${String(s.index + 1).padStart(2)}. ${s.id.padEnd(16)} ${s.scene.type.padEnd(9)} ${(s.start / plan.fps).toFixed(2).padStart(6)}s  ${((s.frames - plan.T) / plan.fps).toFixed(2).padStart(5)}s  ${s.transition.padEnd(7)} ${s.camera.padEnd(8)} ${props.voice[s.id] ? `voz ${props.voice[s.id].seconds.toFixed(1)}s` : ""}`);
         console.log(`  efeitos: ${plan.sfx.map((e) => `${e.name}@${(e.frame / plan.fps).toFixed(1)}`).join(" ")}`);
-        console.log(`  legendas: ${plan.captions.length} palavra(s)`);
+        console.log(`  legendas: ${plan.captions.length} palavra(s), ${plan.burn.length} queimada(s)`);
       }
       break;
     }

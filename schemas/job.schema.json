@@ -135,7 +135,8 @@
     "captions": {
       "default": {
         "mode": "both",
-        "style": "pop"
+        "style": "pop",
+        "whenOnScreen": "hide"
       },
       "type": "object",
       "properties": {
@@ -156,6 +157,14 @@
             "pop",
             "line",
             "box"
+          ]
+        },
+        "whenOnScreen": {
+          "default": "hide",
+          "type": "string",
+          "enum": [
+            "hide",
+            "show"
           ]
         }
       }

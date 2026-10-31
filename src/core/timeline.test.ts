@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import { props, words } from "./testing";
-import { countWords, planTimeline, readingSeconds, stripMarks } from "./timeline";
+import { countWords, onScreenShare, planTimeline, readingSeconds, stripMarks } from "./timeline";
 
 const onBeat = (frame: number, T: number, beat: number) => {
   const k = (frame - T) / beat;
@@ -109,5 +109,28 @@ describe("legendas", () => {
     assert.ok(p.captions.length > 0 && p.captions.length < clip.length);
     assert.equal(p.captions[0].text, "c"); // começa em 1 s do clipe (trim)
     assert.ok(p.captions.every((c) => c.startMs >= 0 && c.startMs < end));
+  });
+});
+
+describe("legenda queimada", () => {
+  // cena "ideia": texto na tela "Uma frase curta"
+  const repete = { ideia: { src: "v.mp3", seconds: 1.5, words: words("Uma frase curta.") } };
+  const nova = { ideia: { src: "v.mp3", seconds: 2, words: words("Isto é dito, não escrito") } };
+  test("fala que repete a tela não é queimada, mas fica no .srt", () => {
+    const p = planTimeline(props({ voice: repete }));
+    assert.equal(p.captions.length, 3);
+    assert.equal(p.burn.length, 0);
+  });
+  test("fala com texto novo é queimada", () => {
+    assert.equal(planTimeline(props({ voice: nova })).burn.length, 5);
+  });
+  test("whenOnScreen show queima sempre; mode file nunca queima", () => {
+    assert.equal(planTimeline(props({ voice: repete, job: { captions: { mode: "both", style: "pop", whenOnScreen: "show" } } })).burn.length, 3);
+    assert.equal(planTimeline(props({ voice: nova, job: { captions: { mode: "file", style: "pop", whenOnScreen: "hide" } } })).burn.length, 0);
+  });
+  test("comparação ignora acento, caixa, pontuação e colchetes", () => {
+    const s = { id: "a", type: "statement" as const, text: "Vídeos que [vendem], gerados por código" };
+    assert.equal(onScreenShare(["videos", "QUE", "vendem!", "gerados", "por", "codigo."], s), 1);
+    assert.equal(onScreenShare(["outra", "coisa"], s), 0);
   });
 });

@@ -93,6 +93,8 @@ Campos comuns: `id`, `voice`, `duration`, `transition`, `camera`, `background`, 
   pt_PT-tugão), `elevenlabs` (melhor, tempos exatos por palavra), `openai`. `voiceId` pode ser `"pt-BR=x,en=y"`.
 - Legendas saem da locução (ou de `pnpm transcribe` para vídeo falado). `captions.mode` burn/file/both/none;
   `style` pop/line/box. Com legenda queimada, o layout reserva uma faixa embaixo (conteúdo nunca fica sob ela).
+  A legenda da locução não é queimada quando repete o texto da tela (`captions.whenOnScreen: "show"` força);
+  toda legenda fica sobre placa escura com contraste AA e a palavra falada vira pílula na cor de destaque.
 - Idiomas: `langs` no job + `jobs/<slug>/i18n/<lang>.json`. `pnpm video translate <slug> --to en` cria as chaves;
   preencha você mesmo (no chat) ou use `--auto` (DeepL/Claude/OpenAI se houver chave). Depois rode `voice --lang en`.
 

@@ -1,12 +1,15 @@
 import React, { useMemo } from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { clamp, fontStack, hexA, useBrand, useLayout, useVideo } from "./context";
+import { CAPTION_PLATE, inkOn } from "./color";
+import { fontStack, hexA, useBrand, useLayout, useVideo } from "./context";
 import type { CaptionItem } from "./schema";
 
 /**
  * Legendas queimadas. As palavras vêm com tempo (locução TTS ou transcrição Whisper)
  * e são agrupadas em "páginas" curtas, com a palavra falada em destaque.
  * Estilos: pop (estilo Reels, grande e central-baixo), line (legenda clássica), box (karaokê numa caixa).
+ * Contraste: todo estilo fica sobre uma placa preta (CAPTION_PLATE) que garante AA para o branco sobre
+ * qualquer fundo; a palavra falada vira uma pílula na cor de destaque com texto preto ou branco (inkOn).
  */
 export const Captions: React.FC<{ captions: CaptionItem[]; style: "pop" | "line" | "box" }> = ({ captions, style }) => {
   const frame = useCurrentFrame();
@@ -20,6 +23,7 @@ export const Captions: React.FC<{ captions: CaptionItem[]; style: "pop" | "line"
   if (!page) return null;
   const local = ((nowMs - page.startMs) / 1000) * fps;
   const enter = spring({ frame: local, fps, config: { damping: 14, mass: 0.6 } });
+  const ink = inkOn(brand.colors.highlight);
   const size = (style === "pop" ? (vertical ? 76 : 64) : vertical ? 52 : 46) * u;
   // centralizada na faixa reservada (useLayout.captionBand)
   const bottom = job.safe.bottom + (vertical ? 150 : 90) * u * 0.6 + captionBand / 2 - size * 0.7;
@@ -36,14 +40,13 @@ export const Captions: React.FC<{ captions: CaptionItem[]; style: "pop" | "line"
           fontSize: size,
           lineHeight: 1.15,
           color: "#fff",
-          padding: style === "pop" ? 0 : `${12 * u}px ${26 * u}px`,
-          borderRadius: style === "box" ? 18 * u : 10 * u,
-          background: style === "pop" ? undefined : hexA("#000000", style === "box" ? 0.62 : 0.5),
-          textShadow: style === "pop" ? `0 ${4 * u}px ${18 * u}px rgba(0,0,0,0.7), 0 0 ${3 * u}px rgba(0,0,0,0.9)` : undefined,
-          WebkitTextStroke: style === "pop" ? `${2 * u}px rgba(0,0,0,0.85)` : undefined,
-          paintOrder: "stroke fill",
+          padding: `${(style === "pop" ? 10 : 12) * u}px ${(style === "pop" ? 22 : 26) * u}px`,
+          borderRadius: (style === "line" ? 10 : 18) * u,
+          background: hexA("#000000", CAPTION_PLATE),
+          boxShadow: style === "pop" ? `0 0 ${36 * u}px ${12 * u}px ${hexA("#000000", CAPTION_PLATE * 0.6)}` : undefined,
+          textShadow: style === "pop" ? `0 ${2 * u}px ${8 * u}px rgba(0,0,0,0.6)` : undefined,
           transform: `translateY(${(1 - enter) * 30 * u}px) scale(${interpolate(enter, [0, 1], [0.92, 1])})`,
-          opacity: interpolate(enter, [0, 0.5], [0, 1], clamp),
+          // sem fade de opacidade: a entrada é só escala e deslocamento, então nenhum quadro tem legenda apagada
           textTransform: style === "pop" ? "uppercase" : undefined,
         }}
       >
@@ -55,9 +58,13 @@ export const Captions: React.FC<{ captions: CaptionItem[]; style: "pop" | "line"
               {i > 0 ? " " : null}
               <span
                 style={{
-                  color: active ? brand.colors.highlight : style === "box" && !spoken ? hexA("#ffffff", 0.55) : "#fff",
+                  color: active ? ink : style === "box" && !spoken ? hexA("#ffffff", 0.7) : "#fff",
+                  background: active ? brand.colors.highlight : undefined,
+                  textShadow: active ? "none" : undefined,
+                  borderRadius: 8 * u,
+                  padding: `0 ${0.12}em`,
+                  margin: `0 ${-0.12}em`,
                   display: "inline-block",
-                  transform: style === "pop" && active ? "translateY(-0.04em)" : undefined,
                 }}
               >
                 {t.text.trim()}
@@ -89,6 +96,17 @@ export const paginate = (caps: CaptionItem[], maxMs: number, maxChars: number): 
     cur!.words.push({ text: `${cur!.words.length ? " " : ""}${w}`, fromMs: c.startMs, toMs: c.endMs });
     cur!.endMs = c.endMs;
     chars += w.length + 1;
+  }
+  // a última palavra da frase não fica sozinha numa página: volta para a anterior se couber com folga
+  for (let i = pages.length - 1; i > 0; i--) {
+    const [a, b] = [pages[i - 1], pages[i]];
+    const text = (p: Page) => p.words.map((w) => w.text.trim()).join(" ");
+    const sameSentence = !/[.!?]$/.test(text(a)) && b.startMs - a.endMs <= 350;
+    if (b.words.length === 1 && sameSentence && text(a).length + text(b).length + 1 <= maxChars + 8) {
+      a.words.push({ ...b.words[0], text: ` ${b.words[0].text.trim()}` });
+      a.endMs = b.endMs;
+      pages.splice(i, 1);
+    }
   }
   // cada página fica na tela até a próxima começar (no máximo +500 ms)
   pages.forEach((p, i) => (p.endMs = Math.min(pages[i + 1]?.startMs ?? Infinity, p.endMs + 500)));

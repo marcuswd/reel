@@ -154,8 +154,13 @@ export const jobSchema = z.object({
     .object({ provider: z.enum(["none", "elevenlabs", "openai", "piper"]).default("none"), voiceId: z.string().optional(), volume: z.number().default(1) })
     .default({ provider: "none", volume: 1 }),
   captions: z
-    .object({ mode: z.enum(["burn", "file", "both", "none"]).default("both"), style: z.enum(["pop", "line", "box"]).default("pop") })
-    .default({ mode: "both", style: "pop" }),
+    .object({
+      mode: z.enum(["burn", "file", "both", "none"]).default("both"),
+      style: z.enum(["pop", "line", "box"]).default("pop"),
+      /** "hide": não queima a legenda da locução nas cenas em que a fala já está escrita na tela (o .srt continua completo) */
+      whenOnScreen: z.enum(["hide", "show"]).default("hide"),
+    })
+    .default({ mode: "both", style: "pop", whenOnScreen: "hide" }),
   overlays: z
     .object({ logo: z.enum(["none", "top-left", "top-right", "bottom-left", "bottom-right"]).default("none"), grain: z.boolean().default(true), vignette: z.boolean().default(true), progress: z.boolean().default(false) })
     .default({ logo: "none", grain: true, vignette: true, progress: false }),

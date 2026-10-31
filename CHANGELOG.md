@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 (2026-10-31)
+
+- Legenda queimada só quando acrescenta: a legenda da locução não é queimada nas cenas em que 60% ou mais das palavras faladas já estão escritas na tela (`captions.whenOnScreen`, padrão `"hide"`; `"show"` volta ao comportamento anterior). O `.srt`/`.vtt` continua completo; vídeo falado é sempre queimado. Sem nada para queimar, a faixa reservada embaixo some.
+- Contraste AA em todo estilo de legenda: placa preta a 62% (branco passa no AA até sobre fundo branco) e palavra falada em pílula na cor de destaque, com texto preto ou branco escolhido por contraste. Medido nos stills do showcase sobre foto clara: 5,4:1 (16:9) e 9,4:1 (9:16).
+- A legenda entra sem fade de opacidade (nenhum quadro sai apagado) e a última palavra da frase não fica sozinha numa página.
+- `src/core/color.ts` (luminância, contraste, composição) com testes, incluindo a cor de destaque de todas as marcas.
+- `pnpm video plan` mostra quantas palavras são queimadas.
+
 ## 0.2.2 (2026-10-31)
 
 - Testes do motor puro em `src/core/*.test.ts` (timeline, srt, schema): duração por cena, ritmo, `duration` forçada, locução, cortes no tempo da música (bpm do job e da marca), encadeamento das cenas, espaçamento dos efeitos, legendas da locução e de vídeo falado (com trim), SRT/VTT e mensagens de erro do schema por campo.
