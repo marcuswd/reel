@@ -9,9 +9,9 @@ export const doctor = async () => {
   console.log("Ferramentas");
   console.log(`  ${ok(has("ffmpeg"))} ffmpeg / ${ok(has("ffprobe"))} ffprobe`);
   const py = python();
-  const deps = spawnSync(py, ["-c", "import numpy, scipy; print('ok')"], { encoding: "utf8", shell: process.platform === "win32" });
+  const deps = spawnSync(py, ["-c", "import numpy, scipy; print('ok')"], { encoding: "utf8" });
   console.log(`  ${ok(deps.stdout?.includes("ok"))} ${py} + numpy + scipy (trilha e efeitos gerados)  → pip install numpy scipy`);
-  const piper = spawnSync(py, ["-c", "import piper; print('ok')"], { encoding: "utf8", shell: process.platform === "win32" });
+  const piper = spawnSync(py, ["-c", "import piper; print('ok')"], { encoding: "utf8" });
   console.log(`  ${ok(piper.stdout?.includes("ok"))} piper-tts (locução local)  → pip install piper-tts`);
   console.log(`  ${ok(existsSync(p("public", "_lib", "sfx", "whoosh.mp3")))} pack de efeitos (public/_lib/sfx)  → pnpm sfx`);
   const b = browserExecutable();

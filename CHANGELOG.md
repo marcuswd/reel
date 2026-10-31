@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1 (2026-10-31)
+
+- Folha de contato: no Windows o ffmpeg era chamado pelo cmd.exe e o `|` do layout do xstack virava pipe. `run` e `has` agora chamam executáveis sem shell em qualquer sistema; só atalhos `.cmd`/`.bat` passam pelo shell, com aspas.
+- Folha de contato em `scripts/lib/sheet.ts`, usada por `pnpm video stills` e `pnpm media search --sheet`: posição por pixel e job de uma cena só (antes o xstack exigia 2 entradas).
+- `pnpm video doctor`: a checagem de numpy/scipy e piper também passava pelo cmd.exe e falhava no Windows.
+- `pnpm test` (runner do Node via tsx), com teste da folha rodando o ffmpeg de verdade numa pasta com espaço; roda no CI.
+
 ## 0.2.0 (2026-10-31)
 
 - Repositório próprio: github.com/marcuswd/reel (privado). Material e entregas de clientes ficam fora do git.

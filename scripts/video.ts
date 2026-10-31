@@ -13,10 +13,11 @@
 import { spawnSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { basename, extname, join, resolve } from "node:path";
-import { type FormatKey, type VideoProps } from "../src/core/schema.ts";
+import { FORMATS, type FormatKey, type VideoProps } from "../src/core/schema.ts";
 import { musicBrief } from "../src/core/timeline.ts";
 import { toSrt, toVtt } from "../src/core/srt.ts";
 import { browserExecutable, die, fmtId, has, hash, langId, log, p, parseArgs, python, readJson, run, today, writeJson } from "./lib/env.ts";
+import { sheetArgs } from "./lib/sheet.ts";
 import { extractStrings, langsOf, listJobs, loadBrand, loadJob, musicFile, planOf, resolveProps, writeIndex, writeResolved } from "./lib/resolve.ts";
 
 const [cmd, ...rest] = process.argv.slice(2);
@@ -197,10 +198,11 @@ const stills = async (slug: string) => {
     for (const lang of pickLangs(slug)) for (const format of pickFormats(slug)) {
       const pre = `${fmtId(format)}-${langId(lang)}-`;
       const list = files.filter((f) => basename(f).startsWith(pre));
-      const cols = format === "9:16" ? Math.min(6, list.length) : Math.min(3, list.length);
+      const [fw, fh] = FORMATS[format];
+      const w = format === "9:16" ? 270 : 480;
       const sheet = p("out", slug, `sheet-${fmtId(format)}-${langId(lang)}.jpg`);
       try {
-        run("ffmpeg", ["-y", "-loglevel", "error", ...list.flatMap((f) => ["-i", f]), "-filter_complex", `${list.map((_, i) => `[${i}:v]scale=${format === "9:16" ? 270 : 480}:-1[v${i}]`).join(";")};${list.map((_, i) => `[v${i}]`).join("")}xstack=inputs=${list.length}:layout=${list.map((_, i) => `${(i % cols) ? Array.from({ length: i % cols }, () => "w0").join("+") : "0"}_${Math.floor(i / cols) ? Array.from({ length: Math.floor(i / cols) }, () => "h0").join("+") : "0"}`).join("|")}:fill=black`, sheet], { quiet: true });
+        run("ffmpeg", sheetArgs(list, sheet, { w, h: Math.round((w * fh) / fw / 2) * 2, cols: format === "9:16" ? 6 : 3 }), { quiet: true });
         log(`folha de contato → ${sheet}`);
       } catch (e) {
         log(`folha de contato falhou: ${String(e).slice(0, 200)}`);

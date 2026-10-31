@@ -1,12 +1,13 @@
 {
   "name": "reel",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "scripts": {
     "postinstall": "node scripts/copy-fonts.mjs && tsx scripts/video.ts index",
     "dev": "remotion studio",
     "typecheck": "tsc --noEmit",
+    "test": "tsx --test \"scripts/**/*.test.ts\"",
     "video": "tsx scripts/video.ts",
     "media": "tsx scripts/media.ts",
     "brand": "tsx scripts/brand.ts",

@@ -9,6 +9,7 @@
 import { appendFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { die, has, log, p, parseArgs, readJson, run, writeJson } from "./lib/env.ts";
+import { sheetArgs } from "./lib/sheet.ts";
 
 type Item = {
   source: string;
@@ -156,12 +157,9 @@ const search = async () => {
         thumbs.push(f);
       } catch { /* ignora miniatura */ }
     }
-    const cols = Math.min(4, thumbs.length);
     const sheet = join(dir, `sheet-${type}-${slug}.jpg`);
     const font = process.platform === "win32" ? "" : ":fontcolor=white:fontsize=28:box=1:boxcolor=black@0.6:x=8:y=8";
-    run("ffmpeg", ["-y", "-loglevel", "error", ...thumbs.flatMap((t) => ["-i", t]), "-filter_complex",
-      `${thumbs.map((_, i) => `[${i}:v]scale=360:240:force_original_aspect_ratio=increase,crop=360:240,drawtext=text='${i + 1}'${font}[v${i}]`).join(";")};${thumbs.map((_, i) => `[v${i}]`).join("")}xstack=inputs=${thumbs.length}:layout=${thumbs.map((_, i) => `${(i % cols) * 360}_${Math.floor(i / cols) * 240}`).join("|")}:fill=black`,
-      sheet], { quiet: true });
+    run("ffmpeg", sheetArgs(thumbs, sheet, { w: 360, h: 240, cols: 4, cover: true, cell: (i) => `drawtext=text='${i + 1}'${font}` }), { quiet: true });
     log(`miniaturas → ${sheet}`);
   }
   log(`resultado salvo em out/_search/${type}-${slug}.json`);

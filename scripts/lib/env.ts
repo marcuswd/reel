@@ -47,12 +47,28 @@ export const parseArgs = (argv: string[]) => {
   return { pos, opt };
 };
 
+/**
+ * Como chamar um programa sem que o shell reinterprete os argumentos.
+ * Executáveis (ffmpeg, python, tar) vão direto, em qualquer sistema: assim `|`, `;`, `>` e espaços
+ * chegam intactos (no Windows o cmd.exe tratava o `|` do xstack como pipe).
+ * Só atalhos .cmd/.bat do Windows (npm.cmd) precisam de shell; nesse caso cada argumento vai entre aspas.
+ */
+export const spawnPlan = (cmd: string, args: string[], platform: NodeJS.Platform = process.platform) => {
+  if (platform !== "win32" || !/\.(cmd|bat)$/i.test(cmd)) return { cmd, args, shell: false };
+  const q = (a: string) => (/^[\w./:=@\\-]+$/.test(a) ? a : `"${a.replace(/"/g, '""')}"`);
+  return { cmd: q(cmd), args: args.map(q), shell: true };
+};
+
 export const run = (cmd: string, args: string[], opts: { quiet?: boolean } = {}) => {
-  const r = spawnSync(cmd, args, { cwd: ROOT, stdio: opts.quiet ? "pipe" : "inherit", encoding: "utf8", shell: process.platform === "win32" && !cmd.includes("\\") });
-  if (r.status !== 0) throw new Error(`${cmd} ${args.join(" ")} falhou (${r.status})\n${r.stderr ?? ""}`);
+  const s = spawnPlan(cmd, args);
+  const r = spawnSync(s.cmd, s.args, { cwd: ROOT, stdio: opts.quiet ? "pipe" : "inherit", encoding: "utf8", shell: s.shell });
+  if (r.status !== 0) throw new Error(`${cmd} ${args.join(" ")} falhou (${r.status ?? r.error?.message})\n${r.stderr ?? ""}`);
   return r.stdout ?? "";
 };
-export const has = (cmd: string, args = ["-version"]) => spawnSync(cmd, args, { stdio: "ignore", shell: process.platform === "win32" }).status === 0;
+export const has = (cmd: string, args = ["-version"]) => {
+  const s = spawnPlan(cmd, args);
+  return spawnSync(s.cmd, s.args, { stdio: "ignore", shell: s.shell }).status === 0;
+};
 export const python = () => (has("python3", ["--version"]) ? "python3" : "python");
 
 /** Chromium para render: REMOTION_BROWSER no .env, Playwright da nuvem do Claude, ou o do Remotion (padrão). */
