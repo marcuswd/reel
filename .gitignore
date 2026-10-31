@@ -1,0 +1,18 @@
+node_modules
+out
+.DS_Store
+.env
+.env.local
+.cache
+public/fonts
+
+# Material e entregas de clientes ficam só na máquina (o repositório leva o motor e os exemplos próprios).
+clientes/
+jobs/*/_build
+public/*
+!public/_lib/
+!public/brands/
+public/brands/*
+!public/brands/marcuswd/
+!public/demo-30s/
+!public/showcase/

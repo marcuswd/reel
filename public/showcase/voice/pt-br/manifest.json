@@ -1,0 +1,751 @@
+{
+  "abertura": {
+    "key": "01889bd247",
+    "src": "showcase/voice/pt-br/abertura.mp3",
+    "seconds": 2.016,
+    "words": [
+      {
+        "text": " Vídeos",
+        "startMs": 0,
+        "endMs": 258,
+        "timestampMs": 140,
+        "confidence": null
+      },
+      {
+        "text": " que",
+        "startMs": 280,
+        "endMs": 409,
+        "timestampMs": 350,
+        "confidence": null
+      },
+      {
+        "text": " vendem,",
+        "startMs": 420,
+        "endMs": 781,
+        "timestampMs": 616,
+        "confidence": null
+      },
+      {
+        "text": " gerados",
+        "startMs": 812,
+        "endMs": 1198,
+        "timestampMs": 1022,
+        "confidence": null
+      },
+      {
+        "text": " por",
+        "startMs": 1232,
+        "endMs": 1361,
+        "timestampMs": 1302,
+        "confidence": null
+      },
+      {
+        "text": " código.",
+        "startMs": 1372,
+        "endMs": 1964,
+        "timestampMs": 1694,
+        "confidence": null
+      }
+    ]
+  },
+  "ideia": {
+    "key": "42e486e16f",
+    "src": "showcase/voice/pt-br/ideia.mp3",
+    "seconds": 3.624,
+    "words": [
+      {
+        "text": " Um",
+        "startMs": 0,
+        "endMs": 123,
+        "timestampMs": 67,
+        "confidence": null
+      },
+      {
+        "text": " roteiro",
+        "startMs": 134,
+        "endMs": 505,
+        "timestampMs": 336,
+        "confidence": null
+      },
+      {
+        "text": " vira",
+        "startMs": 537,
+        "endMs": 784,
+        "timestampMs": 671,
+        "confidence": null
+      },
+      {
+        "text": " um",
+        "startMs": 805,
+        "endMs": 929,
+        "timestampMs": 872,
+        "confidence": null
+      },
+      {
+        "text": " vídeo",
+        "startMs": 940,
+        "endMs": 1187,
+        "timestampMs": 1074,
+        "confidence": null
+      },
+      {
+        "text": " completo,",
+        "startMs": 1208,
+        "endMs": 1677,
+        "timestampMs": 1463,
+        "confidence": null
+      },
+      {
+        "text": " com",
+        "startMs": 1718,
+        "endMs": 1842,
+        "timestampMs": 1785,
+        "confidence": null
+      },
+      {
+        "text": " câmera,",
+        "startMs": 1852,
+        "endMs": 2322,
+        "timestampMs": 2107,
+        "confidence": null
+      },
+      {
+        "text": " trilha,",
+        "startMs": 2362,
+        "endMs": 2708,
+        "timestampMs": 2550,
+        "confidence": null
+      },
+      {
+        "text": " voz",
+        "startMs": 2738,
+        "endMs": 2862,
+        "timestampMs": 2805,
+        "confidence": null
+      },
+      {
+        "text": " e",
+        "startMs": 2872,
+        "endMs": 2996,
+        "timestampMs": 2939,
+        "confidence": null
+      },
+      {
+        "text": " legenda.",
+        "startMs": 3007,
+        "endMs": 3575,
+        "timestampMs": 3315,
+        "confidence": null
+      }
+    ]
+  },
+  "codigo": {
+    "key": "6e3cc98db6",
+    "src": "showcase/voice/pt-br/codigo.mp3",
+    "seconds": 3.24,
+    "words": [
+      {
+        "text": " Motion",
+        "startMs": 0,
+        "endMs": 255,
+        "timestampMs": 138,
+        "confidence": null
+      },
+      {
+        "text": " design",
+        "startMs": 277,
+        "endMs": 532,
+        "timestampMs": 415,
+        "confidence": null
+      },
+      {
+        "text": " programável,",
+        "startMs": 554,
+        "endMs": 1165,
+        "timestampMs": 886,
+        "confidence": null
+      },
+      {
+        "text": " com",
+        "startMs": 1218,
+        "endMs": 1346,
+        "timestampMs": 1288,
+        "confidence": null
+      },
+      {
+        "text": " movimentos",
+        "startMs": 1357,
+        "endMs": 1866,
+        "timestampMs": 1634,
+        "confidence": null
+      },
+      {
+        "text": " de",
+        "startMs": 1911,
+        "endMs": 2038,
+        "timestampMs": 1980,
+        "confidence": null
+      },
+      {
+        "text": " câmera",
+        "startMs": 2049,
+        "endMs": 2431,
+        "timestampMs": 2257,
+        "confidence": null
+      },
+      {
+        "text": " de",
+        "startMs": 2465,
+        "endMs": 2592,
+        "timestampMs": 2534,
+        "confidence": null
+      },
+      {
+        "text": " verdade.",
+        "startMs": 2603,
+        "endMs": 3189,
+        "timestampMs": 2922,
+        "confidence": null
+      }
+    ]
+  },
+  "edicao": {
+    "key": "e875995259",
+    "src": "showcase/voice/pt-br/edicao.mp3",
+    "seconds": 3.072,
+    "words": [
+      {
+        "text": " A",
+        "startMs": 0,
+        "endMs": 126,
+        "timestampMs": 69,
+        "confidence": null
+      },
+      {
+        "text": " identidade",
+        "startMs": 137,
+        "endMs": 768,
+        "timestampMs": 480,
+        "confidence": null
+      },
+      {
+        "text": " do",
+        "startMs": 823,
+        "endMs": 949,
+        "timestampMs": 891,
+        "confidence": null
+      },
+      {
+        "text": " cliente",
+        "startMs": 960,
+        "endMs": 1212,
+        "timestampMs": 1097,
+        "confidence": null
+      },
+      {
+        "text": " em",
+        "startMs": 1234,
+        "endMs": 1360,
+        "timestampMs": 1303,
+        "confidence": null
+      },
+      {
+        "text": " cada",
+        "startMs": 1371,
+        "endMs": 1624,
+        "timestampMs": 1509,
+        "confidence": null
+      },
+      {
+        "text": " quadro,",
+        "startMs": 1646,
+        "endMs": 1999,
+        "timestampMs": 1838,
+        "confidence": null
+      },
+      {
+        "text": " em",
+        "startMs": 2030,
+        "endMs": 2156,
+        "timestampMs": 2098,
+        "confidence": null
+      },
+      {
+        "text": " qualquer",
+        "startMs": 2167,
+        "endMs": 2419,
+        "timestampMs": 2304,
+        "confidence": null
+      },
+      {
+        "text": " formato.",
+        "startMs": 2441,
+        "endMs": 3022,
+        "timestampMs": 2757,
+        "confidence": null
+      }
+    ]
+  },
+  "sistema": {
+    "key": "396a2f4b7f",
+    "src": "showcase/voice/pt-br/sistema.mp3",
+    "seconds": 2.184,
+    "words": [
+      {
+        "text": " Demonstrações",
+        "startMs": 0,
+        "endMs": 515,
+        "timestampMs": 280,
+        "confidence": null
+      },
+      {
+        "text": " de",
+        "startMs": 560,
+        "endMs": 689,
+        "timestampMs": 630,
+        "confidence": null
+      },
+      {
+        "text": " sistema",
+        "startMs": 700,
+        "endMs": 1086,
+        "timestampMs": 910,
+        "confidence": null
+      },
+      {
+        "text": " com",
+        "startMs": 1120,
+        "endMs": 1249,
+        "timestampMs": 1190,
+        "confidence": null
+      },
+      {
+        "text": " zoom",
+        "startMs": 1260,
+        "endMs": 1389,
+        "timestampMs": 1330,
+        "confidence": null
+      },
+      {
+        "text": " no",
+        "startMs": 1400,
+        "endMs": 1529,
+        "timestampMs": 1470,
+        "confidence": null
+      },
+      {
+        "text": " detalhe.",
+        "startMs": 1540,
+        "endMs": 2132,
+        "timestampMs": 1862,
+        "confidence": null
+      }
+    ]
+  },
+  "mobile": {
+    "key": "c8ce3c8ad9",
+    "src": "showcase/voice/pt-br/mobile.mp3",
+    "seconds": 1.896,
+    "words": [
+      {
+        "text": " E",
+        "startMs": 0,
+        "endMs": 138,
+        "timestampMs": 75,
+        "confidence": null
+      },
+      {
+        "text": " rolagem",
+        "startMs": 150,
+        "endMs": 566,
+        "timestampMs": 376,
+        "confidence": null
+      },
+      {
+        "text": " suave",
+        "startMs": 602,
+        "endMs": 879,
+        "timestampMs": 752,
+        "confidence": null
+      },
+      {
+        "text": " em",
+        "startMs": 903,
+        "endMs": 1041,
+        "timestampMs": 978,
+        "confidence": null
+      },
+      {
+        "text": " telas",
+        "startMs": 1053,
+        "endMs": 1330,
+        "timestampMs": 1204,
+        "confidence": null
+      },
+      {
+        "text": " longas.",
+        "startMs": 1354,
+        "endMs": 1853,
+        "timestampMs": 1625,
+        "confidence": null
+      }
+    ]
+  },
+  "produtos": {
+    "key": "410bc0c493",
+    "src": "showcase/voice/pt-br/produtos.mp3",
+    "seconds": 3.528,
+    "words": [
+      {
+        "text": " Galerias",
+        "startMs": 0,
+        "endMs": 399,
+        "timestampMs": 217,
+        "confidence": null
+      },
+      {
+        "text": " em",
+        "startMs": 434,
+        "endMs": 567,
+        "timestampMs": 506,
+        "confidence": null
+      },
+      {
+        "text": " movimento,",
+        "startMs": 578,
+        "endMs": 1217,
+        "timestampMs": 925,
+        "confidence": null
+      },
+      {
+        "text": " com",
+        "startMs": 1272,
+        "endMs": 1405,
+        "timestampMs": 1345,
+        "confidence": null
+      },
+      {
+        "text": " fotos",
+        "startMs": 1417,
+        "endMs": 1683,
+        "timestampMs": 1562,
+        "confidence": null
+      },
+      {
+        "text": " do",
+        "startMs": 1706,
+        "endMs": 1839,
+        "timestampMs": 1778,
+        "confidence": null
+      },
+      {
+        "text": " cliente",
+        "startMs": 1851,
+        "endMs": 2117,
+        "timestampMs": 1995,
+        "confidence": null
+      },
+      {
+        "text": " ou",
+        "startMs": 2140,
+        "endMs": 2273,
+        "timestampMs": 2212,
+        "confidence": null
+      },
+      {
+        "text": " de",
+        "startMs": 2285,
+        "endMs": 2418,
+        "timestampMs": 2357,
+        "confidence": null
+      },
+      {
+        "text": " bancos",
+        "startMs": 2429,
+        "endMs": 2695,
+        "timestampMs": 2574,
+        "confidence": null
+      },
+      {
+        "text": " de",
+        "startMs": 2718,
+        "endMs": 2851,
+        "timestampMs": 2791,
+        "confidence": null
+      },
+      {
+        "text": " imagem.",
+        "startMs": 2863,
+        "endMs": 3475,
+        "timestampMs": 3195,
+        "confidence": null
+      }
+    ]
+  },
+  "numeros": {
+    "key": "b500ca2c09",
+    "src": "showcase/voice/pt-br/numeros.mp3",
+    "seconds": 3.408,
+    "words": [
+      {
+        "text": " Onze",
+        "startMs": 0,
+        "endMs": 307,
+        "timestampMs": 167,
+        "confidence": null
+      },
+      {
+        "text": " tipos",
+        "startMs": 334,
+        "endMs": 642,
+        "timestampMs": 501,
+        "confidence": null
+      },
+      {
+        "text": " de",
+        "startMs": 668,
+        "endMs": 822,
+        "timestampMs": 752,
+        "confidence": null
+      },
+      {
+        "text": " cena,",
+        "startMs": 835,
+        "endMs": 1266,
+        "timestampMs": 1069,
+        "confidence": null
+      },
+      {
+        "text": " quinze",
+        "startMs": 1303,
+        "endMs": 1610,
+        "timestampMs": 1470,
+        "confidence": null
+      },
+      {
+        "text": " transições",
+        "startMs": 1637,
+        "endMs": 2098,
+        "timestampMs": 1888,
+        "confidence": null
+      },
+      {
+        "text": " e",
+        "startMs": 2138,
+        "endMs": 2292,
+        "timestampMs": 2222,
+        "confidence": null
+      },
+      {
+        "text": " vários",
+        "startMs": 2305,
+        "endMs": 2613,
+        "timestampMs": 2472,
+        "confidence": null
+      },
+      {
+        "text": " idiomas.",
+        "startMs": 2640,
+        "endMs": 3347,
+        "timestampMs": 3024,
+        "confidence": null
+      }
+    ]
+  },
+  "recursos": {
+    "key": "b616ed1437",
+    "src": "showcase/voice/pt-br/recursos.mp3",
+    "seconds": 3.792,
+    "words": [
+      {
+        "text": " Trilha",
+        "startMs": 0,
+        "endMs": 279,
+        "timestampMs": 152,
+        "confidence": null
+      },
+      {
+        "text": " no",
+        "startMs": 303,
+        "endMs": 443,
+        "timestampMs": 379,
+        "confidence": null
+      },
+      {
+        "text": " ritmo",
+        "startMs": 455,
+        "endMs": 734,
+        "timestampMs": 607,
+        "confidence": null
+      },
+      {
+        "text": " dos",
+        "startMs": 758,
+        "endMs": 898,
+        "timestampMs": 834,
+        "confidence": null
+      },
+      {
+        "text": " cortes,",
+        "startMs": 910,
+        "endMs": 1301,
+        "timestampMs": 1122,
+        "confidence": null
+      },
+      {
+        "text": " efeitos,",
+        "startMs": 1335,
+        "endMs": 1865,
+        "timestampMs": 1623,
+        "confidence": null
+      },
+      {
+        "text": " locução,",
+        "startMs": 1911,
+        "endMs": 2441,
+        "timestampMs": 2199,
+        "confidence": null
+      },
+      {
+        "text": " legendas",
+        "startMs": 2488,
+        "endMs": 2906,
+        "timestampMs": 2715,
+        "confidence": null
+      },
+      {
+        "text": " e",
+        "startMs": 2943,
+        "endMs": 3082,
+        "timestampMs": 3018,
+        "confidence": null
+      },
+      {
+        "text": " tradução.",
+        "startMs": 3094,
+        "endMs": 3736,
+        "timestampMs": 3443,
+        "confidence": null
+      }
+    ]
+  },
+  "depoimento": {
+    "key": "766e5f0946",
+    "src": "showcase/voice/pt-br/depoimento.mp3",
+    "seconds": 2.352,
+    "words": [
+      {
+        "text": " O",
+        "startMs": 0,
+        "endMs": 139,
+        "timestampMs": 75,
+        "confidence": null
+      },
+      {
+        "text": " que",
+        "startMs": 151,
+        "endMs": 289,
+        "timestampMs": 226,
+        "confidence": null
+      },
+      {
+        "text": " levava",
+        "startMs": 302,
+        "endMs": 718,
+        "timestampMs": 528,
+        "confidence": null
+      },
+      {
+        "text": " dias",
+        "startMs": 754,
+        "endMs": 893,
+        "timestampMs": 829,
+        "confidence": null
+      },
+      {
+        "text": " agora",
+        "startMs": 905,
+        "endMs": 1321,
+        "timestampMs": 1131,
+        "confidence": null
+      },
+      {
+        "text": " sai",
+        "startMs": 1357,
+        "endMs": 1496,
+        "timestampMs": 1432,
+        "confidence": null
+      },
+      {
+        "text": " em",
+        "startMs": 1508,
+        "endMs": 1646,
+        "timestampMs": 1583,
+        "confidence": null
+      },
+      {
+        "text": " minutos.",
+        "startMs": 1658,
+        "endMs": 2297,
+        "timestampMs": 2005,
+        "confidence": null
+      }
+    ]
+  },
+  "contato": {
+    "key": "0a4dadefca",
+    "src": "showcase/voice/pt-br/contato.mp3",
+    "seconds": 2.088,
+    "words": [
+      {
+        "text": " Bora",
+        "startMs": 0,
+        "endMs": 237,
+        "timestampMs": 129,
+        "confidence": null
+      },
+      {
+        "text": " fazer",
+        "startMs": 258,
+        "endMs": 495,
+        "timestampMs": 387,
+        "confidence": null
+      },
+      {
+        "text": " o",
+        "startMs": 516,
+        "endMs": 634,
+        "timestampMs": 580,
+        "confidence": null
+      },
+      {
+        "text": " seu",
+        "startMs": 644,
+        "endMs": 763,
+        "timestampMs": 709,
+        "confidence": null
+      },
+      {
+        "text": " vídeo?",
+        "startMs": 773,
+        "endMs": 1200,
+        "timestampMs": 1005,
+        "confidence": null
+      },
+      {
+        "text": " Fale",
+        "startMs": 1237,
+        "endMs": 1474,
+        "timestampMs": 1366,
+        "confidence": null
+      },
+      {
+        "text": " comigo.",
+        "startMs": 1495,
+        "endMs": 2041,
+        "timestampMs": 1792,
+        "confidence": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "../schemas/brand.schema.json",
+  "slug": "tis",
+  "name": "TIS",
+  "colors": {
+    "bg": "#04165D",
+    "bg2": "#020C3A",
+    "surface": "#ffffff",
+    "text": "#ffffff",
+    "textOnSurface": "#04165D",
+    "muted": "#B9C8EC",
+    "primary": "#036EF2",
+    "accent": "#00AAFF",
+    "highlight": "#00AAFF",
+    "palette": ["#00AAFF", "#036EF2", "#3126B4", "#04165D"]
+  },
+  "fonts": {
+    "heading": { "family": "Archivo", "files": { "500": "cms/fonts/archivo-500.woff2", "700": "cms/fonts/archivo-700.woff2" } },
+    "body": { "family": "Archivo", "files": { "400": "cms/fonts/archivo-400.woff2", "500": "cms/fonts/archivo-500.woff2" } }
+  },
+  "logo": { "light": "cms/brand/tis-logo-branca.svg", "dark": "cms/brand/tis-logo.svg", "mark": "cms/brand/tis-mark.svg" },
+  "shape": { "radius": 0, "style": "square" },
+  "motion": { "energy": "normal", "transitions": ["lift", "bands", "dive", "lift", "iris"], "background": "grid" },
+  "audio": { "mood": "corporate", "bpm": 120 },
+  "contact": { "site": "tis.ao" }
+}

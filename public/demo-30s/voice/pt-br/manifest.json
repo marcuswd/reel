@@ -1,0 +1,408 @@
+{
+  "abertura": {
+    "key": "cc279960d8",
+    "src": "demo-30s/voice/pt-br/abertura.mp3",
+    "seconds": 2.088,
+    "words": [
+      {
+        "text": " Vídeos",
+        "startMs": 0,
+        "endMs": 267,
+        "timestampMs": 145,
+        "confidence": null
+      },
+      {
+        "text": " que",
+        "startMs": 290,
+        "endMs": 423,
+        "timestampMs": 363,
+        "confidence": null
+      },
+      {
+        "text": " vendem,",
+        "startMs": 435,
+        "endMs": 809,
+        "timestampMs": 638,
+        "confidence": null
+      },
+      {
+        "text": " gerados",
+        "startMs": 841,
+        "endMs": 1241,
+        "timestampMs": 1059,
+        "confidence": null
+      },
+      {
+        "text": " por",
+        "startMs": 1276,
+        "endMs": 1409,
+        "timestampMs": 1349,
+        "confidence": null
+      },
+      {
+        "text": " código.",
+        "startMs": 1421,
+        "endMs": 2035,
+        "timestampMs": 1755,
+        "confidence": null
+      }
+    ]
+  },
+  "roteiro": {
+    "key": "f1bcd663ef",
+    "src": "demo-30s/voice/pt-br/roteiro.mp3",
+    "seconds": 2.928,
+    "words": [
+      {
+        "text": " Você",
+        "startMs": 0,
+        "endMs": 254,
+        "timestampMs": 138,
+        "confidence": null
+      },
+      {
+        "text": " escreve",
+        "startMs": 276,
+        "endMs": 657,
+        "timestampMs": 483,
+        "confidence": null
+      },
+      {
+        "text": " o",
+        "startMs": 691,
+        "endMs": 818,
+        "timestampMs": 760,
+        "confidence": null
+      },
+      {
+        "text": " roteiro.",
+        "startMs": 829,
+        "endMs": 1413,
+        "timestampMs": 1146,
+        "confidence": null
+      },
+      {
+        "text": " O",
+        "startMs": 1464,
+        "endMs": 1591,
+        "timestampMs": 1533,
+        "confidence": null
+      },
+      {
+        "text": " resto",
+        "startMs": 1602,
+        "endMs": 1856,
+        "timestampMs": 1740,
+        "confidence": null
+      },
+      {
+        "text": " é",
+        "startMs": 1878,
+        "endMs": 2005,
+        "timestampMs": 1947,
+        "confidence": null
+      },
+      {
+        "text": " automático.",
+        "startMs": 2016,
+        "endMs": 2855,
+        "timestampMs": 2472,
+        "confidence": null
+      }
+    ]
+  },
+  "camera": {
+    "key": "1cd9581ed4",
+    "src": "demo-30s/voice/pt-br/camera.mp3",
+    "seconds": 1.608,
+    "words": [
+      {
+        "text": " Movimentos",
+        "startMs": 0,
+        "endMs": 435,
+        "timestampMs": 236,
+        "confidence": null
+      },
+      {
+        "text": " de",
+        "startMs": 473,
+        "endMs": 582,
+        "timestampMs": 532,
+        "confidence": null
+      },
+      {
+        "text": " câmera",
+        "startMs": 591,
+        "endMs": 918,
+        "timestampMs": 769,
+        "confidence": null
+      },
+      {
+        "text": " de",
+        "startMs": 946,
+        "endMs": 1055,
+        "timestampMs": 1005,
+        "confidence": null
+      },
+      {
+        "text": " cinema.",
+        "startMs": 1064,
+        "endMs": 1564,
+        "timestampMs": 1336,
+        "confidence": null
+      }
+    ]
+  },
+  "marca": {
+    "key": "6c583a1f7f",
+    "src": "demo-30s/voice/pt-br/marca.mp3",
+    "seconds": 2.088,
+    "words": [
+      {
+        "text": " A",
+        "startMs": 0,
+        "endMs": 125,
+        "timestampMs": 68,
+        "confidence": null
+      },
+      {
+        "text": " sua",
+        "startMs": 136,
+        "endMs": 260,
+        "timestampMs": 203,
+        "confidence": null
+      },
+      {
+        "text": " marca,",
+        "startMs": 271,
+        "endMs": 620,
+        "timestampMs": 461,
+        "confidence": null
+      },
+      {
+        "text": " em",
+        "startMs": 651,
+        "endMs": 776,
+        "timestampMs": 719,
+        "confidence": null
+      },
+      {
+        "text": " qualquer",
+        "startMs": 786,
+        "endMs": 1036,
+        "timestampMs": 922,
+        "confidence": null
+      },
+      {
+        "text": " formato",
+        "startMs": 1058,
+        "endMs": 1432,
+        "timestampMs": 1261,
+        "confidence": null
+      },
+      {
+        "text": " de",
+        "startMs": 1464,
+        "endMs": 1589,
+        "timestampMs": 1532,
+        "confidence": null
+      },
+      {
+        "text": " tela.",
+        "startMs": 1600,
+        "endMs": 2049,
+        "timestampMs": 1844,
+        "confidence": null
+      }
+    ]
+  },
+  "numeros": {
+    "key": "fd04240dbd",
+    "src": "demo-30s/voice/pt-br/numeros.mp3",
+    "seconds": 3.192,
+    "words": [
+      {
+        "text": " Onze",
+        "startMs": 0,
+        "endMs": 274,
+        "timestampMs": 149,
+        "confidence": null
+      },
+      {
+        "text": " tipos",
+        "startMs": 298,
+        "endMs": 573,
+        "timestampMs": 447,
+        "confidence": null
+      },
+      {
+        "text": " de",
+        "startMs": 597,
+        "endMs": 734,
+        "timestampMs": 671,
+        "confidence": null
+      },
+      {
+        "text": " cena,",
+        "startMs": 746,
+        "endMs": 1130,
+        "timestampMs": 955,
+        "confidence": null
+      },
+      {
+        "text": " quinze",
+        "startMs": 1163,
+        "endMs": 1438,
+        "timestampMs": 1313,
+        "confidence": null
+      },
+      {
+        "text": " transições",
+        "startMs": 1462,
+        "endMs": 1873,
+        "timestampMs": 1685,
+        "confidence": null
+      },
+      {
+        "text": " e",
+        "startMs": 1909,
+        "endMs": 2046,
+        "timestampMs": 1984,
+        "confidence": null
+      },
+      {
+        "text": " trilha",
+        "startMs": 2058,
+        "endMs": 2333,
+        "timestampMs": 2208,
+        "confidence": null
+      },
+      {
+        "text": " original.",
+        "startMs": 2357,
+        "endMs": 3125,
+        "timestampMs": 2774,
+        "confidence": null
+      }
+    ]
+  },
+  "automatico": {
+    "key": "6e1edb2c23",
+    "src": "demo-30s/voice/pt-br/automatico.mp3",
+    "seconds": 3.72,
+    "words": [
+      {
+        "text": " Música",
+        "startMs": 0,
+        "endMs": 424,
+        "timestampMs": 231,
+        "confidence": null
+      },
+      {
+        "text": " no",
+        "startMs": 461,
+        "endMs": 603,
+        "timestampMs": 538,
+        "confidence": null
+      },
+      {
+        "text": " ritmo",
+        "startMs": 615,
+        "endMs": 898,
+        "timestampMs": 769,
+        "confidence": null
+      },
+      {
+        "text": " dos",
+        "startMs": 922,
+        "endMs": 1064,
+        "timestampMs": 999,
+        "confidence": null
+      },
+      {
+        "text": " cortes,",
+        "startMs": 1076,
+        "endMs": 1472,
+        "timestampMs": 1291,
+        "confidence": null
+      },
+      {
+        "text": " locução,",
+        "startMs": 1506,
+        "endMs": 2044,
+        "timestampMs": 1799,
+        "confidence": null
+      },
+      {
+        "text": " legendas",
+        "startMs": 2091,
+        "endMs": 2515,
+        "timestampMs": 2321,
+        "confidence": null
+      },
+      {
+        "text": " e",
+        "startMs": 2552,
+        "endMs": 2693,
+        "timestampMs": 2629,
+        "confidence": null
+      },
+      {
+        "text": " vários",
+        "startMs": 2705,
+        "endMs": 2988,
+        "timestampMs": 2859,
+        "confidence": null
+      },
+      {
+        "text": " idiomas.",
+        "startMs": 3013,
+        "endMs": 3663,
+        "timestampMs": 3366,
+        "confidence": null
+      }
+    ]
+  },
+  "contato": {
+    "key": "07cfeb301b",
+    "src": "demo-30s/voice/pt-br/contato.mp3",
+    "seconds": 0.96,
+    "words": [
+      {
+        "text": " Bora",
+        "startMs": 0,
+        "endMs": 184,
+        "timestampMs": 100,
+        "confidence": null
+      },
+      {
+        "text": " fazer",
+        "startMs": 200,
+        "endMs": 384,
+        "timestampMs": 300,
+        "confidence": null
+      },
+      {
+        "text": " o",
+        "startMs": 400,
+        "endMs": 492,
+        "timestampMs": 450,
+        "confidence": null
+      },
+      {
+        "text": " seu",
+        "startMs": 500,
+        "endMs": 592,
+        "timestampMs": 550,
+        "confidence": null
+      },
+      {
+        "text": " vídeo?",
+        "startMs": 600,
+        "endMs": 931,
+        "timestampMs": 780,
+        "confidence": null
+      }
+    ]
+  }
+}

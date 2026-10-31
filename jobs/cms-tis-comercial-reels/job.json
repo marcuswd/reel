@@ -1,0 +1,120 @@
+{
+  "$schema": "../../schemas/job.schema.json",
+  "slug": "cms-tis-comercial-reels",
+  "title": "CMS TIS: vídeo comercial (redes)",
+  "client": "tis",
+  "brand": "tis",
+  "lang": "pt-AO",
+  "formats": [
+    "9:16"
+  ],
+  "pace": "fast",
+  "music": {
+    "mode": "generate",
+    "mood": "corporate",
+    "bpm": 120
+  },
+  "voice": {
+    "provider": "none"
+  },
+  "captions": {
+    "mode": "none"
+  },
+  "overlays": {
+    "logo": "none",
+    "grain": true,
+    "vignette": true,
+    "progress": false
+  },
+  "scenes": [
+    {
+      "id": "gancho",
+      "type": "cover",
+      "duration": 4,
+      "logo": true,
+      "eyebrow": "CMS TIS",
+      "title": "O seu portal, [sob o seu controlo]",
+      "background": "aurora",
+      "camera": "dolly",
+      "transition": "fade",
+      "sfx": "impact"
+    },
+    {
+      "id": "escopo-frase",
+      "type": "statement",
+      "duration": 3,
+      "text": "Cada unidade vê [só o que é seu]",
+      "background": "grid",
+      "camera": "in",
+      "transition": "lift",
+      "sfx": "whoosh-soft"
+    },
+    {
+      "id": "painel",
+      "type": "screen",
+      "duration": 4,
+      "src": "cms-tis-comercial/img/painel-390.png",
+      "device": "phone",
+      "title": "Tudo num [só painel]",
+      "camera": "push",
+      "transition": "dive",
+      "background": "gradient",
+      "sfx": "whoosh"
+    },
+    {
+      "id": "garantias",
+      "type": "list",
+      "duration": 5,
+      "title": "Seguro e [auditável]",
+      "items": [
+        "Escopo por zona que falha fechado",
+        "Trilha de auditoria completa",
+        "Entrada única e segundo passo"
+      ],
+      "icon": "check",
+      "camera": "static",
+      "transition": "bands",
+      "background": "grid",
+      "sfx": "pop-soft"
+    },
+    {
+      "id": "fluxos",
+      "type": "screen",
+      "duration": 4,
+      "src": "cms-tis-comercial/img/fluxos-aprovacao-390.png",
+      "device": "phone",
+      "title": "Fluxos de [aprovação]",
+      "camera": "up",
+      "transition": "iris",
+      "background": "gradient",
+      "sfx": "swoosh"
+    },
+    {
+      "id": "acessivel",
+      "type": "statement",
+      "duration": 4,
+      "text": "Acessível: [WCAG 2.2 AA] e instalação sua",
+      "background": "mesh",
+      "camera": "in",
+      "transition": "lift",
+      "sfx": "hit-soft"
+    },
+    {
+      "id": "cta",
+      "type": "cta",
+      "duration": 5,
+      "title": "Vamos pôr o [seu portal] no ar?",
+      "button": "tis.ao",
+      "contact": [
+        {
+          "kind": "site",
+          "value": "tis.ao"
+        }
+      ],
+      "camera": "in",
+      "transition": "dive",
+      "background": "aurora",
+      "sfx": "chime"
+    }
+  ]
+}

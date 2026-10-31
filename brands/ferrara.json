@@ -1,0 +1,68 @@
+{
+  "$schema": "../schemas/brand.schema.json",
+  "slug": "ferrara",
+  "name": "Ferrara Ophthalmics",
+  "colors": {
+    "bg": "#f4f5f7",
+    "bg2": "#ffffff",
+    "surface": "#ffffff",
+    "text": "#1f2328",
+    "textOnSurface": "#1f2328",
+    "muted": "#5b6472",
+    "primary": "#FFCC00",
+    "accent": "#9a7b00",
+    "highlight": "#FFCC00",
+    "palette": [
+      "#FFCC00",
+      "#e6e9ef",
+      "#dde1e8",
+      "#ffffff"
+    ]
+  },
+  "fonts": {
+    "heading": {
+      "family": "Roboto Condensed",
+      "files": {
+        "600": "brands/ferrara/fonts/roboto-condensed-latin-600-normal.woff2",
+        "700": "brands/ferrara/fonts/roboto-condensed-latin-700-normal.woff2"
+      },
+      "scale": 1.15
+    },
+    "body": {
+      "family": "Roboto Condensed",
+      "files": {
+        "400": "brands/ferrara/fonts/roboto-condensed-latin-400-normal.woff2",
+        "500": "brands/ferrara/fonts/roboto-condensed-latin-500-normal.woff2"
+      }
+    }
+  },
+  "logo": {
+    "light": "brands/ferrara/logo.png",
+    "dark": "brands/ferrara/logo.png",
+    "plate": "none",
+    "maxHeight": 110
+  },
+  "shape": {
+    "radius": 14,
+    "style": "round",
+    "highlight": "marker"
+  },
+  "motion": {
+    "energy": "normal",
+    "transitions": [
+      "slide",
+      "lift",
+      "zoom",
+      "push",
+      "wipe"
+    ],
+    "background": "mesh"
+  },
+  "audio": {
+    "mood": "tech",
+    "bpm": 118
+  },
+  "contact": {
+    "site": "nomograma-anel-de-ferrara.vercel.app"
+  }
+}

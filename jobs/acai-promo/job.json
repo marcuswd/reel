@@ -1,0 +1,148 @@
+{
+  "$schema": "../../schemas/job.schema.json",
+  "slug": "acai-promo",
+  "title": "Distribuidora de Açaí MG: institucional",
+  "client": "distribuidora_de_acai_mg",
+  "brand": "distribuidora-acai-mg",
+  "lang": "pt-BR",
+  "langs": [
+    "pt-BR",
+    "en"
+  ],
+  "formats": [
+    "9:16",
+    "16:9"
+  ],
+  "pace": "normal",
+  "music": {
+    "mode": "generate",
+    "mood": "upbeat",
+    "bpm": 120
+  },
+  "voice": {
+    "provider": "piper"
+  },
+  "captions": {
+    "mode": "both",
+    "style": "pop"
+  },
+  "overlays": {
+    "logo": "top-right",
+    "grain": true,
+    "vignette": true
+  },
+  "scenes": [
+    {
+      "id": "abertura",
+      "type": "cover",
+      "logo": true,
+      "title": "Qualidade da produção até a [entrega]",
+      "voice": "Distribuidora de Açaí MG. Qualidade da produção até a entrega.",
+      "media": {
+        "src": "acai-promo/stock/acai-bowl-2.jpg",
+        "focus": {
+          "x": 0.5,
+          "y": 0.55
+        }
+      },
+      "camera": "pull"
+    },
+    {
+      "id": "polpas",
+      "type": "split",
+      "eyebrow": "Polpas",
+      "title": "As [melhores polpas] para o seu [creme de açaí]",
+      "bullets": [
+        "Açaí 12%",
+        "Pronta entrega"
+      ],
+      "media": {
+        "src": "distribuidora-acai-mg/img/p-para.png",
+        "fit": "contain"
+      },
+      "background": "particles",
+      "voice": "As melhores polpas para fabricar o seu creme de açaí."
+    },
+    {
+      "id": "bowl",
+      "type": "media",
+      "media": {
+        "src": "acai-promo/stock/acai-bowl-1.jpg",
+        "focus": {
+          "x": 0.5,
+          "y": 0.5
+        }
+      },
+      "eyebrow": "Do pé até a sua loja",
+      "title": "Sabor que [vende]",
+      "camera": "in",
+      "voice": "Um açaí com sabor de verdade, que faz o seu cliente voltar."
+    },
+    {
+      "id": "frutas",
+      "type": "gallery",
+      "eyebrow": "Frutas congeladas",
+      "title": "Qual é a sua [fruta preferida?]",
+      "layout": "grid",
+      "items": [
+        "distribuidora-acai-mg/img/f-morango.jpg",
+        "distribuidora-acai-mg/img/f-mirtilo.jpg",
+        "distribuidora-acai-mg/img/f-framboesa.jpg",
+        "distribuidora-acai-mg/img/f-maracuja.jpg"
+      ],
+      "voice": "Morango, mirtilo, framboesa, maracujá. Qual é a sua fruta preferida?"
+    },
+    {
+      "id": "numeros",
+      "type": "stats",
+      "title": "Para o seu [negócio] crescer",
+      "items": [
+        {
+          "value": 12,
+          "suffix": "%",
+          "label": "de açaí na polpa"
+        },
+        {
+          "value": 853,
+          "label": "cidades em MG"
+        },
+        {
+          "value": 24,
+          "suffix": "h",
+          "label": "para entregar"
+        }
+      ],
+      "voice": "Atendemos todo o estado de Minas Gerais, com entrega rápida."
+    },
+    {
+      "id": "diferenciais",
+      "type": "list",
+      "eyebrow": "Por que a gente",
+      "title": "Nossos [diferenciais]",
+      "items": [
+        "Garantia de qualidade",
+        "Bom atendimento",
+        "Excelentes preços",
+        "Carros refrigerados"
+      ],
+      "voice": "Garantia de qualidade, bom atendimento e excelentes preços."
+    },
+    {
+      "id": "pedido",
+      "type": "cta",
+      "title": "Faça seu [pedido!]",
+      "button": "Chamar no WhatsApp",
+      "contact": [
+        {
+          "kind": "whatsapp",
+          "value": "(31) 98864-7029"
+        },
+        {
+          "kind": "site",
+          "value": "distribuidoradeacaimg.com.br"
+        }
+      ],
+      "voice": "Faça o seu pedido pelo WhatsApp."
+    }
+  ]
+}

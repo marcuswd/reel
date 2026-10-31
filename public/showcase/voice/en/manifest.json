@@ -1,0 +1,716 @@
+{
+  "abertura": {
+    "key": "07d8fe2c79",
+    "src": "showcase/voice/en/abertura.mp3",
+    "seconds": 2.304,
+    "words": [
+      {
+        "text": " Videos",
+        "startMs": 0,
+        "endMs": 316,
+        "timestampMs": 172,
+        "confidence": null
+      },
+      {
+        "text": " that",
+        "startMs": 344,
+        "endMs": 502,
+        "timestampMs": 430,
+        "confidence": null
+      },
+      {
+        "text": " sell,",
+        "startMs": 516,
+        "endMs": 801,
+        "timestampMs": 671,
+        "confidence": null
+      },
+      {
+        "text": " generated",
+        "startMs": 825,
+        "endMs": 1458,
+        "timestampMs": 1169,
+        "confidence": null
+      },
+      {
+        "text": " by",
+        "startMs": 1513,
+        "endMs": 1671,
+        "timestampMs": 1599,
+        "confidence": null
+      },
+      {
+        "text": " code.",
+        "startMs": 1685,
+        "endMs": 2254,
+        "timestampMs": 1995,
+        "confidence": null
+      }
+    ]
+  },
+  "ideia": {
+    "key": "cbfff107bb",
+    "src": "showcase/voice/en/ideia.mp3",
+    "seconds": 4.896,
+    "words": [
+      {
+        "text": " A",
+        "startMs": 0,
+        "endMs": 161,
+        "timestampMs": 87,
+        "confidence": null
+      },
+      {
+        "text": " script",
+        "startMs": 175,
+        "endMs": 336,
+        "timestampMs": 262,
+        "confidence": null
+      },
+      {
+        "text": " becomes",
+        "startMs": 350,
+        "endMs": 832,
+        "timestampMs": 612,
+        "confidence": null
+      },
+      {
+        "text": " a",
+        "startMs": 874,
+        "endMs": 1035,
+        "timestampMs": 962,
+        "confidence": null
+      },
+      {
+        "text": " complete",
+        "startMs": 1049,
+        "endMs": 1532,
+        "timestampMs": 1311,
+        "confidence": null
+      },
+      {
+        "text": " video,",
+        "startMs": 1574,
+        "endMs": 2024,
+        "timestampMs": 1819,
+        "confidence": null
+      },
+      {
+        "text": " with",
+        "startMs": 2063,
+        "endMs": 2224,
+        "timestampMs": 2151,
+        "confidence": null
+      },
+      {
+        "text": " camera",
+        "startMs": 2238,
+        "endMs": 2721,
+        "timestampMs": 2500,
+        "confidence": null
+      },
+      {
+        "text": " moves,",
+        "startMs": 2763,
+        "endMs": 3213,
+        "timestampMs": 3008,
+        "confidence": null
+      },
+      {
+        "text": " music,",
+        "startMs": 3252,
+        "endMs": 3703,
+        "timestampMs": 3497,
+        "confidence": null
+      },
+      {
+        "text": " voice",
+        "startMs": 3742,
+        "endMs": 4064,
+        "timestampMs": 3917,
+        "confidence": null
+      },
+      {
+        "text": " and",
+        "startMs": 4092,
+        "endMs": 4253,
+        "timestampMs": 4179,
+        "confidence": null
+      },
+      {
+        "text": " captions.",
+        "startMs": 4267,
+        "endMs": 4846,
+        "timestampMs": 4581,
+        "confidence": null
+      }
+    ]
+  },
+  "codigo": {
+    "key": "141902e38f",
+    "src": "showcase/voice/en/codigo.mp3",
+    "seconds": 3.168,
+    "words": [
+      {
+        "text": " Programmable",
+        "startMs": 0,
+        "endMs": 670,
+        "timestampMs": 364,
+        "confidence": null
+      },
+      {
+        "text": " motion",
+        "startMs": 728,
+        "endMs": 1063,
+        "timestampMs": 910,
+        "confidence": null
+      },
+      {
+        "text": " design,",
+        "startMs": 1092,
+        "endMs": 1561,
+        "timestampMs": 1347,
+        "confidence": null
+      },
+      {
+        "text": " with",
+        "startMs": 1602,
+        "endMs": 1770,
+        "timestampMs": 1693,
+        "confidence": null
+      },
+      {
+        "text": " real",
+        "startMs": 1784,
+        "endMs": 1952,
+        "timestampMs": 1875,
+        "confidence": null
+      },
+      {
+        "text": " camera",
+        "startMs": 1966,
+        "endMs": 2469,
+        "timestampMs": 2239,
+        "confidence": null
+      },
+      {
+        "text": " moves.",
+        "startMs": 2513,
+        "endMs": 3116,
+        "timestampMs": 2840,
+        "confidence": null
+      }
+    ]
+  },
+  "edicao": {
+    "key": "c80fcb5191",
+    "src": "showcase/voice/en/edicao.mp3",
+    "seconds": 3.096,
+    "words": [
+      {
+        "text": " The",
+        "startMs": 0,
+        "endMs": 147,
+        "timestampMs": 80,
+        "confidence": null
+      },
+      {
+        "text": " client's",
+        "startMs": 160,
+        "endMs": 306,
+        "timestampMs": 239,
+        "confidence": null
+      },
+      {
+        "text": " identity",
+        "startMs": 319,
+        "endMs": 906,
+        "timestampMs": 638,
+        "confidence": null
+      },
+      {
+        "text": " in",
+        "startMs": 958,
+        "endMs": 1104,
+        "timestampMs": 1037,
+        "confidence": null
+      },
+      {
+        "text": " every",
+        "startMs": 1117,
+        "endMs": 1558,
+        "timestampMs": 1356,
+        "confidence": null
+      },
+      {
+        "text": " frame,",
+        "startMs": 1596,
+        "endMs": 2007,
+        "timestampMs": 1819,
+        "confidence": null
+      },
+      {
+        "text": " in",
+        "startMs": 2043,
+        "endMs": 2190,
+        "timestampMs": 2123,
+        "confidence": null
+      },
+      {
+        "text": " any",
+        "startMs": 2202,
+        "endMs": 2496,
+        "timestampMs": 2362,
+        "confidence": null
+      },
+      {
+        "text": " format.",
+        "startMs": 2521,
+        "endMs": 3050,
+        "timestampMs": 2809,
+        "confidence": null
+      }
+    ]
+  },
+  "sistema": {
+    "key": "ce58f1a3b9",
+    "src": "showcase/voice/en/sistema.mp3",
+    "seconds": 2.352,
+    "words": [
+      {
+        "text": " Software",
+        "startMs": 0,
+        "endMs": 477,
+        "timestampMs": 259,
+        "confidence": null
+      },
+      {
+        "text": " demos",
+        "startMs": 519,
+        "endMs": 837,
+        "timestampMs": 692,
+        "confidence": null
+      },
+      {
+        "text": " that",
+        "startMs": 865,
+        "endMs": 1024,
+        "timestampMs": 951,
+        "confidence": null
+      },
+      {
+        "text": " zoom",
+        "startMs": 1038,
+        "endMs": 1197,
+        "timestampMs": 1124,
+        "confidence": null
+      },
+      {
+        "text": " into",
+        "startMs": 1211,
+        "endMs": 1529,
+        "timestampMs": 1384,
+        "confidence": null
+      },
+      {
+        "text": " the",
+        "startMs": 1556,
+        "endMs": 1716,
+        "timestampMs": 1643,
+        "confidence": null
+      },
+      {
+        "text": " details.",
+        "startMs": 1729,
+        "endMs": 2302,
+        "timestampMs": 2041,
+        "confidence": null
+      }
+    ]
+  },
+  "mobile": {
+    "key": "6bb3cac6b2",
+    "src": "showcase/voice/en/mobile.mp3",
+    "seconds": 2.04,
+    "words": [
+      {
+        "text": " And",
+        "startMs": 0,
+        "endMs": 218,
+        "timestampMs": 119,
+        "confidence": null
+      },
+      {
+        "text": " smooth",
+        "startMs": 237,
+        "endMs": 455,
+        "timestampMs": 356,
+        "confidence": null
+      },
+      {
+        "text": " scrolling",
+        "startMs": 474,
+        "endMs": 911,
+        "timestampMs": 712,
+        "confidence": null
+      },
+      {
+        "text": " through",
+        "startMs": 949,
+        "endMs": 1167,
+        "timestampMs": 1067,
+        "confidence": null
+      },
+      {
+        "text": " long",
+        "startMs": 1186,
+        "endMs": 1404,
+        "timestampMs": 1305,
+        "confidence": null
+      },
+      {
+        "text": " screens.",
+        "startMs": 1423,
+        "endMs": 1991,
+        "timestampMs": 1732,
+        "confidence": null
+      }
+    ]
+  },
+  "produtos": {
+    "key": "b43642023b",
+    "src": "showcase/voice/en/produtos.mp3",
+    "seconds": 3.144,
+    "words": [
+      {
+        "text": " Galleries",
+        "startMs": 0,
+        "endMs": 499,
+        "timestampMs": 271,
+        "confidence": null
+      },
+      {
+        "text": " in",
+        "startMs": 542,
+        "endMs": 708,
+        "timestampMs": 632,
+        "confidence": null
+      },
+      {
+        "text": " motion,",
+        "startMs": 723,
+        "endMs": 1188,
+        "timestampMs": 976,
+        "confidence": null
+      },
+      {
+        "text": " with",
+        "startMs": 1229,
+        "endMs": 1395,
+        "timestampMs": 1319,
+        "confidence": null
+      },
+      {
+        "text": " client",
+        "startMs": 1409,
+        "endMs": 1576,
+        "timestampMs": 1500,
+        "confidence": null
+      },
+      {
+        "text": " photos",
+        "startMs": 1590,
+        "endMs": 1923,
+        "timestampMs": 1771,
+        "confidence": null
+      },
+      {
+        "text": " or",
+        "startMs": 1951,
+        "endMs": 2118,
+        "timestampMs": 2042,
+        "confidence": null
+      },
+      {
+        "text": " stock",
+        "startMs": 2132,
+        "endMs": 2298,
+        "timestampMs": 2222,
+        "confidence": null
+      },
+      {
+        "text": " images.",
+        "startMs": 2313,
+        "endMs": 3078,
+        "timestampMs": 2728,
+        "confidence": null
+      }
+    ]
+  },
+  "numeros": {
+    "key": "df7ec704e5",
+    "src": "showcase/voice/en/numeros.mp3",
+    "seconds": 3.672,
+    "words": [
+      {
+        "text": " Eleven",
+        "startMs": 0,
+        "endMs": 474,
+        "timestampMs": 257,
+        "confidence": null
+      },
+      {
+        "text": " scene",
+        "startMs": 515,
+        "endMs": 830,
+        "timestampMs": 686,
+        "confidence": null
+      },
+      {
+        "text": " types,",
+        "startMs": 858,
+        "endMs": 1300,
+        "timestampMs": 1098,
+        "confidence": null
+      },
+      {
+        "text": " fifteen",
+        "startMs": 1338,
+        "endMs": 1654,
+        "timestampMs": 1510,
+        "confidence": null
+      },
+      {
+        "text": " transitions",
+        "startMs": 1682,
+        "endMs": 2155,
+        "timestampMs": 1939,
+        "confidence": null
+      },
+      {
+        "text": " and",
+        "startMs": 2196,
+        "endMs": 2354,
+        "timestampMs": 2282,
+        "confidence": null
+      },
+      {
+        "text": " multiple",
+        "startMs": 2368,
+        "endMs": 2842,
+        "timestampMs": 2625,
+        "confidence": null
+      },
+      {
+        "text": " languages.",
+        "startMs": 2883,
+        "endMs": 3609,
+        "timestampMs": 3277,
+        "confidence": null
+      }
+    ]
+  },
+  "recursos": {
+    "key": "f49caa0a4f",
+    "src": "showcase/voice/en/recursos.mp3",
+    "seconds": 4.344,
+    "words": [
+      {
+        "text": " Music",
+        "startMs": 0,
+        "endMs": 381,
+        "timestampMs": 207,
+        "confidence": null
+      },
+      {
+        "text": " on",
+        "startMs": 414,
+        "endMs": 604,
+        "timestampMs": 517,
+        "confidence": null
+      },
+      {
+        "text": " the",
+        "startMs": 621,
+        "endMs": 811,
+        "timestampMs": 724,
+        "confidence": null
+      },
+      {
+        "text": " beat,",
+        "startMs": 827,
+        "endMs": 1170,
+        "timestampMs": 1014,
+        "confidence": null
+      },
+      {
+        "text": " sound",
+        "startMs": 1200,
+        "endMs": 1390,
+        "timestampMs": 1303,
+        "confidence": null
+      },
+      {
+        "text": " effects,",
+        "startMs": 1407,
+        "endMs": 1939,
+        "timestampMs": 1696,
+        "confidence": null
+      },
+      {
+        "text": " voiceover,",
+        "startMs": 1986,
+        "endMs": 2709,
+        "timestampMs": 2379,
+        "confidence": null
+      },
+      {
+        "text": " captions",
+        "startMs": 2772,
+        "endMs": 3153,
+        "timestampMs": 2979,
+        "confidence": null
+      },
+      {
+        "text": " and",
+        "startMs": 3186,
+        "endMs": 3376,
+        "timestampMs": 3289,
+        "confidence": null
+      },
+      {
+        "text": " translation.",
+        "startMs": 3392,
+        "endMs": 4268,
+        "timestampMs": 3868,
+        "confidence": null
+      }
+    ]
+  },
+  "depoimento": {
+    "key": "7fb4a48014",
+    "src": "showcase/voice/en/depoimento.mp3",
+    "seconds": 1.968,
+    "words": [
+      {
+        "text": " What",
+        "startMs": 0,
+        "endMs": 124,
+        "timestampMs": 67,
+        "confidence": null
+      },
+      {
+        "text": " used",
+        "startMs": 135,
+        "endMs": 383,
+        "timestampMs": 270,
+        "confidence": null
+      },
+      {
+        "text": " to",
+        "startMs": 404,
+        "endMs": 528,
+        "timestampMs": 472,
+        "confidence": null
+      },
+      {
+        "text": " take",
+        "startMs": 539,
+        "endMs": 787,
+        "timestampMs": 674,
+        "confidence": null
+      },
+      {
+        "text": " days",
+        "startMs": 809,
+        "endMs": 933,
+        "timestampMs": 876,
+        "confidence": null
+      },
+      {
+        "text": " now",
+        "startMs": 944,
+        "endMs": 1068,
+        "timestampMs": 1011,
+        "confidence": null
+      },
+      {
+        "text": " takes",
+        "startMs": 1078,
+        "endMs": 1326,
+        "timestampMs": 1213,
+        "confidence": null
+      },
+      {
+        "text": " minutes.",
+        "startMs": 1348,
+        "endMs": 1918,
+        "timestampMs": 1658,
+        "confidence": null
+      }
+    ]
+  },
+  "contato": {
+    "key": "ca9ea3bc38",
+    "src": "showcase/voice/en/contato.mp3",
+    "seconds": 2.304,
+    "words": [
+      {
+        "text": " Ready",
+        "startMs": 0,
+        "endMs": 299,
+        "timestampMs": 162,
+        "confidence": null
+      },
+      {
+        "text": " to",
+        "startMs": 325,
+        "endMs": 474,
+        "timestampMs": 406,
+        "confidence": null
+      },
+      {
+        "text": " make",
+        "startMs": 487,
+        "endMs": 785,
+        "timestampMs": 649,
+        "confidence": null
+      },
+      {
+        "text": " your",
+        "startMs": 811,
+        "endMs": 961,
+        "timestampMs": 892,
+        "confidence": null
+      },
+      {
+        "text": " video?",
+        "startMs": 974,
+        "endMs": 1511,
+        "timestampMs": 1266,
+        "confidence": null
+      },
+      {
+        "text": " Get",
+        "startMs": 1558,
+        "endMs": 1707,
+        "timestampMs": 1639,
+        "confidence": null
+      },
+      {
+        "text": " in",
+        "startMs": 1720,
+        "endMs": 1869,
+        "timestampMs": 1801,
+        "confidence": null
+      },
+      {
+        "text": " touch.",
+        "startMs": 1882,
+        "endMs": 2270,
+        "timestampMs": 2093,
+        "confidence": null
+      }
+    ]
+  }
+}

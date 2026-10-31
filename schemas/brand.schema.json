@@ -1,0 +1,275 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "slug": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "colors": {
+      "type": "object",
+      "properties": {
+        "bg": {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+        },
+        "bg2": {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+        },
+        "surface": {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+        },
+        "text": {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+        },
+        "textOnSurface": {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+        },
+        "muted": {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+        },
+        "primary": {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+        },
+        "accent": {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+        },
+        "highlight": {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+        },
+        "palette": {
+          "minItems": 2,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+          }
+        }
+      },
+      "required": [
+        "bg",
+        "bg2",
+        "surface",
+        "text",
+        "textOnSurface",
+        "muted",
+        "primary",
+        "accent",
+        "highlight",
+        "palette"
+      ]
+    },
+    "fonts": {
+      "type": "object",
+      "properties": {
+        "heading": {
+          "type": "object",
+          "properties": {
+            "family": {
+              "type": "string"
+            },
+            "files": {
+              "default": {},
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "scale": {
+              "default": 1,
+              "type": "number"
+            },
+            "uppercase": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "family"
+          ]
+        },
+        "body": {
+          "type": "object",
+          "properties": {
+            "family": {
+              "type": "string"
+            },
+            "files": {
+              "default": {},
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "scale": {
+              "default": 1,
+              "type": "number"
+            },
+            "uppercase": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "family"
+          ]
+        }
+      },
+      "required": [
+        "heading",
+        "body"
+      ]
+    },
+    "logo": {
+      "default": {
+        "plate": "none"
+      },
+      "type": "object",
+      "properties": {
+        "light": {
+          "type": "string"
+        },
+        "dark": {
+          "type": "string"
+        },
+        "mark": {
+          "type": "string"
+        },
+        "plate": {
+          "default": "none",
+          "type": "string",
+          "enum": [
+            "none",
+            "circle",
+            "rounded"
+          ]
+        },
+        "plateColor": {
+          "type": "string",
+          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+        },
+        "maxHeight": {
+          "type": "number"
+        }
+      }
+    },
+    "shape": {
+      "default": {
+        "radius": 28,
+        "style": "round",
+        "highlight": "color"
+      },
+      "type": "object",
+      "properties": {
+        "radius": {
+          "default": 28,
+          "type": "number"
+        },
+        "style": {
+          "default": "round",
+          "type": "string",
+          "enum": [
+            "round",
+            "square"
+          ]
+        },
+        "highlight": {
+          "default": "color",
+          "type": "string",
+          "enum": [
+            "color",
+            "marker"
+          ]
+        }
+      }
+    },
+    "motion": {
+      "default": {
+        "energy": "normal",
+        "transitions": []
+      },
+      "type": "object",
+      "properties": {
+        "energy": {
+          "default": "normal",
+          "type": "string",
+          "enum": [
+            "calm",
+            "normal",
+            "playful"
+          ]
+        },
+        "transitions": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "background": {
+          "type": "string"
+        }
+      }
+    },
+    "audio": {
+      "default": {
+        "mood": "corporate",
+        "bpm": 110
+      },
+      "type": "object",
+      "properties": {
+        "mood": {
+          "default": "corporate",
+          "type": "string"
+        },
+        "bpm": {
+          "default": 110,
+          "type": "number"
+        }
+      }
+    },
+    "contact": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "whatsapp": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "site": {
+          "type": "string"
+        },
+        "instagram": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "slug",
+    "name",
+    "colors",
+    "fonts"
+  ]
+}

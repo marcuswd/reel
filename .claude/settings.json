@@ -1,0 +1,48 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:api.openverse.org)",
+      "WebFetch(domain:openverse.org)",
+      "WebFetch(domain:freesound.org)",
+      "WebFetch(domain:cdn.freesound.org)",
+      "WebFetch(domain:api.jamendo.com)",
+      "WebFetch(domain:jamendo.com)",
+      "WebFetch(domain:pixabay.com)",
+      "WebFetch(domain:remotion.dev)",
+      "WebFetch(domain:github.com)",
+      "Bash(node scripts/audio.mjs:*)",
+      "Bash(pnpm audio\\:search:*)",
+      "Bash(pnpm audio\\:get:*)",
+      "Bash(pnpm dev)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm still:*)",
+      "Bash(pnpm render:*)",
+      "Bash(pnpm exec remotion:*)",
+      "Bash(pnpm install)",
+      "Bash(npx remotion:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(ffprobe:*)",
+      "Bash(curl:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(mv public/:*)",
+      "Bash(cp:*)",
+      "Edit(src/**)",
+      "Edit(public/**)",
+      "Edit(scripts/**)",
+      "Edit(out/**)",
+      "Edit(README.md)",
+      "Edit(CLAUDE.md)",
+      "Edit(package.json)",
+      "Bash(node scripts/export.mjs:*)",
+      "Bash(pnpm export:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Bash(rm -rf:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}

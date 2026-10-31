@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595.28 253.21">
+  <defs><style>.cls-1, .cls-2 { opacity: .75; } .cls-1, .cls-3 { fill: #111111; }</style></defs>
+  <g>
+    <g class="cls-2"><path class="cls-3" d="m0,253.21V0h57.12v253.21H0Z"/></g>
+    <polygon class="cls-3" points="195.9 0 126.51 90.24 57.12 0 0 0 126.19 156.17 253.02 0 195.9 0"/>
+    <g class="cls-2"><path class="cls-3" d="m195.9,253.21V0h57.12v253.21h-57.12Z"/></g>
+  </g>
+  <g class="cls-2"><path class="cls-3" d="m448.92,0v253.21h-57.12V0h57.12Z"/></g>
+  <polygon class="cls-3" points="253.02 253.21 322.41 162.96 391.79 253.21 448.92 253.21 322.73 97.03 195.9 253.21 253.02 253.21"/>
+  <g class="cls-2"><path class="cls-3" d="m253.02,0v253.21h-57.12V0h57.12Z"/></g>
+  <path class="cls-1" d="m455.06,253.21c77.44,0,140.22-56.68,140.22-126.6S532.5,0,455.06,0h-63.27v253.21h63.27Z"/>
+</svg>

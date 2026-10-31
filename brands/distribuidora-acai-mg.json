@@ -1,0 +1,67 @@
+{
+  "$schema": "../schemas/brand.schema.json",
+  "slug": "distribuidora-acai-mg",
+  "name": "Distribuidora de Açaí MG",
+  "colors": {
+    "bg": "#22162f",
+    "bg2": "#5b2a6e",
+    "surface": "#fff6ec",
+    "text": "#ffffff",
+    "textOnSurface": "#3d365c",
+    "muted": "#e6d9f0",
+    "primary": "#cc3366",
+    "accent": "#f8b55f",
+    "highlight": "#f8b55f",
+    "palette": [
+      "#cc3366",
+      "#f8b55f",
+      "#319746",
+      "#5b2a6e",
+      "#c95792"
+    ]
+  },
+  "fonts": {
+    "heading": {
+      "family": "Montserrat",
+      "files": {
+        "700": "distribuidora-acai-mg/fonts/montserrat-latin-700-normal.woff2",
+        "800": "distribuidora-acai-mg/fonts/montserrat-latin-800-normal.woff2",
+        "900": "distribuidora-acai-mg/fonts/montserrat-latin-900-normal.woff2"
+      }
+    },
+    "body": {
+      "family": "Quicksand",
+      "files": {
+        "500": "distribuidora-acai-mg/fonts/quicksand-latin-500-normal.woff2",
+        "700": "distribuidora-acai-mg/fonts/quicksand-latin-700-normal.woff2"
+      }
+    }
+  },
+  "logo": {
+    "light": "distribuidora-acai-mg/img/logo.png",
+    "plate": "circle",
+    "plateColor": "#ffffff"
+  },
+  "shape": {
+    "radius": 36,
+    "style": "round"
+  },
+  "motion": {
+    "energy": "playful",
+    "transitions": [
+      "bubble",
+      "zoom",
+      "whip",
+      "bubble",
+      "bands"
+    ],
+    "background": "particles"
+  },
+  "audio": {
+    "mood": "upbeat",
+    "bpm": 120
+  },
+  "contact": {
+    "site": "distribuidoradeacaimg.com.br"
+  }
+}

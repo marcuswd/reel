@@ -1,0 +1,61 @@
+{
+  "$schema": "../schemas/brand.schema.json",
+  "slug": "marcuswd",
+  "name": "MARCUSWD",
+  "colors": {
+    "bg": "#0b0b0b",
+    "bg2": "#1c1c1c",
+    "surface": "#ffffff",
+    "text": "#eeeeee",
+    "textOnSurface": "#111111",
+    "muted": "#a1a1a1",
+    "primary": "#ea580c",
+    "accent": "#ea580c",
+    "highlight": "#f97316",
+    "palette": [
+      "#ea580c",
+      "#da3b01",
+      "#f97316",
+      "#3291ff",
+      "#222222"
+    ]
+  },
+  "fonts": {
+    "heading": {
+      "family": "Ubuntu",
+      "files": {
+        "500": "brands/marcuswd/fonts/ubuntu-latin-500-normal.woff2",
+        "700": "brands/marcuswd/fonts/ubuntu-latin-700-normal.woff2"
+      }
+    },
+    "body": {
+      "family": "Ubuntu",
+      "files": {
+        "400": "brands/marcuswd/fonts/ubuntu-latin-400-normal.woff2",
+        "500": "brands/marcuswd/fonts/ubuntu-latin-500-normal.woff2"
+      }
+    }
+  },
+  "logo": {
+    "light": "brands/marcuswd/logo-white.svg",
+    "dark": "brands/marcuswd/logo-dark.svg",
+    "plate": "none"
+  },
+  "shape": {
+    "radius": 24,
+    "style": "round"
+  },
+  "motion": {
+    "energy": "normal",
+    "transitions": [],
+    "background": "mesh"
+  },
+  "audio": {
+    "mood": "tech",
+    "bpm": 118
+  },
+  "contact": {
+    "site": "marcuswd.dev",
+    "email": "marcus@marcuswd.dev"
+  }
+}

@@ -1,0 +1,4143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "client": {
+      "type": "string"
+    },
+    "brand": {
+      "type": "string"
+    },
+    "lang": {
+      "default": "pt-BR",
+      "type": "string"
+    },
+    "langs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "formats": {
+      "default": [
+        "16:9"
+      ],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "16:9",
+          "9:16",
+          "1:1",
+          "4:5"
+        ]
+      }
+    },
+    "fps": {
+      "default": 30,
+      "type": "number"
+    },
+    "pace": {
+      "default": "normal",
+      "type": "string",
+      "enum": [
+        "calm",
+        "normal",
+        "fast"
+      ]
+    },
+    "music": {
+      "default": {
+        "mode": "generate",
+        "volume": 0.9
+      },
+      "type": "object",
+      "properties": {
+        "mode": {
+          "default": "generate",
+          "type": "string",
+          "enum": [
+            "generate",
+            "file",
+            "none"
+          ]
+        },
+        "file": {
+          "type": "string"
+        },
+        "mood": {
+          "type": "string"
+        },
+        "bpm": {
+          "type": "number"
+        },
+        "volume": {
+          "default": 0.9,
+          "type": "number"
+        }
+      }
+    },
+    "sfx": {
+      "default": {
+        "enabled": true,
+        "pack": "_lib/sfx",
+        "volume": 1
+      },
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "default": true,
+          "type": "boolean"
+        },
+        "pack": {
+          "default": "_lib/sfx",
+          "type": "string"
+        },
+        "volume": {
+          "default": 1,
+          "type": "number"
+        }
+      }
+    },
+    "voice": {
+      "default": {
+        "provider": "none",
+        "volume": 1
+      },
+      "type": "object",
+      "properties": {
+        "provider": {
+          "default": "none",
+          "type": "string",
+          "enum": [
+            "none",
+            "elevenlabs",
+            "openai",
+            "piper"
+          ]
+        },
+        "voiceId": {
+          "type": "string"
+        },
+        "volume": {
+          "default": 1,
+          "type": "number"
+        }
+      }
+    },
+    "captions": {
+      "default": {
+        "mode": "both",
+        "style": "pop"
+      },
+      "type": "object",
+      "properties": {
+        "mode": {
+          "default": "both",
+          "type": "string",
+          "enum": [
+            "burn",
+            "file",
+            "both",
+            "none"
+          ]
+        },
+        "style": {
+          "default": "pop",
+          "type": "string",
+          "enum": [
+            "pop",
+            "line",
+            "box"
+          ]
+        }
+      }
+    },
+    "overlays": {
+      "default": {
+        "logo": "none",
+        "grain": true,
+        "vignette": true,
+        "progress": false
+      },
+      "type": "object",
+      "properties": {
+        "logo": {
+          "default": "none",
+          "type": "string",
+          "enum": [
+            "none",
+            "top-left",
+            "top-right",
+            "bottom-left",
+            "bottom-right"
+          ]
+        },
+        "grain": {
+          "default": true,
+          "type": "boolean"
+        },
+        "vignette": {
+          "default": true,
+          "type": "boolean"
+        },
+        "progress": {
+          "default": false,
+          "type": "boolean"
+        }
+      }
+    },
+    "safe": {
+      "default": {
+        "top": 0,
+        "bottom": 0
+      },
+      "type": "object",
+      "properties": {
+        "top": {
+          "default": 0,
+          "type": "number"
+        },
+        "bottom": {
+          "default": 0,
+          "type": "number"
+        }
+      }
+    },
+    "defaults": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "transition": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "none",
+            "fade",
+            "slide",
+            "push",
+            "wipe",
+            "zoom",
+            "whip",
+            "lift",
+            "dive",
+            "iris",
+            "bands",
+            "bubble",
+            "leak",
+            "glitch",
+            "flip"
+          ]
+        },
+        "camera": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "static",
+            "in",
+            "out",
+            "left",
+            "right",
+            "up",
+            "down",
+            "push",
+            "pull",
+            "orbit",
+            "tilt",
+            "handheld",
+            "dolly",
+            "whip"
+          ]
+        },
+        "background": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "auto",
+                "solid",
+                "gradient",
+                "mesh",
+                "particles",
+                "grid",
+                "shapes",
+                "aurora"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "auto",
+                    "solid",
+                    "gradient",
+                    "mesh",
+                    "particles",
+                    "grid",
+                    "shapes",
+                    "aurora"
+                  ]
+                },
+                "colors": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                  }
+                },
+                "media": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "src": {
+                          "type": "string"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "image",
+                            "video"
+                          ]
+                        },
+                        "focus": {
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "type": "number"
+                            },
+                            "y": {
+                              "type": "number"
+                            },
+                            "w": {
+                              "type": "number"
+                            },
+                            "h": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y"
+                          ]
+                        },
+                        "fit": {
+                          "type": "string",
+                          "enum": [
+                            "cover",
+                            "contain"
+                          ]
+                        },
+                        "trim": {
+                          "type": "number"
+                        },
+                        "muted": {
+                          "type": "boolean"
+                        },
+                        "captions": {
+                          "type": "string"
+                        },
+                        "credit": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "src"
+                      ]
+                    }
+                  ]
+                },
+                "dim": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "type"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "media"
+                },
+                "media": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "src": {
+                          "type": "string"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "image",
+                            "video"
+                          ]
+                        },
+                        "focus": {
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "type": "number"
+                            },
+                            "y": {
+                              "type": "number"
+                            },
+                            "w": {
+                              "type": "number"
+                            },
+                            "h": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y"
+                          ]
+                        },
+                        "fit": {
+                          "type": "string",
+                          "enum": [
+                            "cover",
+                            "contain"
+                          ]
+                        },
+                        "trim": {
+                          "type": "number"
+                        },
+                        "muted": {
+                          "type": "boolean"
+                        },
+                        "captions": {
+                          "type": "string"
+                        },
+                        "credit": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "src"
+                      ]
+                    }
+                  ]
+                },
+                "dim": {
+                  "type": "number"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "auto",
+                    "static",
+                    "in",
+                    "out",
+                    "left",
+                    "right",
+                    "up",
+                    "down",
+                    "push",
+                    "pull",
+                    "orbit",
+                    "tilt",
+                    "handheld",
+                    "dolly",
+                    "whip"
+                  ]
+                }
+              },
+              "required": [
+                "type",
+                "media"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "scenes": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "voice": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              },
+              "transition": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "none",
+                  "fade",
+                  "slide",
+                  "push",
+                  "wipe",
+                  "zoom",
+                  "whip",
+                  "lift",
+                  "dive",
+                  "iris",
+                  "bands",
+                  "bubble",
+                  "leak",
+                  "glitch",
+                  "flip"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "static",
+                  "in",
+                  "out",
+                  "left",
+                  "right",
+                  "up",
+                  "down",
+                  "push",
+                  "pull",
+                  "orbit",
+                  "tilt",
+                  "handheld",
+                  "dolly",
+                  "whip"
+                ]
+              },
+              "background": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "solid",
+                      "gradient",
+                      "mesh",
+                      "particles",
+                      "grid",
+                      "shapes",
+                      "aurora"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "solid",
+                          "gradient",
+                          "mesh",
+                          "particles",
+                          "grid",
+                          "shapes",
+                          "aurora"
+                        ]
+                      },
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        }
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "media"
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      },
+                      "camera": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "static",
+                          "in",
+                          "out",
+                          "left",
+                          "right",
+                          "up",
+                          "down",
+                          "push",
+                          "pull",
+                          "orbit",
+                          "tilt",
+                          "handheld",
+                          "dolly",
+                          "whip"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "media"
+                    ]
+                  }
+                ]
+              },
+              "sfx": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "const": "cover"
+              },
+              "eyebrow": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "subtitle": {
+                "type": "string"
+              },
+              "logo": {
+                "type": "boolean"
+              },
+              "media": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "src": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "image",
+                          "video"
+                        ]
+                      },
+                      "focus": {
+                        "type": "object",
+                        "properties": {
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          },
+                          "w": {
+                            "type": "number"
+                          },
+                          "h": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ]
+                      },
+                      "fit": {
+                        "type": "string",
+                        "enum": [
+                          "cover",
+                          "contain"
+                        ]
+                      },
+                      "trim": {
+                        "type": "number"
+                      },
+                      "muted": {
+                        "type": "boolean"
+                      },
+                      "captions": {
+                        "type": "string"
+                      },
+                      "credit": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "src"
+                    ]
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "title"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "voice": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              },
+              "transition": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "none",
+                  "fade",
+                  "slide",
+                  "push",
+                  "wipe",
+                  "zoom",
+                  "whip",
+                  "lift",
+                  "dive",
+                  "iris",
+                  "bands",
+                  "bubble",
+                  "leak",
+                  "glitch",
+                  "flip"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "static",
+                  "in",
+                  "out",
+                  "left",
+                  "right",
+                  "up",
+                  "down",
+                  "push",
+                  "pull",
+                  "orbit",
+                  "tilt",
+                  "handheld",
+                  "dolly",
+                  "whip"
+                ]
+              },
+              "background": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "solid",
+                      "gradient",
+                      "mesh",
+                      "particles",
+                      "grid",
+                      "shapes",
+                      "aurora"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "solid",
+                          "gradient",
+                          "mesh",
+                          "particles",
+                          "grid",
+                          "shapes",
+                          "aurora"
+                        ]
+                      },
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        }
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "media"
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      },
+                      "camera": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "static",
+                          "in",
+                          "out",
+                          "left",
+                          "right",
+                          "up",
+                          "down",
+                          "push",
+                          "pull",
+                          "orbit",
+                          "tilt",
+                          "handheld",
+                          "dolly",
+                          "whip"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "media"
+                    ]
+                  }
+                ]
+              },
+              "sfx": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "const": "statement"
+              },
+              "eyebrow": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "align": {
+                "type": "string",
+                "enum": [
+                  "center",
+                  "left"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "text"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "voice": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              },
+              "transition": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "none",
+                  "fade",
+                  "slide",
+                  "push",
+                  "wipe",
+                  "zoom",
+                  "whip",
+                  "lift",
+                  "dive",
+                  "iris",
+                  "bands",
+                  "bubble",
+                  "leak",
+                  "glitch",
+                  "flip"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "static",
+                  "in",
+                  "out",
+                  "left",
+                  "right",
+                  "up",
+                  "down",
+                  "push",
+                  "pull",
+                  "orbit",
+                  "tilt",
+                  "handheld",
+                  "dolly",
+                  "whip"
+                ]
+              },
+              "background": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "solid",
+                      "gradient",
+                      "mesh",
+                      "particles",
+                      "grid",
+                      "shapes",
+                      "aurora"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "solid",
+                          "gradient",
+                          "mesh",
+                          "particles",
+                          "grid",
+                          "shapes",
+                          "aurora"
+                        ]
+                      },
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        }
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "media"
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      },
+                      "camera": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "static",
+                          "in",
+                          "out",
+                          "left",
+                          "right",
+                          "up",
+                          "down",
+                          "push",
+                          "pull",
+                          "orbit",
+                          "tilt",
+                          "handheld",
+                          "dolly",
+                          "whip"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "media"
+                    ]
+                  }
+                ]
+              },
+              "sfx": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "const": "media"
+              },
+              "media": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "src": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "image",
+                          "video"
+                        ]
+                      },
+                      "focus": {
+                        "type": "object",
+                        "properties": {
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          },
+                          "w": {
+                            "type": "number"
+                          },
+                          "h": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ]
+                      },
+                      "fit": {
+                        "type": "string",
+                        "enum": [
+                          "cover",
+                          "contain"
+                        ]
+                      },
+                      "trim": {
+                        "type": "number"
+                      },
+                      "muted": {
+                        "type": "boolean"
+                      },
+                      "captions": {
+                        "type": "string"
+                      },
+                      "credit": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "src"
+                    ]
+                  }
+                ]
+              },
+              "eyebrow": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "position": {
+                "type": "string",
+                "enum": [
+                  "bottom",
+                  "center",
+                  "top"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "media"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "voice": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              },
+              "transition": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "none",
+                  "fade",
+                  "slide",
+                  "push",
+                  "wipe",
+                  "zoom",
+                  "whip",
+                  "lift",
+                  "dive",
+                  "iris",
+                  "bands",
+                  "bubble",
+                  "leak",
+                  "glitch",
+                  "flip"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "static",
+                  "in",
+                  "out",
+                  "left",
+                  "right",
+                  "up",
+                  "down",
+                  "push",
+                  "pull",
+                  "orbit",
+                  "tilt",
+                  "handheld",
+                  "dolly",
+                  "whip"
+                ]
+              },
+              "background": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "solid",
+                      "gradient",
+                      "mesh",
+                      "particles",
+                      "grid",
+                      "shapes",
+                      "aurora"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "solid",
+                          "gradient",
+                          "mesh",
+                          "particles",
+                          "grid",
+                          "shapes",
+                          "aurora"
+                        ]
+                      },
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        }
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "media"
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      },
+                      "camera": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "static",
+                          "in",
+                          "out",
+                          "left",
+                          "right",
+                          "up",
+                          "down",
+                          "push",
+                          "pull",
+                          "orbit",
+                          "tilt",
+                          "handheld",
+                          "dolly",
+                          "whip"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "media"
+                    ]
+                  }
+                ]
+              },
+              "sfx": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "const": "split"
+              },
+              "media": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "src": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "image",
+                          "video"
+                        ]
+                      },
+                      "focus": {
+                        "type": "object",
+                        "properties": {
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          },
+                          "w": {
+                            "type": "number"
+                          },
+                          "h": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ]
+                      },
+                      "fit": {
+                        "type": "string",
+                        "enum": [
+                          "cover",
+                          "contain"
+                        ]
+                      },
+                      "trim": {
+                        "type": "number"
+                      },
+                      "muted": {
+                        "type": "boolean"
+                      },
+                      "captions": {
+                        "type": "string"
+                      },
+                      "credit": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "src"
+                    ]
+                  }
+                ]
+              },
+              "eyebrow": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "bullets": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "side": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "right"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "media",
+              "title"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "voice": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              },
+              "transition": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "none",
+                  "fade",
+                  "slide",
+                  "push",
+                  "wipe",
+                  "zoom",
+                  "whip",
+                  "lift",
+                  "dive",
+                  "iris",
+                  "bands",
+                  "bubble",
+                  "leak",
+                  "glitch",
+                  "flip"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "static",
+                  "in",
+                  "out",
+                  "left",
+                  "right",
+                  "up",
+                  "down",
+                  "push",
+                  "pull",
+                  "orbit",
+                  "tilt",
+                  "handheld",
+                  "dolly",
+                  "whip"
+                ]
+              },
+              "background": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "solid",
+                      "gradient",
+                      "mesh",
+                      "particles",
+                      "grid",
+                      "shapes",
+                      "aurora"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "solid",
+                          "gradient",
+                          "mesh",
+                          "particles",
+                          "grid",
+                          "shapes",
+                          "aurora"
+                        ]
+                      },
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        }
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "media"
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      },
+                      "camera": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "static",
+                          "in",
+                          "out",
+                          "left",
+                          "right",
+                          "up",
+                          "down",
+                          "push",
+                          "pull",
+                          "orbit",
+                          "tilt",
+                          "handheld",
+                          "dolly",
+                          "whip"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "media"
+                    ]
+                  }
+                ]
+              },
+              "sfx": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "const": "screen"
+              },
+              "src": {
+                "type": "string"
+              },
+              "device": {
+                "type": "string",
+                "enum": [
+                  "browser",
+                  "phone",
+                  "none"
+                ]
+              },
+              "focus": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  },
+                  "w": {
+                    "type": "number"
+                  },
+                  "h": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ]
+              },
+              "pan": {
+                "type": "boolean"
+              },
+              "eyebrow": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "src"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "voice": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              },
+              "transition": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "none",
+                  "fade",
+                  "slide",
+                  "push",
+                  "wipe",
+                  "zoom",
+                  "whip",
+                  "lift",
+                  "dive",
+                  "iris",
+                  "bands",
+                  "bubble",
+                  "leak",
+                  "glitch",
+                  "flip"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "static",
+                  "in",
+                  "out",
+                  "left",
+                  "right",
+                  "up",
+                  "down",
+                  "push",
+                  "pull",
+                  "orbit",
+                  "tilt",
+                  "handheld",
+                  "dolly",
+                  "whip"
+                ]
+              },
+              "background": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "solid",
+                      "gradient",
+                      "mesh",
+                      "particles",
+                      "grid",
+                      "shapes",
+                      "aurora"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "solid",
+                          "gradient",
+                          "mesh",
+                          "particles",
+                          "grid",
+                          "shapes",
+                          "aurora"
+                        ]
+                      },
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        }
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "media"
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      },
+                      "camera": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "static",
+                          "in",
+                          "out",
+                          "left",
+                          "right",
+                          "up",
+                          "down",
+                          "push",
+                          "pull",
+                          "orbit",
+                          "tilt",
+                          "handheld",
+                          "dolly",
+                          "whip"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "media"
+                    ]
+                  }
+                ]
+              },
+              "sfx": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "const": "list"
+              },
+              "eyebrow": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "items": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "icon": {
+                "type": "string",
+                "enum": [
+                  "check",
+                  "number",
+                  "dot"
+                ]
+              },
+              "media": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "src": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "image",
+                          "video"
+                        ]
+                      },
+                      "focus": {
+                        "type": "object",
+                        "properties": {
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          },
+                          "w": {
+                            "type": "number"
+                          },
+                          "h": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ]
+                      },
+                      "fit": {
+                        "type": "string",
+                        "enum": [
+                          "cover",
+                          "contain"
+                        ]
+                      },
+                      "trim": {
+                        "type": "number"
+                      },
+                      "muted": {
+                        "type": "boolean"
+                      },
+                      "captions": {
+                        "type": "string"
+                      },
+                      "credit": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "src"
+                    ]
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "title",
+              "items"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "voice": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              },
+              "transition": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "none",
+                  "fade",
+                  "slide",
+                  "push",
+                  "wipe",
+                  "zoom",
+                  "whip",
+                  "lift",
+                  "dive",
+                  "iris",
+                  "bands",
+                  "bubble",
+                  "leak",
+                  "glitch",
+                  "flip"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "static",
+                  "in",
+                  "out",
+                  "left",
+                  "right",
+                  "up",
+                  "down",
+                  "push",
+                  "pull",
+                  "orbit",
+                  "tilt",
+                  "handheld",
+                  "dolly",
+                  "whip"
+                ]
+              },
+              "background": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "solid",
+                      "gradient",
+                      "mesh",
+                      "particles",
+                      "grid",
+                      "shapes",
+                      "aurora"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "solid",
+                          "gradient",
+                          "mesh",
+                          "particles",
+                          "grid",
+                          "shapes",
+                          "aurora"
+                        ]
+                      },
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        }
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "media"
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      },
+                      "camera": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "static",
+                          "in",
+                          "out",
+                          "left",
+                          "right",
+                          "up",
+                          "down",
+                          "push",
+                          "pull",
+                          "orbit",
+                          "tilt",
+                          "handheld",
+                          "dolly",
+                          "whip"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "media"
+                    ]
+                  }
+                ]
+              },
+              "sfx": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "const": "stats"
+              },
+              "eyebrow": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "items": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "number"
+                    },
+                    "prefix": {
+                      "type": "string"
+                    },
+                    "suffix": {
+                      "type": "string"
+                    },
+                    "decimals": {
+                      "type": "number"
+                    },
+                    "label": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "value",
+                    "label"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "items"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "voice": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              },
+              "transition": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "none",
+                  "fade",
+                  "slide",
+                  "push",
+                  "wipe",
+                  "zoom",
+                  "whip",
+                  "lift",
+                  "dive",
+                  "iris",
+                  "bands",
+                  "bubble",
+                  "leak",
+                  "glitch",
+                  "flip"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "static",
+                  "in",
+                  "out",
+                  "left",
+                  "right",
+                  "up",
+                  "down",
+                  "push",
+                  "pull",
+                  "orbit",
+                  "tilt",
+                  "handheld",
+                  "dolly",
+                  "whip"
+                ]
+              },
+              "background": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "solid",
+                      "gradient",
+                      "mesh",
+                      "particles",
+                      "grid",
+                      "shapes",
+                      "aurora"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "solid",
+                          "gradient",
+                          "mesh",
+                          "particles",
+                          "grid",
+                          "shapes",
+                          "aurora"
+                        ]
+                      },
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        }
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "media"
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      },
+                      "camera": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "static",
+                          "in",
+                          "out",
+                          "left",
+                          "right",
+                          "up",
+                          "down",
+                          "push",
+                          "pull",
+                          "orbit",
+                          "tilt",
+                          "handheld",
+                          "dolly",
+                          "whip"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "media"
+                    ]
+                  }
+                ]
+              },
+              "sfx": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "const": "gallery"
+              },
+              "eyebrow": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "items": {
+                "minItems": 2,
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "src": {
+                          "type": "string"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "image",
+                            "video"
+                          ]
+                        },
+                        "focus": {
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "type": "number"
+                            },
+                            "y": {
+                              "type": "number"
+                            },
+                            "w": {
+                              "type": "number"
+                            },
+                            "h": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y"
+                          ]
+                        },
+                        "fit": {
+                          "type": "string",
+                          "enum": [
+                            "cover",
+                            "contain"
+                          ]
+                        },
+                        "trim": {
+                          "type": "number"
+                        },
+                        "muted": {
+                          "type": "boolean"
+                        },
+                        "captions": {
+                          "type": "string"
+                        },
+                        "credit": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "src"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "layout": {
+                "type": "string",
+                "enum": [
+                  "grid",
+                  "carousel",
+                  "stack"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "items"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "voice": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              },
+              "transition": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "none",
+                  "fade",
+                  "slide",
+                  "push",
+                  "wipe",
+                  "zoom",
+                  "whip",
+                  "lift",
+                  "dive",
+                  "iris",
+                  "bands",
+                  "bubble",
+                  "leak",
+                  "glitch",
+                  "flip"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "static",
+                  "in",
+                  "out",
+                  "left",
+                  "right",
+                  "up",
+                  "down",
+                  "push",
+                  "pull",
+                  "orbit",
+                  "tilt",
+                  "handheld",
+                  "dolly",
+                  "whip"
+                ]
+              },
+              "background": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "solid",
+                      "gradient",
+                      "mesh",
+                      "particles",
+                      "grid",
+                      "shapes",
+                      "aurora"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "solid",
+                          "gradient",
+                          "mesh",
+                          "particles",
+                          "grid",
+                          "shapes",
+                          "aurora"
+                        ]
+                      },
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        }
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "media"
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      },
+                      "camera": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "static",
+                          "in",
+                          "out",
+                          "left",
+                          "right",
+                          "up",
+                          "down",
+                          "push",
+                          "pull",
+                          "orbit",
+                          "tilt",
+                          "handheld",
+                          "dolly",
+                          "whip"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "media"
+                    ]
+                  }
+                ]
+              },
+              "sfx": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "const": "quote"
+              },
+              "text": {
+                "type": "string"
+              },
+              "author": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string"
+              },
+              "avatar": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "text",
+              "author"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "voice": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              },
+              "transition": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "none",
+                  "fade",
+                  "slide",
+                  "push",
+                  "wipe",
+                  "zoom",
+                  "whip",
+                  "lift",
+                  "dive",
+                  "iris",
+                  "bands",
+                  "bubble",
+                  "leak",
+                  "glitch",
+                  "flip"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "static",
+                  "in",
+                  "out",
+                  "left",
+                  "right",
+                  "up",
+                  "down",
+                  "push",
+                  "pull",
+                  "orbit",
+                  "tilt",
+                  "handheld",
+                  "dolly",
+                  "whip"
+                ]
+              },
+              "background": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "solid",
+                      "gradient",
+                      "mesh",
+                      "particles",
+                      "grid",
+                      "shapes",
+                      "aurora"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "solid",
+                          "gradient",
+                          "mesh",
+                          "particles",
+                          "grid",
+                          "shapes",
+                          "aurora"
+                        ]
+                      },
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        }
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "media"
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      },
+                      "camera": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "static",
+                          "in",
+                          "out",
+                          "left",
+                          "right",
+                          "up",
+                          "down",
+                          "push",
+                          "pull",
+                          "orbit",
+                          "tilt",
+                          "handheld",
+                          "dolly",
+                          "whip"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "media"
+                    ]
+                  }
+                ]
+              },
+              "sfx": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "const": "cta"
+              },
+              "eyebrow": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "button": {
+                "type": "string"
+              },
+              "contact": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "whatsapp",
+                        "phone",
+                        "site",
+                        "instagram",
+                        "email"
+                      ]
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "value"
+                  ]
+                }
+              },
+              "logo": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "title"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "voice": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              },
+              "transition": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "none",
+                  "fade",
+                  "slide",
+                  "push",
+                  "wipe",
+                  "zoom",
+                  "whip",
+                  "lift",
+                  "dive",
+                  "iris",
+                  "bands",
+                  "bubble",
+                  "leak",
+                  "glitch",
+                  "flip"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "static",
+                  "in",
+                  "out",
+                  "left",
+                  "right",
+                  "up",
+                  "down",
+                  "push",
+                  "pull",
+                  "orbit",
+                  "tilt",
+                  "handheld",
+                  "dolly",
+                  "whip"
+                ]
+              },
+              "background": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "solid",
+                      "gradient",
+                      "mesh",
+                      "particles",
+                      "grid",
+                      "shapes",
+                      "aurora"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "solid",
+                          "gradient",
+                          "mesh",
+                          "particles",
+                          "grid",
+                          "shapes",
+                          "aurora"
+                        ]
+                      },
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                        }
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "media"
+                      },
+                      "media": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "src": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video"
+                                ]
+                              },
+                              "focus": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  },
+                                  "w": {
+                                    "type": "number"
+                                  },
+                                  "h": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "x",
+                                  "y"
+                                ]
+                              },
+                              "fit": {
+                                "type": "string",
+                                "enum": [
+                                  "cover",
+                                  "contain"
+                                ]
+                              },
+                              "trim": {
+                                "type": "number"
+                              },
+                              "muted": {
+                                "type": "boolean"
+                              },
+                              "captions": {
+                                "type": "string"
+                              },
+                              "credit": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "src"
+                            ]
+                          }
+                        ]
+                      },
+                      "dim": {
+                        "type": "number"
+                      },
+                      "camera": {
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "static",
+                          "in",
+                          "out",
+                          "left",
+                          "right",
+                          "up",
+                          "down",
+                          "push",
+                          "pull",
+                          "orbit",
+                          "tilt",
+                          "handheld",
+                          "dolly",
+                          "whip"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "media"
+                    ]
+                  }
+                ]
+              },
+              "sfx": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "const": "logo"
+              },
+              "tagline": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "type"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "slug",
+    "brand",
+    "scenes"
+  ]
+}

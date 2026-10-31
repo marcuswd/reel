@@ -1,0 +1,125 @@
+{
+  "$schema": "../../schemas/job.schema.json",
+  "slug": "ferrara-nomograma",
+  "title": "Nomograma do Anel de Ferrara: apresentação caso a caso",
+  "client": "ferrara",
+  "brand": "ferrara",
+  "lang": "pt-BR",
+  "formats": ["16:9"],
+  "pace": "calm",
+  "music": { "mode": "generate", "mood": "tech", "bpm": 118, "volume": 1 },
+  "voice": { "provider": "piper", "voiceId": "pt_BR-faber-medium" },
+  "captions": { "mode": "both", "style": "line" },
+  "overlays": { "logo": "none", "grain": false, "vignette": false, "progress": true },
+  "defaults": { "background": "gradient" },
+  "scenes": [
+    {
+      "id": "abertura", "type": "cover", "logo": true,
+      "title": "Nomograma do [Anel de Ferrara]",
+      "subtitle": "Do exame ao plano cirúrgico, caso a caso",
+      "background": "mesh",
+      "voice": "Conheça o Nomograma do Anel de Ferrara: do exame ao plano cirúrgico, caso a caso."
+    },
+    {
+      "id": "modulos", "type": "screen", "src": "ferrara/screens/00-home.png", "device": "browser",
+      "eyebrow": "Três módulos", "title": "Anel [5 mm], anel [HM 6 mm] e [Fine Tuning]",
+      "voice": "São três módulos: o anel de cinco milímetros, o anel HM de seis milímetros, e o Fine Tuning, para o ajuste sobre um HM já implantado."
+    },
+    {
+      "id": "m1", "type": "statement", "eyebrow": "Módulo 1", "text": "Anel [5 mm]: o anel original",
+      "align": "center", "background": "mesh",
+      "voice": "Começamos pelo anel de cinco milímetros."
+    },
+    {
+      "id": "tipos", "type": "screen", "src": "ferrara/cases/oval-tipo.png", "device": "browser",
+      "focus": { "x": 0.29, "y": 0.12, "w": 0.63, "h": 0.5 },
+      "eyebrow": "Padrão da topografia", "title": "Quatro tipos de ceratocone, [quatro regras]",
+      "voice": "O cirurgião escolhe o padrão da topografia: oval, astigmático, nipple ou PMD. Cada um segue a sua própria regra de indicação."
+    },
+    {
+      "id": "oval", "type": "screen", "src": "ferrara/cases/oval-resultado.png", "device": "browser",
+      "focus": { "x": 0.31, "y": 0.23, "w": 0.34, "h": 0.22 },
+      "eyebrow": "Cone oval", "title": "A asfericidade define [o par de segmentos]",
+      "voice": "No cone oval, quem manda é a asfericidade. Neste caso, a sugestão é um par de segmentos de cento e sessenta, com a regra explicada logo abaixo."
+    },
+    {
+      "id": "astig", "type": "screen", "src": "ferrara/cases/astig-plano.png", "device": "browser",
+      "focus": { "x": 0.31, "y": 0.33, "w": 0.62, "h": 0.5 },
+      "eyebrow": "Cone astigmático", "title": "Incisão sempre do [lado temporal]",
+      "voice": "No cone astigmático com até seis dioptrias, vale a tabela do arco de cento e sessenta. E o plano já mostra a incisão do lado temporal, em cada olho."
+    },
+    {
+      "id": "nipple", "type": "screen", "src": "ferrara/cases/nipple-resultado.png", "device": "browser",
+      "focus": { "x": 0.31, "y": 0.23, "w": 0.34, "h": 0.22 },
+      "eyebrow": "Cone nipple", "title": "O astigmatismo escolhe entre [210 e 320]",
+      "voice": "No cone nipple, o astigmatismo decide. Até três dioptrias, anel de duzentos e dez. Acima disso, anel de trezentos e vinte."
+    },
+    {
+      "id": "pmd", "type": "screen", "src": "ferrara/cases/pmd-plano.png", "device": "browser",
+      "focus": { "x": 0.31, "y": 0.33, "w": 0.62, "h": 0.5 },
+      "eyebrow": "PMD e PMD-like", "title": "Arco de 140 [por faixa de astigmatismo]",
+      "voice": "Na degeneração marginal pelúcida, o arco de cento e quarenta muda de espessura conforme a faixa de astigmatismo."
+    },
+    {
+      "id": "tecnicas", "type": "stats",
+      "eyebrow": "Mesmo caso, três técnicas", "title": "A técnica ajusta a [profundidade da incisão]",
+      "items": [
+        { "value": 416, "suffix": " µm", "label": "Manual" },
+        { "value": 259, "suffix": " µm", "label": "Bomba a vácuo" },
+        { "value": 360, "suffix": " µm", "label": "Laser" }
+      ],
+      "background": "mesh",
+      "voice": "A técnica cirúrgica ajusta a profundidade da incisão. No mesmo olho, manual, bomba a vácuo ou laser dão profundidades diferentes."
+    },
+    {
+      "id": "m2", "type": "statement", "eyebrow": "Módulo 2", "text": "Anel [HM 6 mm]: miopia e ceratocone",
+      "align": "center", "background": "mesh",
+      "voice": "Agora, o anel HM, de seis milímetros."
+    },
+    {
+      "id": "hmk", "type": "screen", "src": "ferrara/cases/hmk-resultado.png", "device": "browser",
+      "focus": { "x": 0.3, "y": 0.21, "w": 0.62, "h": 0.27 },
+      "eyebrow": "Duas indicações", "title": "K médio e miopia, [lado a lado]",
+      "voice": "Na miopia, a indicação vem pelo equivalente esférico. No ceratocone, pelo K médio. E, com a refração, o sistema mostra também a indicação pela miopia, lado a lado."
+    },
+    {
+      "id": "prk", "type": "screen", "src": "ferrara/screens/23-6mm-plano.png", "device": "browser",
+      "focus": { "x": 0.66, "y": 0.2, "w": 0.3, "h": 0.42 },
+      "eyebrow": "Plano do HM", "title": "O que sobra vai para o [PRK]",
+      "voice": "Quando a miopia passa do que o HM corrige, o plano já calcula o PRK complementar e a zona óptica."
+    },
+    {
+      "id": "m3", "type": "statement", "eyebrow": "Módulo 3", "text": "[Fine Tuning]: o segundo anel sobre o HM",
+      "align": "center", "background": "mesh",
+      "voice": "Por fim, o Fine Tuning."
+    },
+    {
+      "id": "prioridade", "type": "screen", "src": "ferrara/cases/ft-K.png", "device": "browser",
+      "focus": { "x": 0.29, "y": 0.17, "w": 0.63, "h": 0.5 },
+      "eyebrow": "Cilindro, K ou Q", "title": "Escolha o que [mais quer corrigir]",
+      "voice": "Num olho que já tem HM, o cirurgião escolhe a prioridade: cilindro, K ou Q. O sistema ordena os quatro arcos pelo efeito de cada um."
+    },
+    {
+      "id": "concentrico", "type": "screen", "src": "ferrara/cases/ft-plano.png", "device": "browser",
+      "focus": { "x": 0.31, "y": 0.33, "w": 0.62, "h": 0.5 },
+      "title": "O segundo anel, [concêntrico ao HM]",
+      "voice": "E o planejamento mostra o segundo anel, concêntrico ao HM implantado."
+    },
+    {
+      "id": "pdf", "type": "split",
+      "media": { "src": "ferrara/cases/pdf-plano.png", "fit": "contain", "focus": { "x": 0.5, "y": 0.4 } },
+      "eyebrow": "Pronto para a sala", "title": "Plano em [PDF] e pedido do anel",
+      "bullets": ["Olho, anel e incisão desenhados", "Pedido do anel pela própria ferramenta"],
+      "camera": "static",
+      "voice": "Cada plano sai em PDF, com o olho, o anel e a incisão desenhados. E o pedido do anel é feito pela própria ferramenta."
+    },
+    {
+      "id": "acesso", "type": "cta", "logo": true,
+      "title": "Nomograma do [Anel de Ferrara]",
+      "button": "Acesse o nomograma",
+      "contact": [{ "kind": "site", "value": "nomograma-anel-de-ferrara.vercel.app" }],
+      "background": "mesh",
+      "voice": "Nomograma do Anel de Ferrara. Planeje o seu próximo caso."
+    }
+  ]
+}

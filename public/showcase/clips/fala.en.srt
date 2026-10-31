@@ -1,0 +1,7 @@
+1
+00:00:00,270 --> 00:00:03,320
+This is the Mais Sabor production line in Angola.
+
+2
+00:00:03,320 --> 00:00:06,460
+The video was built straight from the client's footage.

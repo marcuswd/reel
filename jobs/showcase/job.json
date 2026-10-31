@@ -1,0 +1,115 @@
+{
+  "$schema": "../../schemas/job.schema.json",
+  "slug": "showcase",
+  "title": "MARCUSWD: vitrine do gerador de vídeos",
+  "client": "marcuswd",
+  "brand": "marcuswd",
+  "lang": "pt-BR",
+  "langs": ["pt-BR", "en"],
+  "formats": ["16:9", "9:16"],
+  "pace": "fast",
+  "music": { "mode": "generate", "mood": "tech", "bpm": 118 },
+  "voice": { "provider": "piper", "voiceId": "pt-BR=pt_BR-faber-medium,en=en_US-lessac-medium" },
+  "captions": { "mode": "both", "style": "box" },
+  "overlays": { "logo": "top-right", "grain": true, "vignette": true, "progress": true },
+  "scenes": [
+    {
+      "id": "abertura", "type": "cover", "logo": true,
+      "eyebrow": "MARCUSWD apresenta",
+      "title": "Vídeos que [vendem], gerados por código",
+      "background": "aurora",
+      "voice": "Vídeos que vendem, gerados por código."
+    },
+    {
+      "id": "ideia", "type": "statement",
+      "text": "Um roteiro em JSON vira um vídeo [completo]: câmera, trilha, voz e legenda",
+      "background": "grid", "transition": "glitch",
+      "voice": "Um roteiro vira um vídeo completo, com câmera, trilha, voz e legenda."
+    },
+    {
+      "id": "codigo", "type": "media",
+      "media": { "src": "showcase/stock/dev-1.jpg", "focus": { "x": 0.5, "y": 0.5 } },
+      "eyebrow": "Do código", "title": "Motion design [programável]",
+      "camera": "orbit", "transition": "whip",
+      "voice": "Motion design programável, com movimentos de câmera de verdade."
+    },
+    {
+      "id": "edicao", "type": "split",
+      "media": { "src": "showcase/stock/edit-1.jpg", "focus": { "x": 0.5, "y": 0.45 } },
+      "eyebrow": "Para qualquer marca",
+      "title": "Sua identidade em [cada quadro]",
+      "bullets": ["Cores e fontes da marca", "16:9, 9:16, 1:1 e 4:5"],
+      "background": "shapes", "transition": "lift", "camera": "dolly",
+      "voice": "A identidade do cliente em cada quadro, em qualquer formato."
+    },
+    {
+      "id": "sistema", "type": "screen",
+      "src": "cms/p02-portal-inicio.png", "device": "browser",
+      "focus": { "x": 0.05, "y": 0.12, "w": 0.5, "h": 0.4 },
+      "eyebrow": "Demonstração de produto", "title": "Telas com [zoom no detalhe]",
+      "background": "mesh", "transition": "dive",
+      "voice": "Demonstrações de sistema com zoom no detalhe."
+    },
+    {
+      "id": "mobile", "type": "screen",
+      "src": "cms/a25-admin-indicadores.png", "device": "phone", "pan": true,
+      "title": "E rolagem em [telas longas]",
+      "background": "particles", "transition": "flip",
+      "voice": "E rolagem suave em telas longas."
+    },
+    {
+      "id": "case", "type": "media",
+      "media": { "src": "showcase/clips/fala.mp4", "muted": false, "captions": "showcase/clips/fala.{lang}.captions.json" },
+      "eyebrow": "Case Mais Sabor", "position": "top",
+      "camera": "handheld", "transition": "wipe", "duration": 7
+    },
+    {
+      "id": "produtos", "type": "gallery", "layout": "carousel",
+      "eyebrow": "Fotos do cliente ou de banco", "title": "Galerias em [movimento]",
+      "items": ["mais-sabor/img/porcao_coxinha.jpg", "mais-sabor/img/porcao_kibe.jpg", "mais-sabor/img/porcao-enrolado-salsicha.jpg", "mais-sabor/img/porcao-pao-de-queijo.jpg", "acai-promo/stock/acai-bowl-1.jpg"],
+      "transition": "zoom",
+      "voice": "Galerias em movimento, com fotos do cliente ou de bancos de imagem."
+    },
+    {
+      "id": "numeros", "type": "stats",
+      "title": "Feito para [escalar]",
+      "items": [
+        { "value": 11, "label": "tipos de cena" },
+        { "value": 15, "label": "transições" },
+        { "value": 4, "label": "formatos" },
+        { "value": 2, "label": "idiomas neste vídeo" }
+      ],
+      "background": "particles", "transition": "bands",
+      "voice": "Onze tipos de cena, quinze transições e vários idiomas."
+    },
+    {
+      "id": "recursos", "type": "list", "icon": "number",
+      "eyebrow": "No piloto automático", "title": "O que já vem [pronto]",
+      "items": ["Trilha original no ritmo dos cortes", "Efeitos sonoros sincronizados", "Locução e legendas palavra a palavra", "Tradução e entrega com créditos"],
+      "media": { "src": "showcase/stock/edit-2.jpg" },
+      "transition": "push", "camera": "pull",
+      "voice": "Trilha no ritmo dos cortes, efeitos, locução, legendas e tradução."
+    },
+    {
+      "id": "depoimento", "type": "quote",
+      "text": "O que levava dias de edição agora sai em [minutos], com a cara da marca.",
+      "author": "Cliente satisfeito", "role": "Exemplo de cena de depoimento",
+      "avatar": "cms/pessoas/pessoa-retrato.jpg",
+      "background": "gradient", "transition": "leak",
+      "voice": "O que levava dias agora sai em minutos."
+    },
+    {
+      "id": "contato", "type": "cta",
+      "title": "Bora fazer o [seu vídeo]?",
+      "button": "marcuswd.dev",
+      "contact": [{ "kind": "site", "value": "marcuswd.dev" }, { "kind": "email", "value": "marcus@marcuswd.dev" }],
+      "transition": "iris",
+      "voice": "Bora fazer o seu vídeo? Fale comigo."
+    },
+    {
+      "id": "assinatura", "type": "logo",
+      "tagline": "Desenvolvimento e motion por código",
+      "background": "aurora", "transition": "bubble"
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "$schema": "../../schemas/job.schema.json",
+  "slug": "cms-tis-comercial",
+  "title": "CMS TIS: vídeo comercial",
+  "client": "tis",
+  "brand": "tis",
+  "lang": "pt-AO",
+  "formats": [
+    "16:9"
+  ],
+  "pace": "normal",
+  "music": {
+    "mode": "generate",
+    "mood": "corporate",
+    "bpm": 120
+  },
+  "voice": {
+    "provider": "none"
+  },
+  "captions": {
+    "mode": "none"
+  },
+  "overlays": {
+    "logo": "none",
+    "grain": true,
+    "vignette": true,
+    "progress": false
+  },
+  "scenes": [
+    {
+      "id": "abertura",
+      "type": "cover",
+      "duration": 5,
+      "logo": true,
+      "eyebrow": "CMS TIS",
+      "title": "O portal da sua instituição, [sob o seu controlo]",
+      "background": "aurora",
+      "camera": "dolly",
+      "transition": "fade",
+      "sfx": "impact"
+    },
+    {
+      "id": "escopo-frase",
+      "type": "statement",
+      "duration": 4,
+      "text": "Cada unidade vê [só o que é seu]",
+      "background": "grid",
+      "camera": "in",
+      "transition": "lift",
+      "sfx": "whoosh-soft"
+    },
+    {
+      "id": "painel",
+      "type": "screen",
+      "duration": 5,
+      "src": "cms-tis-comercial/img/painel-1440.png",
+      "device": "browser",
+      "camera": "push",
+      "eyebrow": "O painel",
+      "title": "Tudo à mão, [num só sítio]",
+      "text": "Notícias, eventos, contas e novidades",
+      "transition": "dive",
+      "background": "gradient",
+      "sfx": "whoosh"
+    },
+    {
+      "id": "escopo",
+      "type": "list",
+      "duration": 6,
+      "eyebrow": "Segurança",
+      "title": "Escopo por zona que [falha fechado]",
+      "items": [
+        "Cada zona lê e edita só o que é seu",
+        "Sem decisão de zona, não há acesso",
+        "Perfis definidos em código e revistos"
+      ],
+      "icon": "check",
+      "camera": "static",
+      "transition": "bands",
+      "background": "grid",
+      "sfx": "pop-soft"
+    },
+    {
+      "id": "fluxos",
+      "type": "screen",
+      "duration": 5,
+      "src": "cms-tis-comercial/img/fluxos-aprovacao-1440.png",
+      "device": "browser",
+      "eyebrow": "Governação",
+      "title": "Fluxos de [aprovação]",
+      "text": "Quem escreve pede, quem decide publica",
+      "camera": "left",
+      "transition": "push",
+      "background": "gradient",
+      "sfx": "swoosh"
+    },
+    {
+      "id": "auditoria",
+      "type": "screen",
+      "duration": 5,
+      "src": "cms-tis-comercial/img/auditoria-1440.png",
+      "device": "browser",
+      "eyebrow": "Transparência",
+      "title": "Trilha de [auditoria] completa",
+      "text": "Quando, quem, acção e registo",
+      "camera": "right",
+      "transition": "wipe",
+      "background": "gradient",
+      "sfx": "swoosh"
+    },
+    {
+      "id": "publicacao",
+      "type": "list",
+      "duration": 6,
+      "eyebrow": "Conteúdo",
+      "title": "Do rascunho à [publicação agendada]",
+      "items": [
+        "Rascunho, à espera, agendada, publicada",
+        "Histórico de versões com comparação",
+        "Lixeira com restauro"
+      ],
+      "icon": "number",
+      "camera": "static",
+      "transition": "iris",
+      "background": "shapes",
+      "sfx": "pop-soft"
+    },
+    {
+      "id": "linguas",
+      "type": "screen",
+      "duration": 5,
+      "src": "cms-tis-comercial/img/listagem-noticias-1440.png",
+      "device": "browser",
+      "eyebrow": "Várias línguas",
+      "title": "Cada tradução, [publicada por si]",
+      "text": "Adicione um idioma a partir da original",
+      "camera": "push",
+      "transition": "lift",
+      "background": "gradient",
+      "sfx": "whoosh"
+    },
+    {
+      "id": "acesso",
+      "type": "list",
+      "duration": 6,
+      "eyebrow": "Acesso",
+      "title": "Entrada [única] e segundo passo",
+      "items": [
+        "Entrada com a conta da instituição (OIDC, Keycloak)",
+        "Segundo passo (MFA) com códigos de recuperação",
+        "Política definida por cada instalação"
+      ],
+      "icon": "check",
+      "camera": "static",
+      "transition": "dive",
+      "background": "grid",
+      "sfx": "pop-soft"
+    },
+    {
+      "id": "acessivel",
+      "type": "statement",
+      "duration": 4,
+      "text": "Acessível de raiz: [WCAG 2.2 AA] no portal e no painel",
+      "background": "mesh",
+      "camera": "in",
+      "transition": "bands",
+      "sfx": "hit-soft"
+    },
+    {
+      "id": "instalacao",
+      "type": "screen",
+      "duration": 5,
+      "src": "cms-tis-comercial/img/definicoes-1440.png",
+      "device": "browser",
+      "eyebrow": "Sem amarras",
+      "title": "A instalação é [sua]",
+      "text": "Idiomas, funcionalidades e marca definidos por cliente",
+      "camera": "down",
+      "transition": "push",
+      "background": "gradient",
+      "sfx": "swoosh"
+    },
+    {
+      "id": "modulos",
+      "type": "list",
+      "duration": 6,
+      "eyebrow": "Tudo num só motor",
+      "title": "O que a sua instituição [publica]",
+      "items": [
+        "Notícias, eventos e enquetes",
+        "Newsletter e páginas",
+        "Organograma e agenda de pessoas",
+        "\"A minha conta\" para cada utilizador"
+      ],
+      "icon": "dot",
+      "camera": "static",
+      "transition": "iris",
+      "background": "particles",
+      "sfx": "pop-soft"
+    },
+    {
+      "id": "alternativa",
+      "type": "statement",
+      "duration": 5,
+      "eyebrow": "Uma alternativa a",
+      "text": "SharePoint, Umbraco, Liferay, Directus ou [WordPress]",
+      "align": "left",
+      "background": "grid",
+      "camera": "left",
+      "transition": "lift",
+      "sfx": "whoosh-soft"
+    },
+    {
+      "id": "cta",
+      "type": "cta",
+      "duration": 5,
+      "title": "Vamos pôr o [seu portal] no ar?",
+      "button": "tis.ao",
+      "contact": [
+        {
+          "kind": "site",
+          "value": "tis.ao"
+        }
+      ],
+      "camera": "in",
+      "transition": "dive",
+      "background": "aurora",
+      "sfx": "chime"
+    },
+    {
+      "id": "assinatura",
+      "type": "logo",
+      "duration": 3,
+      "tagline": "Tecnologia ao serviço das instituições",
+      "background": "aurora",
+      "camera": "static",
+      "transition": "fade",
+      "sfx": "impact"
+    }
+  ]
+}
