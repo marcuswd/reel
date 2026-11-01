@@ -1,7 +1,7 @@
 {
   "name": "reel",
   "displayName": "Reel (vídeos MARCUSWD)",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Motor de vídeos em Remotion: um vídeo é um job em JSON na pasta do cliente; câmera, transições, trilha sincronizada, locução, legendas, idiomas e render em qualquer formato.",
   "author": {
     "name": "Marcus Sá",
@@ -75,6 +75,18 @@
       "type": "string",
       "title": "Anthropic",
       "description": "Opcional: tradução automática pela API do Claude. Fica só no .env do motor, nesta máquina.",
+      "sensitive": true
+    },
+    "cf_account_id": {
+      "type": "string",
+      "title": "Cloudflare: Account ID",
+      "description": "Opcional: imagens por IA grátis (pnpm media gen, FLUX schnell). Fica só no .env do motor, nesta máquina.",
+      "sensitive": false
+    },
+    "cf_api_token": {
+      "type": "string",
+      "title": "Cloudflare: API token (Workers AI)",
+      "description": "Opcional: imagens por IA grátis (pnpm media gen). Fica só no .env do motor, nesta máquina.",
       "sensitive": true
     }
   }

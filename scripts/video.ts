@@ -11,16 +11,19 @@
 //   render <pasta> [--lang x|all] [--format x|all] [--draft] [--dest pasta]   entrega em <pasta>/entregas/<data>
 //   plan <pasta> [--lang x]             mostra a timeline (cenas, durações, transições, efeitos)
 //   check <pasta>                       valida job, marca, material, traduções e locução sem renderizar
+//   qc <pasta> [--file x.mp4]           revisa a última entrega (também roda no fim do render)
 //   studio <pasta>                      abre o Studio com o job
 //   doctor                              confere ffmpeg, python, chaves e rede
 import { spawnSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { basename, extname, join, relative, resolve } from "node:path";
 import { FORMATS, type FormatKey, type VideoProps } from "../src/core/schema.ts";
 import { musicBrief } from "../src/core/timeline.ts";
 import { toSrt, toVtt } from "../src/core/srt.ts";
 import { browserExecutable, die, fmtId, has, hash, langId, log, p, parseArgs, python, readJson, run, spawnPlan, today, userPath, writeJson } from "./lib/env.ts";
 import { sheetArgs } from "./lib/sheet.ts";
+import { cube, lutFilter } from "./lib/lut.ts";
+import { parseBlack, parseFrozen, parseLufs, parseSilence, review, samplePoints } from "./lib/qc.ts";
 import { applyI18n, buildFile, extractStrings, i18nFile, langsOf, loadBrand, loadJob, loadVoice, musicFile, planOf, resolveProps, writeIndex, writeResolved } from "./lib/resolve.ts";
 import { checkJob } from "./lib/check.ts";
 import { jobSchema } from "../src/core/schema.ts";
@@ -86,6 +89,8 @@ const build = (slug: string, opts: { music?: boolean } = {}) => {
 };
 
 // ── render ──
+/** WebGL (3D, mapa) precisa do ANGLE no Chromium headless. */
+const GL = { gl: (process.env.REEL_GL ?? (process.platform === "linux" ? "swangle" : "angle")) as "angle" | "swangle" | "egl" | "vulkan" | "swiftshader" };
 const bundleOnce = (() => {
   let url: Promise<string> | null = null;
   return () => {
@@ -109,6 +114,24 @@ const free = (f: string) => {
   for (let i = 2; ; i++) if (!existsSync(`${b}-v${i}${ext}`)) return `${b}-v${i}${ext}`;
 };
 
+/** .cube do look da marca (gerado ou o arquivo próprio), ou null sem look. */
+const lutOf = (props: VideoProps): string | null => {
+  const g = props.brand.grade;
+  if (!g || g === "none") return null;
+  if (typeof g === "object") return fileOf(g.lut);
+  const f = join(ws().dir, "out", `look-${g}.cube`);
+  mkdirSync(join(ws().dir, "out"), { recursive: true });
+  writeFileSync(f, cube(g));
+  return f;
+};
+/** Aplica o look a um vídeo ou imagem (ffmpeg lut3d). */
+const applyLut = (lut: string, input: string, output: string, opts: { draft?: boolean } = {}) => {
+  const video = /\.(mp4|mov|webm)$/i.test(input);
+  run("ffmpeg", ["-y", "-loglevel", "error", "-i", input, "-vf", lutFilter(lut),
+    ...(video ? ["-c:v", "libx264", "-crf", opts.draft ? "28" : "16", "-preset", opts.draft ? "veryfast" : "medium", "-pix_fmt", "yuv420p", "-c:a", "copy", "-movflags", "+faststart"] : ["-frames:v", "1", "-q:v", "2"]),
+    output], { quiet: true });
+};
+
 /** Entrega: --dest <pasta> ou <pasta do job>/entregas, sempre numa subpasta com a data. */
 const outDir = (_props: VideoProps) => resolve(str("dest") ? userPath(str("dest")!) : join(ws().dir, "entregas"), today());
 
@@ -117,7 +140,7 @@ const renderOne = async (props: VideoProps, format: FormatKey) => {
   const serveUrl = await bundleOnce();
   const inputProps = { ...props, format } as unknown as Record<string, unknown>;
   const browser = browserExecutable();
-  const composition = await selectComposition({ serveUrl, id: "Video", inputProps, browserExecutable: browser ?? undefined, logLevel: "error" });
+  const composition = await selectComposition({ serveUrl, id: "Video", inputProps, browserExecutable: browser ?? undefined, logLevel: "error", chromiumOptions: GL });
   const plan = planOf({ ...props, format });
   const name = `${props.job.slug}-${fmtId(format)}-${langId(props.langCode)}`;
   const work = join(ws().dir, "out");
@@ -136,7 +159,8 @@ const renderOne = async (props: VideoProps, format: FormatKey) => {
     crf: draft ? 30 : 18,
     scale: draft ? 0.5 : 1,
     concurrency: str("concurrency") ? Number(str("concurrency")) : null,
-    chromiumOptions: { gl: "angle" },
+    chromiumOptions: GL,
+    timeoutInMilliseconds: 120000,
     logLevel: "error",
     onProgress: ({ progress }) => {
       const pc = Math.floor(progress * 10);
@@ -144,12 +168,20 @@ const renderOne = async (props: VideoProps, format: FormatKey) => {
     },
   });
   process.stdout.write("\n");
+  const lut = has("ffmpeg") ? lutOf(props) : null;
+  if (lut) {
+    log(`look de cor: ${typeof props.brand.grade === "string" ? props.brand.grade : basename(lut)}`);
+    const graded = join(work, `${name}-look.mp4`);
+    applyLut(lut, tmp, graded, { draft });
+    copyFileSync(graded, tmp);
+  }
   // thumbnail: quadro da capa já assentada
   const first = plan.scenes[0];
   const thumbFrame = Math.min(composition.durationInFrames - 1, first.land + Math.round(first.frames * 0.55));
   const thumb = join(work, `${name}-thumb.png`);
-  await renderStill({ composition, serveUrl, output: thumb, frame: thumbFrame, inputProps, browserExecutable: browser ?? undefined, imageFormat: "png", logLevel: "error" });
+  await renderStill({ composition, serveUrl, output: thumb, frame: thumbFrame, inputProps, browserExecutable: browser ?? undefined, imageFormat: "png", logLevel: "error", chromiumOptions: GL, timeoutInMilliseconds: 120000 });
 
+  if (lut) applyLut(lut, thumb, thumb.replace(/\.png$/, "-look.png")), copyFileSync(thumb.replace(/\.png$/, "-look.png"), thumb);
   // exporta
   const dir = outDir(props);
   mkdirSync(dir, { recursive: true });
@@ -169,11 +201,44 @@ const renderOne = async (props: VideoProps, format: FormatKey) => {
   return mp4;
 };
 
-const lufs = (file: string) => {
-  if (!has("ffmpeg")) return undefined;
-  const r = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-i", file, "-af", "ebur128", "-f", "null", "-"], { encoding: "utf8" });
-  const m = (r.stderr as string).match(/I:\s+(-?[\d.]+) LUFS/g);
-  return m?.at(-1);
+// ── QC do vídeo renderizado ──
+/** Confere o mp4: resolução, duração, áudio, tela preta, imagem parada, silêncio, loudness; extrai 4 quadros. */
+const qc = (file: string, props: VideoProps, format: FormatKey, draft = false) => {
+  if (!has("ffmpeg") || !has("ffprobe")) return log("QC: ffmpeg/ffprobe ausentes, pulei");
+  const pr = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration:stream=codec_type,width,height", "-of", "json", file], { encoding: "utf8" });
+  const info = JSON.parse(pr.stdout || "{}") as { format?: { duration?: string }; streams?: { codec_type: string; width?: number; height?: number }[] };
+  const v = info.streams?.find((x) => x.codec_type === "video");
+  const audio = !!info.streams?.some((x) => x.codec_type === "audio");
+  const duration = Number(info.format?.duration ?? 0);
+  const plan = planOf({ ...props, format });
+  const [fw, fh] = FORMATS[format];
+  // rascunho (--draft) sai com metade da resolução; o qc avulso reconhece pelo tamanho
+  const k = draft || (v?.width === Math.round(fw / 2) && v?.height === Math.round(fh / 2)) ? 0.5 : 1;
+  const expectAudio = props.musicSrc !== null || Object.keys(props.voice).length > 0 || (props.job.sfx.enabled && plan.sfx.length > 0);
+  const ff = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-i", file, "-vf", "blackdetect=d=0.4:pix_th=0.08,freezedetect=n=0.002:d=3", ...(audio ? ["-af", "silencedetect=n=-45dB:d=1.5,ebur128"] : ["-an"]), "-f", "null", "-"], { encoding: "utf8" });
+  const err = ff.stderr as string;
+  const r = review({
+    probe: { duration, width: v?.width ?? 0, height: v?.height ?? 0, audio },
+    expect: { duration: plan.total / plan.fps, width: Math.round(fw * k), height: Math.round(fh * k), audio: expectAudio, continuous: props.musicSrc !== null || Object.keys(props.voice).length > 0 },
+    black: parseBlack(err), frozen: parseFrozen(err), silent: parseSilence(err), lufs: audio ? parseLufs(err) : undefined,
+  });
+  // quatro quadros numa folha, para olhar
+  const dir = join(ws().dir, "out", "qc");
+  mkdirSync(dir, { recursive: true });
+  const base = basename(file, extname(file));
+  const shots = samplePoints(duration).map((t, i) => {
+    const out = join(dir, `${base}-${i + 1}.jpg`);
+    run("ffmpeg", ["-y", "-loglevel", "error", "-ss", String(t), "-i", file, "-frames:v", "1", "-vf", `scale=${format === "9:16" ? 270 : 480}:-2`, "-q:v", "3", out], { quiet: true });
+    return out;
+  });
+  const sheet = join(dir, `${base}-qc.jpg`);
+  try { run("ffmpeg", sheetArgs(shots, sheet, { w: format === "9:16" ? 270 : 480, h: Math.round(((format === "9:16" ? 270 : 480) * fh) / fw / 2) * 2, cols: 4 }), { quiet: true }); } catch { /* a folha é só conferência */ }
+  const lufs = audio ? parseLufs(err) : undefined;
+  log(`QC ${basename(file)}: ${duration.toFixed(1)} s · ${v?.width}x${v?.height}${lufs !== undefined ? ` · ${lufs} LUFS` : ""} · quadros em ${sheet}`);
+  for (const p of r.problems) console.log(`  ✗ ${p}`);
+  for (const w of r.warnings) console.log(`  ! ${w}`);
+  if (!r.problems.length && !r.warnings.length) console.log("  ✓ sem problemas");
+  return r;
 };
 
 // ── stills de conferência ──
@@ -188,16 +253,21 @@ const stills = async (slug: string) => {
     const props = readJson<VideoProps>(buildFile(lang));
     for (const format of pickFormats(slug)) {
       const inputProps = { ...props, format } as unknown as Record<string, unknown>;
-      const composition = await selectComposition({ serveUrl, id: "Video", inputProps, browserExecutable: browser, logLevel: "error" });
+      const composition = await selectComposition({ serveUrl, id: "Video", inputProps, browserExecutable: browser, logLevel: "error", chromiumOptions: GL });
       const plan = planOf({ ...props, format });
       for (const s of plan.scenes) {
         const at = str("at") ? Number(str("at")) : 0.7;
         const frame = Math.min(composition.durationInFrames - 1, s.start + Math.round(s.frames * at));
         const out = join(dir, `${fmtId(format)}-${langId(lang)}-${String(s.index + 1).padStart(2, "0")}-${s.id}.jpg`);
-        await renderStill({ composition, serveUrl, output: out, frame, inputProps, browserExecutable: browser, imageFormat: "jpeg", jpegQuality: 80, scale: 0.5, logLevel: "error" });
+        await renderStill({ composition, serveUrl, output: out, frame, inputProps, browserExecutable: browser, imageFormat: "jpeg", jpegQuality: 80, scale: 0.5, logLevel: "error", chromiumOptions: GL, timeoutInMilliseconds: 120000 });
         files.push(out);
       }
     }
+  }
+  // look de cor da marca também nos stills (a folha mostra a cor final)
+  if (has("ffmpeg") && files.length) {
+    const lut = lutOf(readJson<VideoProps>(buildFile(pickLangs(slug)[0])));
+    if (lut) for (const f of files) { applyLut(lut, f, f + ".look.jpg"); copyFileSync(f + ".look.jpg", f); unlinkSync(f + ".look.jpg"); }
   }
   // folha de contato
   if (has("ffmpeg") && files.length) {
@@ -305,6 +375,26 @@ const main = async () => {
       log(`${slug}: ${r.errors.length} erro(s), ${r.warnings.length} aviso(s) · marca ${ws().brandFile}`);
       process.exit(r.errors.length ? 1 : 0);
     }
+    case "qc": {
+      // pnpm video qc <pasta> [--file entregas/<data>/x.mp4]: revisa a última entrega (ou o arquivo dado)
+      const slug = open();
+      let files: string[] = [];
+      if (str("file")) files = [userPath(str("file")!)];
+      else {
+        const root = join(ws().dir, "entregas");
+        const day = existsSync(root) ? readdirSync(root).sort().at(-1) : undefined;
+        if (day) files = readdirSync(join(root, day)).filter((x) => x.endsWith(".mp4")).map((x) => join(root, day, x));
+      }
+      if (!files.length) die("nenhum mp4 em <pasta>/entregas; renderize antes ou passe --file");
+      let bad = 0;
+      for (const f of files) {
+        const m = basename(f).match(/-(\d+x\d+)-([a-z0-9-]+?)(?:-v\d+)?\.mp4$/);
+        const format = (m ? m[1].replace("x", ":") : loadJob().formats[0]) as FormatKey;
+        const lang = m ? (langsOf(loadJob()).find((l) => langId(l) === m[2]) ?? loadJob().lang) : loadJob().lang;
+        bad += qc(f, readJson<VideoProps>(buildFile(lang)), format)?.problems.length ?? 0;
+      }
+      process.exit(bad ? 1 : 0);
+    }
     case "studio": {
       const slug = open();
       build(slug);
@@ -384,7 +474,9 @@ const main = async () => {
       const all = build(slug);
       const done: string[] = [];
       for (const lang of pickLangs(slug)) for (const format of pickFormats(slug)) done.push(await renderOne(all[lang], format));
-      for (const f of done) { const l = lufs(f); if (l) log(`${basename(f)}: ${l}`); }
+      let bad = 0;
+      for (const [i, f] of done.entries()) bad += qc(f, all[pickLangs(slug)[Math.floor(i / pickFormats(slug).length)]], pickFormats(slug)[i % pickFormats(slug).length], opt.draft === true)?.problems.length ?? 0;
+      if (bad) die(`QC encontrou ${bad} problema(s): confira antes de entregar`);
       break;
     }
     case "doctor": {
@@ -393,7 +485,7 @@ const main = async () => {
       break;
     }
     default:
-      console.log(readFileSync(new URL(import.meta.url), "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 16).map((l) => l.slice(3)).join("\n"));
+      console.log(readFileSync(new URL(import.meta.url), "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 17).map((l) => l.slice(3)).join("\n"));
   }
 };
 

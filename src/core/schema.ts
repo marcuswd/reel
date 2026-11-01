@@ -58,6 +58,8 @@ export const brandSchema = z.object({
     })
     .default({ energy: "normal", transitions: [] }),
   audio: z.object({ mood: z.string().default("corporate"), bpm: z.number().default(110) }).default({ mood: "corporate", bpm: 110 }),
+  /** look de cor aplicado no render (LUT 3D): pronto ou um .cube próprio ao lado do brand.json */
+  grade: z.union([z.enum(["none", "warm", "cool", "teal-orange", "film", "mono"]), z.object({ lut: z.string() })]).optional(),
   contact: z
     .object({ whatsapp: z.string().optional(), phone: z.string().optional(), site: z.string().optional(), instagram: z.string().optional(), email: z.string().optional() })
     .default({}),
@@ -85,6 +87,7 @@ export const CAMERA_MOVES = [
 ] as const;
 export const TRANSITIONS = [
   "auto", "none", "fade", "slide", "push", "wipe", "zoom", "whip", "lift", "dive", "iris", "bands", "bubble", "leak", "glitch", "flip",
+  "rgb", "zoomblur", "pixelate", "clock", "checker",
 ] as const;
 export const BACKGROUNDS = ["auto", "solid", "gradient", "mesh", "particles", "grid", "shapes", "aurora"] as const;
 
@@ -121,6 +124,16 @@ export const sceneSchema = z.discriminatedUnion("type", [
   z.object({ ...base, type: z.literal("quote"), text: z.string(), author: z.string(), role: z.string().optional(), avatar: z.string().optional() }),
   z.object({ ...base, type: z.literal("cta"), eyebrow: z.string().optional(), title: z.string(), text: z.string().optional(), button: z.string().optional(), contact: z.array(z.object({ kind: z.enum(["whatsapp", "phone", "site", "instagram", "email"]), value: z.string() })).optional(), logo: z.boolean().optional() }),
   z.object({ ...base, type: z.literal("logo"), tagline: z.string().optional() }),
+  // gráfico animado a partir de dados do job
+  z.object({ ...base, type: z.literal("chart"), eyebrow: z.string().optional(), title: z.string().optional(), kind: z.enum(["bar", "column", "line", "donut"]).optional(), items: z.array(z.object({ label: z.string(), value: z.number() })).min(1), prefix: z.string().optional(), suffix: z.string().optional(), decimals: z.number().optional() }),
+  // tipografia cinética: palavra a palavra no tempo da música
+  z.object({ ...base, type: z.literal("kinetic"), text: z.string(), style: z.enum(["pop", "stack", "slide"]).optional() }),
+  // animação Lottie (.json local ou URL; LottieFiles grátis permite uso comercial)
+  z.object({ ...base, type: z.literal("lottie"), src: z.string(), eyebrow: z.string().optional(), title: z.string().optional(), text: z.string().optional(), loop: z.boolean().optional(), speed: z.number().optional() }),
+  // objeto 3D (Three.js) com a imagem como textura; "logo" extruda o SVG da marca
+  z.object({ ...base, type: z.literal("object3d"), object: z.enum(["card", "phone", "box", "logo"]).optional(), media: z.string().optional(), eyebrow: z.string().optional(), title: z.string().optional(), text: z.string().optional() }),
+  // mapa (MapLibre + OpenFreeMap, sem chave) com marcadores e rota animada
+  z.object({ ...base, type: z.literal("map"), points: z.array(z.object({ lat: z.number(), lng: z.number(), label: z.string().optional() })).min(1), route: z.boolean().optional(), zoom: z.number().optional(), eyebrow: z.string().optional(), title: z.string().optional() }),
 ]);
 export type Scene = z.infer<typeof sceneSchema>;
 export type SceneType = Scene["type"];
@@ -151,7 +164,7 @@ export const jobSchema = z.object({
     .default({ mode: "generate", volume: 0.9 }),
   sfx: z.object({ enabled: z.boolean().default(true), pack: z.string().default("_lib/sfx"), volume: z.number().default(1) }).default({ enabled: true, pack: "_lib/sfx", volume: 1 }),
   voice: z
-    .object({ provider: z.enum(["none", "elevenlabs", "openai", "piper"]).default("none"), voiceId: z.string().optional(), volume: z.number().default(1) })
+    .object({ provider: z.enum(["none", "elevenlabs", "openai", "piper", "kokoro"]).default("none"), voiceId: z.string().optional(), volume: z.number().default(1) })
     .default({ provider: "none", volume: 1 }),
   captions: z
     .object({

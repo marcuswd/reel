@@ -39,6 +39,8 @@ export const extractStrings = (job: Job) => {
     for (const k of TEXT_KEYS) if (typeof r[k] === "string" && (r[k] as string).trim()) out[`${s.id}.${k}`] = r[k] as string;
     if (s.type === "list") s.items.forEach((t, i) => (out[`${s.id}.items.${i}`] = t));
     if (s.type === "split") (s.bullets ?? []).forEach((t, i) => (out[`${s.id}.bullets.${i}`] = t));
+    if (s.type === "chart") s.items.forEach((it, i) => (out[`${s.id}.items.${i}.label`] = it.label));
+    if (s.type === "map") s.points.forEach((pt, i) => pt.label && (out[`${s.id}.points.${i}.label`] = pt.label));
     if (s.type === "stats")
       s.items.forEach((it, i) => {
         out[`${s.id}.items.${i}.label`] = it.label;

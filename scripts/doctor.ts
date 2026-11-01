@@ -13,6 +13,8 @@ export const doctor = async () => {
   console.log(`  ${ok(deps.stdout?.includes("ok"))} ${py} + numpy + scipy (trilha e efeitos gerados)  → pip install numpy scipy`);
   const piper = spawnSync(py, ["-c", "import piper; print('ok')"], { encoding: "utf8" });
   console.log(`  ${ok(piper.stdout?.includes("ok"))} piper-tts (locução local)  → pip install piper-tts`);
+  const kokoro = spawnSync(py, ["-c", "import kokoro_onnx, soundfile; print('ok')"], { encoding: "utf8" });
+  console.log(`  ${ok(kokoro.stdout?.includes("ok"))} kokoro-onnx (locução local mais natural)  → pip install kokoro-onnx soundfile`);
   console.log(`  ${ok(existsSync(p("public", "_lib", "sfx", "whoosh.mp3")))} pack de efeitos (public/_lib/sfx)  → pnpm sfx`);
   const b = browserExecutable();
   console.log(`  ✓ navegador de render: ${b ?? "Chrome Headless Shell do Remotion (baixa sozinho)"}`);
@@ -27,6 +29,8 @@ export const doctor = async () => {
     ["ELEVENLABS_API_KEY", "locução premium (ElevenLabs)"],
     ["OPENAI_API_KEY", "locução/tradução (OpenAI)"],
     ["DEEPL_API_KEY", "tradução (DeepL)"],
+    ["CF_ACCOUNT_ID", "imagens por IA (Cloudflare, grátis)"],
+    ["CF_API_TOKEN", "imagens por IA (Cloudflare, grátis)"],
     ["ANTHROPIC_API_KEY", "tradução (Claude)"],
   ];
   for (const [k, d] of keys) console.log(`  ${ok(!!process.env[k])} ${k.padEnd(20)} ${d}`);

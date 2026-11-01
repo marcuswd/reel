@@ -42,6 +42,8 @@ export const jobMedia = (job: Job): { field: string; path: string }[] => {
     if (s.type === "screen") out.push({ field: `${f}.src`, path: s.src });
     if (s.type === "gallery") s.items.forEach((m, k) => media(`${f}.items.${k}`, m));
     if (s.type === "quote" && s.avatar) out.push({ field: `${f}.avatar`, path: s.avatar });
+    if (s.type === "lottie") out.push({ field: `${f}.src`, path: s.src });
+    if (s.type === "object3d" && s.media) out.push({ field: `${f}.media`, path: s.media });
   });
   return out;
 };
@@ -50,6 +52,7 @@ export const jobMedia = (job: Job): { field: string; path: string }[] => {
 export const brandMedia = (b: Brand) => [
   ...(["heading", "body"] as const).flatMap((r) => Object.entries(b.fonts[r].files).map(([w, path]) => ({ field: `fonts.${r}.files.${w}`, path }))),
   ...(["light", "dark", "mark"] as const).flatMap((k) => (b.logo[k] ? [{ field: `logo.${k}`, path: b.logo[k]! }] : [])),
+  ...(typeof b.grade === "object" ? [{ field: "grade.lut", path: b.grade.lut }] : []),
 ];
 
 export const checkJob = (rawJob: unknown, rawBrand: unknown, disk: Disk, slug: string): Report => {
@@ -81,6 +84,16 @@ export const checkJob = (rawJob: unknown, rawBrand: unknown, disk: Disk, slug: s
       if (!inJob(job.sfx.pack)) errors.push(`job.json: sfx.pack: pasta não encontrada: ${job.sfx.pack}`);
       else job.scenes.forEach((s, i) => s.sfx && !inJob(`${job.sfx.pack}/${s.sfx}.mp3`) && errors.push(`job.json: scenes.${i} (${s.id}).sfx: efeito não encontrado: ${job.sfx.pack}/${s.sfx}.mp3`));
     }
+    // cara de slideshow (ideia do OpenMontage): texto atrás de texto, pouca imagem ou movimento
+    const textOnly = (sc: Job["scenes"][number]) =>
+      (sc.type === "statement" || sc.type === "list" || sc.type === "quote" || (sc.type === "cover" && !sc.media)) &&
+      !(sc.background && typeof sc.background === "object" && "media" in sc.background && sc.background.media);
+    let run: string[] = [];
+    const flush = () => { if (run.length >= 3) warnings.push(`cara de slideshow: ${run.length} cenas seguidas só de texto (${run.join(", ")}); intercale mídia, gráfico, 3D, mapa, Lottie ou tipografia cinética`); run = []; };
+    for (const sc of job.scenes) { if (textOnly(sc)) run.push(sc.id); else flush(); }
+    flush();
+    const visual = job.scenes.filter((sc) => !textOnly(sc) && sc.type !== "cta" && sc.type !== "logo").length;
+    if (job.scenes.length >= 5 && visual / job.scenes.length < 0.3) warnings.push(`cara de slideshow: só ${visual} de ${job.scenes.length} cenas têm visual além de texto`);
     // idiomas e locução: avisos (o build usa o original e segue sem a fala)
     for (const lang of langs) {
       if (lang !== job.lang) {

@@ -5,6 +5,8 @@
 //   piper       local e grátis. Baixa a voz do HuggingFace na 1ª vez (.cache/piper). Requer `pip install piper-tts`.
 //   elevenlabs  ELEVENLABS_API_KEY (+ ELEVENLABS_VOICE_ID opcional). Melhor qualidade; tempos exatos por palavra.
 //   openai      OPENAI_API_KEY. Voz "alloy" por padrão (job.voice.voiceId muda).
+//   kokoro      local e grátis, mais natural que o Piper. Requer `pip install kokoro-onnx soundfile`; baixa o
+//               modelo (~120 MB) na 1ª vez para .cache/kokoro. pt-BR: pf_dora (padrão), pm_alex, pm_santa.
 // Sem tempos exatos, as palavras são distribuídas pela duração da fala (sílabas e pausas).
 import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
@@ -26,6 +28,12 @@ const PIPER_VOICES: Record<string, string> = {
   de: "de_DE-thorsten-medium",
 };
 const OPENAI_DEFAULT = "alloy";
+// Kokoro: voz e código de idioma por língua (pt-PT e pt-AO caem na voz brasileira; para eles o Piper soa mais certo)
+const KOKORO: Record<string, [voice: string, lang: string]> = {
+  pt: ["pf_dora", "pt-br"], en: ["af_heart", "en-us"], "en-gb": ["bf_emma", "en-gb"], es: ["ef_dora", "es"], fr: ["ff_siwis", "fr-fr"], it: ["if_sara", "it"],
+};
+const KOKORO_FILES = ["kokoro-v1.0.int8.onnx", "voices-v1.0.bin"];
+const KOKORO_URL = "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/";
 const ELEVEN_DEFAULT = "21m00Tcm4TlvDq8ikWAM"; // Rachel (multilíngue)
 
 /** voiceId pode ser string ou "pt-BR=xxx,en=yyy" */
@@ -89,6 +97,26 @@ const piper = async (text: string, lang: string, job: Job, wav: string) => {
   return null;
 };
 
+const kokoro = async (text: string, lang: string, job: Job, wav: string) => {
+  const id = langId(lang);
+  const [defVoice, kLang] = KOKORO[id] ?? KOKORO[id.split("-")[0]] ?? KOKORO.en;
+  if (/^pt-(pt|ao)$/.test(id)) log(`${lang}: o Kokoro só tem português do Brasil; para ${lang} prefira o Piper (pt_PT-tugão)`);
+  const cache = p(".cache", "kokoro");
+  mkdirSync(cache, { recursive: true });
+  for (const f of KOKORO_FILES) {
+    if (existsSync(`${cache}/${f}`)) continue;
+    log(`baixando ${f} (1ª vez)…`);
+    const r = await fetch(KOKORO_URL + f);
+    if (!r.ok) die(`Kokoro: download de ${f} falhou (${r.status})`);
+    writeFileSync(`${cache}/${f}`, Buffer.from(await r.arrayBuffer()));
+  }
+  const txt = `${wav}.txt`;
+  writeFileSync(txt, text);
+  run(python(), [p("scripts", "kokoro_tts.py"), `${cache}/${KOKORO_FILES[0]}`, `${cache}/${KOKORO_FILES[1]}`, voiceFor(job, lang, defVoice), kLang, process.env.KOKORO_SPEED ?? "1.0", txt, wav], { quiet: true });
+  unlinkSync(txt);
+  return null;
+};
+
 const elevenlabs = async (text: string, lang: string, job: Job, out: string): Promise<CaptionItem[] | null> => {
   const key = process.env.ELEVENLABS_API_KEY ?? die("ELEVENLABS_API_KEY não definida no .env");
   const voice = voiceFor(job, lang, process.env.ELEVENLABS_VOICE_ID ?? ELEVEN_DEFAULT);
@@ -134,7 +162,7 @@ const openai = async (text: string, lang: string, job: Job, out: string) => {
 
 export const generateVoice = async (slug: string, lang: string, force = false) => {
   const base = loadJob();
-  if (base.voice.provider === "none") die(`job sem locução: defina "voice": { "provider": "piper" } (ou elevenlabs/openai) no job.json`);
+  if (base.voice.provider === "none") die(`job sem locução: defina "voice": { "provider": "piper" } (ou kokoro/elevenlabs/openai) no job.json`);
   const { job } = applyI18n(base, lang);
   const dir = voiceDir(slug, lang);
   mkdirSync(dir, { recursive: true });
@@ -152,6 +180,7 @@ export const generateVoice = async (slug: string, lang: string, force = false) =
     if (job.voice.provider === "piper") words = await piper(text, lang, job, raw + ".wav");
     if (job.voice.provider === "elevenlabs") words = await elevenlabs(text, lang, job, raw + ".wav");
     if (job.voice.provider === "openai") words = await openai(text, lang, job, raw + ".wav");
+    if (job.voice.provider === "kokoro") words = await kokoro(text, lang, job, raw + ".wav");
     const sec = job.voice.provider === "elevenlabs" ? (run("ffmpeg", ["-y", "-loglevel", "error", "-i", raw + ".wav", "-af", "loudnorm=I=-16:TP=-1.5", "-ar", "48000", "-ac", "1", "-b:a", "160k", fileOf(rel)], { quiet: true }), seconds(fileOf(rel))) : finish(raw + ".wav", fileOf(rel));
     unlinkSync(raw + ".wav");
     manifest[s.id] = { key, src: rel, seconds: sec, words: words ?? estimateWords(text, sec) };

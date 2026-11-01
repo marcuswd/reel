@@ -1,6 +1,9 @@
 // Banco de fotos e vídeos para composições genéricas.
 //   pnpm media search --type photo|video --q "acai bowl" [--orientation portrait|landscape|square] [--source all|pixabay|unsplash|pexels|openverse] [--limit 8] [--sheet]
 //   pnpm media get --source pixabay --id 123 --type photo|video --out <pasta do job>/stock/<nome>.jpg
+//   pnpm media gen --prompt "fundo abstrato de ondas" --out <pasta do job>/img/fundo.jpg [--variants 4] [--style "3d render"]
+//                  imagem por IA (FLUX schnell no Cloudflare, grátis; CF_ACCOUNT_ID e CF_API_TOKEN). Usa a paleta do
+//                  brand.json mais próximo (ou --brand <pasta>). Nunca pessoas: só fundos, objetos e ilustrações.
 //
 // Chaves no .env: PIXABAY_API_KEY (fotos e vídeos), UNSPLASH_ACCESS_KEY (fotos), PEXELS_API_KEY (fotos e vídeos).
 // Openverse não precisa de chave (fotos CC0/CC-BY). Licenças aceitas: Pixabay, Unsplash, Pexels, CC0, CC-BY.
@@ -10,6 +13,7 @@ import { appendFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { die, has, log, p, parseArgs, readJson, run, userPath, writeJson } from "./lib/env.ts";
 import { sheetArgs } from "./lib/sheet.ts";
+import { buildPrompt, genImage, genRequest, variantNames, type GenBrand } from "./lib/gen.ts";
 
 type Item = {
   source: string;
@@ -208,9 +212,50 @@ const get = async () => {
   log(`ok → ${out} (${it.w}x${it.h}, ${it.author} / ${label})`);
 };
 
+// ── imagem por IA ──
+const findBrand = (from: string): string | undefined => {
+  for (let d = from, i = 0; i < 4; i++, d = dirname(d)) if (existsSync(join(d, "brand.json"))) return join(d, "brand.json");
+  return undefined;
+};
+const gen = async () => {
+  const prompt = s("prompt") ?? die('--prompt "o que gerar" (sem pessoas: fundos, objetos, texturas, ilustrações)');
+  const out = userPath(s("out") ?? die("--out <pasta do job>/img/<nome>.jpg"));
+  const account = process.env.CF_ACCOUNT_ID ?? die("CF_ACCOUNT_ID não definida (conta grátis em dash.cloudflare.com > AI > Workers AI)");
+  const token = process.env.CF_API_TOKEN ?? die("CF_API_TOKEN não definida (token com permissão Workers AI)");
+  const brandFile = s("brand") ? userPath(s("brand")!.endsWith(".json") ? s("brand")! : join(s("brand")!, "brand.json")) : findBrand(dirname(out));
+  const brand = brandFile && existsSync(brandFile) ? readJson<GenBrand>(brandFile) : undefined;
+  const full = buildPrompt(prompt, { brand, style: s("style") });
+  const n = Math.max(1, Math.min(8, Number(s("variants") ?? 1)));
+  const base = Number(s("seed") ?? Math.floor(Math.random() * 1e6));
+  log(`gerando ${n} imagem(ns)${brand ? ` com a paleta de ${brandFile}` : ""}…`);
+  const files = variantNames(out, n);
+  mkdirSync(dirname(out), { recursive: true });
+  for (const [i, f] of files.entries()) {
+    const { url, init } = genRequest(account, token, full, { steps: Number(s("steps") ?? 4), seed: base + i });
+    const r = await fetch(url, init);
+    const body = await r.json().catch(() => ({}));
+    if (!r.ok) die(`Cloudflare ${r.status}: ${(body as { errors?: { message: string }[] }).errors?.map((e) => e.message).join("; ") ?? ""}`);
+    writeFileSync(f, genImage(body));
+    appendFileSync(join(dirname(f), "CREDITS.md"), `- ${f.split(/[\\/]/).pop()}: imagem gerada por IA (FLUX.1 schnell, Apache 2.0, Cloudflare Workers AI), seed ${base + i}: "${prompt}"\n`);
+    log(`ok → ${f}`);
+  }
+  if (n > 1 && has("ffmpeg")) {
+    const sheet = out.replace(/(\.[a-z0-9]+)?$/i, "-opcoes.jpg");
+    const font = process.platform === "win32" ? "" : ":fontcolor=white:fontsize=40:box=1:boxcolor=black@0.6:x=12:y=12";
+    try {
+      run("ffmpeg", sheetArgs(files, sheet, { w: 400, h: 400, cols: 4, cover: true, cell: (i) => `drawtext=text='${i + 1}'${font}` }), { quiet: true });
+    } catch {
+      // sem fonte para o número (drawtext): a folha sai sem numeração, na mesma ordem dos arquivos
+      run("ffmpeg", sheetArgs(files, sheet, { w: 400, h: 400, cols: 4, cover: true }), { quiet: true });
+    }
+    log(`opções lado a lado → ${sheet} (escolha uma e apague as outras)`);
+  }
+};
+
 const main = async () => {
   if (pos[0] === "search") { pos.shift(); return search(); }
   if (pos[0] === "get") return get();
-  console.log("uso: pnpm media search --type photo|video --q \"termo\" [--orientation portrait] [--sheet]\n     pnpm media get --source pixabay --id 123 --out public/<slug>/stock/nome.jpg");
+  if (pos[0] === "gen") return gen();
+  console.log("uso: pnpm media search --type photo|video --q \"termo\" [--orientation portrait] [--sheet]\n     pnpm media get --source pixabay --id 123 --out <pasta do job>/stock/nome.jpg\n     pnpm media gen --prompt \"fundo abstrato\" --out <pasta do job>/img/fundo.jpg [--variants 4]");
 };
 main().catch((e) => { console.error(e); process.exit(1); });

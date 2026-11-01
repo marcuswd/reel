@@ -2,6 +2,7 @@ import type { TransitionPresentation, TransitionPresentationComponentProps } fro
 import { fade } from "@remotion/transitions/fade";
 import { flip } from "@remotion/transitions/flip";
 import { slide } from "@remotion/transitions/slide";
+import { clockWipe } from "@remotion/transitions/clock-wipe";
 import { wipe } from "@remotion/transitions/wipe";
 import React from "react";
 import { AbsoluteFill, interpolate, random } from "remotion";
@@ -9,7 +10,7 @@ import { clamp, hexA, io } from "./context";
 import type { Brand } from "./schema";
 import type { Transition } from "./timeline";
 
-type P = { colors: string[]; seed: number };
+type P = { colors: string[]; seed: number; w: number; h: number };
 type Comp = React.FC<TransitionPresentationComponentProps<P>>;
 const make = (component: Comp, props: P): TransitionPresentation<P> => ({ component, props });
 
@@ -159,9 +160,104 @@ const Glitch: Comp = ({ children, presentationDirection, presentationProgress, p
   );
 };
 
+/** Separação RGB: os três canais se afastam e voltam no corte (choque digital). */
+const CHANNELS = ["1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0", "0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0", "0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0"];
+const Rgb: Comp = ({ children, presentationDirection, presentationProgress, passedProps }) => {
+  const p = presentationProgress;
+  const show = presentationDirection === "exiting" ? p < 0.5 : p >= 0.5;
+  const k = Math.sin(Math.PI * p);
+  const id = `rgb${passedProps.seed}${presentationDirection[0]}`;
+  if (!show) return <AbsoluteFill style={{ opacity: 0 }}>{children}</AbsoluteFill>;
+  if (k < 0.03) return <AbsoluteFill>{children}</AbsoluteFill>;
+  return (
+    <AbsoluteFill style={{ background: "#000", scale: String(1 + 0.04 * k) }}>
+      <svg width={0} height={0} style={{ position: "absolute" }}>
+        <defs>
+          {CHANNELS.map((m, i) => (
+            <filter key={i} id={`${id}-${i}`} colorInterpolationFilters="sRGB">
+              <feColorMatrix type="matrix" values={m} />
+            </filter>
+          ))}
+        </defs>
+      </svg>
+      {[-1, 0, 1].map((d, i) => (
+        <AbsoluteFill key={i} style={{ filter: `url(#${id}-${i})`, mixBlendMode: i ? "screen" : "normal", translate: `${d * 0.025 * passedProps.w * k}px ${-d * 0.006 * passedProps.h * k}px` }}>
+          {children}
+        </AbsoluteFill>
+      ))}
+    </AbsoluteFill>
+  );
+};
+
+/** Zoom com desfoque radial: camadas cada vez maiores e mais transparentes, corte no pico. */
+const ZoomBlur: Comp = ({ children, presentationDirection, presentationProgress }) => {
+  const p = presentationProgress;
+  const show = presentationDirection === "exiting" ? p < 0.5 : p >= 0.5;
+  const k = Math.sin(Math.PI * p);
+  const base = presentationDirection === "exiting" ? 1 + 0.25 * io(p) : 1 + 0.25 * (1 - io(p));
+  const layers = k < 0.05 ? 1 : 6;
+  return (
+    <AbsoluteFill style={{ opacity: show ? 1 : 0 }}>
+      {new Array(layers).fill(0).map((_, i) => (
+        <AbsoluteFill key={i} style={{ scale: String(base + i * 0.06 * k), opacity: i ? 0.45 / i : 1, filter: i ? `blur(${2 + i * 2 * k}px)` : undefined }}>
+          {children}
+        </AbsoluteFill>
+      ))}
+    </AbsoluteFill>
+  );
+};
+
+/** Pixelização: a imagem vira blocos cada vez maiores, troca e volta a definir. */
+const Pixelate: Comp = ({ children, presentationDirection, presentationProgress, passedProps }) => {
+  const p = presentationProgress;
+  const show = presentationDirection === "exiting" ? p < 0.5 : p >= 0.5;
+  const b = Math.max(1, Math.round((Math.sin(Math.PI * p) * passedProps.w) / 24 / 2) * 2);
+  const id = `px${passedProps.seed}${presentationDirection[0]}${b}`;
+  if (!show) return <AbsoluteFill style={{ opacity: 0 }}>{children}</AbsoluteFill>;
+  if (b < 3) return <AbsoluteFill>{children}</AbsoluteFill>;
+  return (
+    <AbsoluteFill>
+      <svg width={0} height={0} style={{ position: "absolute" }}>
+        <defs>
+          <filter id={id} x="0" y="0" width="100%" height="100%">
+            <feFlood x={b / 2 - 1} y={b / 2 - 1} width="2" height="2" />
+            <feComposite width={b} height={b} />
+            <feTile result="grid" />
+            <feComposite in="SourceGraphic" in2="grid" operator="in" />
+            <feMorphology operator="dilate" radius={b / 2} />
+          </filter>
+        </defs>
+      </svg>
+      <AbsoluteFill style={{ filter: `url(#${id})` }}>{children}</AbsoluteFill>
+    </AbsoluteFill>
+  );
+};
+
+/** Tabuleiro: a cena nova aparece em quadrados que crescem na diagonal. */
+const Checker: Comp = ({ children, presentationDirection, presentationProgress, passedProps }) => {
+  if (presentationDirection === "exiting") return <AbsoluteFill>{children}</AbsoluteFill>;
+  const { w, h } = passedProps;
+  const cols = w >= h ? 10 : 6;
+  const tile = w / cols;
+  const rows = Math.ceil(h / tile);
+  const p = presentationProgress;
+  let d = "";
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++) {
+      const delay = ((r + c) / (rows + cols - 2)) * 0.6;
+      const s = Math.min(1, Math.max(0, (p - delay) / 0.4));
+      if (s <= 0) continue;
+      const half = (tile * s) / 2 + 0.5;
+      const cx = c * tile + tile / 2;
+      const cy = r * tile + tile / 2;
+      d += `M${cx - half},${cy - half}h${half * 2}v${half * 2}h${-half * 2}Z`;
+    }
+  return <AbsoluteFill style={{ clipPath: p >= 1 ? undefined : `path("${d || "M0,0Z"}")` }}>{children}</AbsoluteFill>;
+};
+
 /** Transição (apresentação) a partir do nome, nas cores da marca. */
-export const presentation = (name: Transition, brand: Brand, seed: number): TransitionPresentation<Record<string, unknown>> => {
-  const props: P = { colors: [brand.colors.primary, ...brand.colors.palette], seed };
+export const presentation = (name: Transition, brand: Brand, seed: number, size: { width: number; height: number } = { width: 1920, height: 1080 }): TransitionPresentation<Record<string, unknown>> => {
+  const props: P = { colors: [brand.colors.primary, ...brand.colors.palette], seed, w: size.width, h: size.height };
   const any = <T extends Record<string, unknown>>(x: TransitionPresentation<T>) => x as unknown as TransitionPresentation<Record<string, unknown>>;
   switch (name) {
     case "fade": return any(fade());
@@ -178,6 +274,11 @@ export const presentation = (name: Transition, brand: Brand, seed: number): Tran
     case "bubble": return any(make(Bubble, props));
     case "leak": return any(make(Leak, props));
     case "glitch": return any(make(Glitch, props));
+    case "rgb": return any(make(Rgb, props));
+    case "zoomblur": return any(make(ZoomBlur, props));
+    case "pixelate": return any(make(Pixelate, props));
+    case "checker": return any(make(Checker, props));
+    case "clock": return any(clockWipe({ width: size.width, height: size.height }));
     case "none":
     case "auto":
     default: return any(make(Cut, props));

@@ -109,7 +109,7 @@ export const brandFiles = (w: Workspace = ws()) => {
 /** "public" temporária para o Studio: motor (_lib, fonts) + job + marca, tudo por junction. */
 export const studioPublic = (w: Workspace = ws()) => {
   const root = mkdtempSync(join(tmpdir(), "reel-public-"));
-  for (const name of ["_lib", "fonts"]) if (existsSync(p("public", name))) symlinkSync(p("public", name), join(root, name), "junction");
+  for (const name of ["_lib", "fonts", "vendor"]) if (existsSync(p("public", name))) symlinkSync(p("public", name), join(root, name), "junction");
   stage(root, "link", w);
   return root;
 };

@@ -1,6 +1,7 @@
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import React, { useMemo } from "react";
-import { AbsoluteFill, interpolate, useCurrentFrame, type CalculateMetadataFunction } from "remotion";
+import { CameraMotionBlur } from "@remotion/motion-blur";
+import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig, type CalculateMetadataFunction } from "remotion";
 import { Soundtrack } from "../core/audio";
 import { Captions } from "../core/captions";
 import { SceneProvider, VideoProvider, loadBrandFonts, useLayout, useVideo } from "../core/context";
@@ -52,6 +53,8 @@ export const Video: React.FC<VideoProps> = (props) => {
   loadBrandFonts(props.brand);
   const plan = useMemo(() => planTimeline(props), [props]);
   const { job, brand } = props;
+  const { width, height } = useVideoConfig();
+  const size = { width, height };
   return (
     <VideoProvider value={{ ...props, plan }}>
       <AbsoluteFill style={{ background: brand.colors.bg }}>
@@ -62,7 +65,7 @@ export const Video: React.FC<VideoProps> = (props) => {
               items.push(
                 <TransitionSeries.Transition
                   key={`t-${p.id}`}
-                  presentation={presentation(p.transition, brand, i)}
+                  presentation={presentation(p.transition, brand, i, size)}
                   timing={linearTiming({ durationInFrames: plan.T })}
                 />,
               );
@@ -70,7 +73,14 @@ export const Video: React.FC<VideoProps> = (props) => {
             items.push(
               <TransitionSeries.Sequence key={p.id} durationInFrames={p.frames} name={`${i + 1}. ${p.scene.type} ${p.id}`} premountFor={30}>
                 <SceneProvider value={p}>
-                  <SceneView scene={p.scene} />
+                  {p.camera === "whip" ? (
+                    // chicote de câmera: desfoque de movimento de verdade (média de subquadros), só nessas cenas
+                    <CameraMotionBlur shutterAngle={180} samples={6}>
+                      <SceneView scene={p.scene} />
+                    </CameraMotionBlur>
+                  ) : (
+                    <SceneView scene={p.scene} />
+                  )}
                 </SceneProvider>
               </TransitionSeries.Sequence>,
             );

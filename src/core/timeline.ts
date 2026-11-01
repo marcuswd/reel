@@ -60,6 +60,11 @@ export const sceneTexts = (s: Scene): (string | undefined)[] => {
     case "quote": return [s.text, s.author, s.role];
     case "cta": return [s.eyebrow, s.title, s.text, s.button, ...(s.contact ?? []).map((c) => c.value)];
     case "logo": return [s.tagline];
+    case "chart": return [s.eyebrow, s.title, ...s.items.flatMap((i) => [i.label, `${s.prefix ?? ""}${i.value}${s.suffix ?? ""}`])];
+    case "kinetic": return [s.text];
+    case "lottie": return [s.eyebrow, s.title, s.text];
+    case "object3d": return [s.eyebrow, s.title, s.text];
+    case "map": return [s.eyebrow, s.title, ...s.points.map((p) => p.label)];
   }
 };
 
@@ -78,12 +83,18 @@ export const ON_SCREEN = 0.6;
 
 const MIN_SECONDS: Record<Scene["type"], number> = {
   cover: 2.6, statement: 2.4, media: 3, split: 3.5, screen: 4.5, list: 3, stats: 3.6, gallery: 3.2, quote: 4, cta: 4, logo: 2.6,
+  chart: 4, kinetic: 2.4, lottie: 3, object3d: 4, map: 4.5,
 };
 const WPS = { calm: 2.5, normal: 3, fast: 3.6 } as const;
 
 /** Tempo de leitura: entrada + palavras ÷ ritmo + respiro, nunca abaixo do mínimo do tipo. */
 export const readingSeconds = (s: Scene, pace: Job["pace"]) => {
-  const extra = s.type === "list" ? s.items.length * 0.35 : s.type === "gallery" ? s.items.length * 0.45 : s.type === "stats" ? s.items.length * 0.3 : 0;
+  const extra =
+    s.type === "list" ? s.items.length * 0.35
+    : s.type === "gallery" ? s.items.length * 0.45
+    : s.type === "stats" || s.type === "chart" ? s.items.length * 0.3
+    : s.type === "map" ? s.points.length * 0.6
+    : 0;
   return Math.max(MIN_SECONDS[s.type], 1.2 + sceneWords(s) / WPS[pace] + 1.0 + extra);
 };
 
@@ -102,6 +113,9 @@ const sceneEvents = (s: Scene, land: number, fps: number): { at: number; kind: s
     case "stats": return s.items.map((_, i) => ({ at: land + itemAt(i, s.items.length, fps), kind: "tick" }));
     case "screen": return s.focus ? [{ at: land + Math.round(fps * 1.2), kind: "click" }] : [];
     case "cta": return [{ at: land + Math.round(fps * 0.9), kind: "chime" }];
+    case "chart": return s.items.map((_, i) => ({ at: land + itemAt(i, s.items.length, fps), kind: "tick" }));
+    case "map": return s.points.map((_, i) => ({ at: land + itemAt(i, s.points.length, fps) + Math.round(fps * 0.3), kind: "pop-soft" }));
+    case "object3d": return [{ at: land, kind: "hit-soft" }];
     default: return [];
   }
 };
@@ -126,13 +140,15 @@ const AUTO_CAMERA: Camera[] = ["in", "left", "out", "right", "push", "up", "orbi
 export const pickCamera = (props: VideoProps, s: Scene, i: number): Camera => {
   const c = s.camera ?? props.job.defaults.camera ?? "auto";
   if (c !== "auto") return c;
-  if (s.type === "gallery" || s.type === "stats") return "static";
+  // cenas que já se movem por dentro (3D, mapa, gráfico, tipografia) não pedem câmera extra
+  if (["gallery", "stats", "chart", "kinetic", "object3d", "map", "lottie"].includes(s.type)) return "static";
   return AUTO_CAMERA[i % AUTO_CAMERA.length];
 };
 
 const TRANSITION_SFX: Partial<Record<Transition, string>> = {
   slide: "whoosh", push: "whoosh", whip: "whoosh", zoom: "whoosh-2", wipe: "swoosh", bands: "swoosh", bubble: "swoosh",
   lift: "whoosh-soft", dive: "whoosh-soft", fade: "whoosh-soft", leak: "whoosh-soft", flip: "whoosh-2", glitch: "glitch", iris: "pop-soft",
+  rgb: "glitch", zoomblur: "whoosh-2", pixelate: "glitch", clock: "swoosh", checker: "pop-soft",
 };
 const EVENT_VOL: Record<string, number> = { impact: 0.55, "hit-soft": 0.4, pop: 0.38, "pop-soft": 0.3, tick: 0.25, click: 0.4, chime: 0.45 };
 /** frames entre o início do arquivo e o pico (para alinhar o pico ao corte) */

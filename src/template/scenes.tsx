@@ -8,6 +8,9 @@ import type { Scene } from "../core/schema";
 import { itemAt } from "../core/timeline";
 import { Counter, Eyebrow, Words, autoSize, wordsFrames } from "../core/text";
 import { Body, Card, Logo, Pill, Safe, usePop } from "./ui";
+import { Object3DScene } from "./scene-3d";
+import { MapScene } from "./scene-map";
+import { ChartScene, KineticScene, LottieScene } from "./scenes-extra";
 
 type Of<T extends Scene["type"]> = Extract<Scene, { type: T }>;
 
@@ -518,6 +521,11 @@ export const SceneView: React.FC<{ scene: Scene }> = ({ scene }) => {
     case "quote": return <QuoteScene scene={scene} />;
     case "cta": return <CtaScene scene={scene} />;
     case "logo": return <LogoScene scene={scene} />;
+    case "chart": return <ChartScene scene={scene} />;
+    case "kinetic": return <KineticScene scene={scene} />;
+    case "lottie": return <LottieScene scene={scene} />;
+    case "object3d": return <Object3DScene scene={scene} />;
+    case "map": return <MapScene scene={scene} />;
   }
 };
 

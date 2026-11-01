@@ -103,16 +103,18 @@ O VS Code completa e valida os campos pelo `$schema` (o `pnpm video new` já apo
 
 | Área | O que tem |
 | --- | --- |
-| Câmera | Ken Burns in/out, pans, push/pull ao foco, orbit 3D, tilt, handheld (ruído), dolly, whip com motion blur, paralaxe |
-| Transições | fade, slide, push, wipe, flip, zoom, whip, lift, dive, iris, bands, bubble, light leak (CSS), glitch; cores da marca |
-| Fundos | mesh, aurora, partículas, grid 3D, formas, gradiente, foto/vídeo escurecido; grão e vinheta |
+| Câmera | Ken Burns in/out, pans, push/pull ao foco, orbit 3D, tilt, handheld (ruído), dolly, whip com motion blur de verdade, paralaxe |
+| Transições | fade, slide, push, wipe, flip, zoom, whip, lift, dive, iris, bands, bubble, light leak, glitch, rgb, zoomblur, pixelate, clock, checker; cores da marca |
+| Cenas | capa, frase, mídia, split, tela, lista, números, galeria, citação, CTA, logo, gráfico (barra, coluna, linha, rosca), tipografia cinética, Lottie, objeto 3D (cartão, celular, caixa, logo extrudado) e mapa com rota |
+| Fundos e cor | mesh, aurora, partículas, grid 3D, formas, gradiente, foto/vídeo escurecido; grão, vinheta e look de cor por marca (LUT) |
 | Formatos | 16:9, 9:16, 1:1, 4:5 com layout responsivo e área segura configurável |
 | Trilha | gerada por código e sincronizada aos cortes (upbeat, corporate, tech, calm, epic) ou arquivo de banco |
 | Efeitos | pack próprio sem licença, mapeado aos eventos da timeline |
-| Locução | Piper (local), ElevenLabs, OpenAI; duração das cenas segue a fala; ducking da trilha |
-| Legendas | palavra a palavra (pop, line, box), faixa reservada no layout, export `.srt`/`.vtt`; Whisper local para vídeo falado |
+| Locução | Kokoro e Piper (locais, grátis), ElevenLabs, OpenAI; duração das cenas segue a fala; ducking da trilha |
+| Legendas | palavra a palavra (pop, line, box) com contraste AA, só quando acrescentam; export `.srt`/`.vtt`; Whisper local para vídeo falado |
 | Idiomas | `i18n/<lang>.json` por job, tradução assistida (DeepL/Claude/OpenAI) e locução por idioma |
-| Mídia | busca e download com crédito: Pixabay, Unsplash, Pexels, Openverse; folha de contato para escolher |
+| Mídia | busca e download com crédito (Pixabay, Unsplash, Pexels, Openverse) e imagens por IA grátis (FLUX no Cloudflare, sem pessoas); folha de contato para escolher |
+| Qualidade | `check` antes (campos, arquivos, cara de slideshow) e QC depois do render (preto, imagem parada, silêncio, loudness, quadros) |
 | Marca | rascunho a partir do site (cores, fontes, logo) e fontes do @fontsource |
 
 ## Repositório

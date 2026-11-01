@@ -45,4 +45,11 @@ describe("check", () => {
     const r = checkJob(job([{ id: "a", type: "statement", text: "x", voice: "x" }], { voice: { provider: "piper" } }), brand, disk(), "promo");
     assert.deepEqual(r, { errors: [], warnings: ["pt-BR: locução faltando em a (pnpm video voice <pasta> --lang pt-BR)"] });
   });
+  test("cara de slideshow: texto atrás de texto vira aviso", () => {
+    const t = (id: string) => ({ id, type: "statement", text: "x" });
+    const r = checkJob(job([t("a"), t("b"), t("c"), { id: "d", type: "chart", items: [{ label: "x", value: 1 }] }, t("e")]), brand, disk(), "promo");
+    assert.equal(r.errors.length, 0);
+    assert.match(r.warnings[0], /3 cenas seguidas só de texto \(a, b, c\)/);
+    assert.match(r.warnings[1], /só 1 de 5 cenas têm visual/);
+  });
 });

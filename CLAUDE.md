@@ -23,7 +23,7 @@ e todo comando recebe a pasta do job como primeiro argumento. Nada de cliente é
   entregas/<data>/               mp4, thumb, srt, vtt, CREDITOS.md (ou --dest)
 
 src/core/                  motor: schema (zod), timeline (plano puro), câmera, transições, texto, mídia, legendas, áudio, cor
-src/template/              composição "Video" + 11 tipos de cena; demo.ts = props padrão com marca neutra
+src/template/              composição "Video" + 16 tipos de cena (scenes, scenes-extra, scene-3d, scene-map); demo.ts = marca neutra
 scripts/                   CLI (video, media, brand, transcribe), trilha (music.py), efeitos (sfx.py)
 scripts/lib/workspace.ts   pasta do job: acha a marca, traduz caminhos, põe o material no bundle
 public/_lib/sfx/           pack de efeitos próprio (pnpm sfx regera)
@@ -47,6 +47,7 @@ pnpm video voice <job> [--lang all]   # locução TTS por cena (gera tempos por 
 pnpm video build <job>            # valida, aplica idiomas/voz e gera a trilha
 pnpm video stills <job> [--format all] [--lang all]   # 1 quadro por cena + folha de contato em <job>/out/
 pnpm video render <job> [--format all] [--lang all] [--draft] [--dest pasta]   # entrega em <job>/entregas/<data>/
+pnpm video qc <job>               # revisa a última entrega (o render já roda no fim): preto, parado, silêncio, loudness
 pnpm video studio <job>           # Studio com o job (material servido direto da pasta do cliente)
 pnpm video translate <job> --to en [--auto]
 pnpm video doctor                 # ferramentas, chaves (só presença) e rede
@@ -54,6 +55,7 @@ pnpm test                         # testes (REEL_E2E=1 inclui o ponta a ponta co
 
 pnpm media search --type photo|video --q "termo" --orientation portrait --sheet
 pnpm media get --source pixabay|unsplash|pexels|openverse --id <id> --out <job>/stock/<nome>.jpg
+pnpm media gen --prompt "..." --out <job>/img/x.jpg [--variants 4]   # imagem por IA (FLUX, Cloudflare, grátis; sem pessoas)
 pnpm transcribe <job>/clips/fala.mp4 --lang pt   # Whisper local -> legendas por palavra
 pnpm dev                          # Studio do motor (marca neutra)
 ```

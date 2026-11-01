@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.8.0 (2026-11-01)
+
+Melhorias a partir da pesquisa de ferramentas parecidas (OpenMontage, claude-code-video-toolkit, APIs de vídeo por JSON e geradores por IA), todas sem custo.
+
+- Cenas novas: `chart` (barra, coluna, linha, rosca, com contagem), `kinetic` (tipografia cinética no tempo da música: pop, stack, slide), `lottie` (animações do LottieFiles), `object3d` (cartão, celular ou caixa com a imagem como textura, ou o logo SVG extrudado, com Three.js) e `map` (MapLibre + OpenFreeMap, sem chave, com marcadores e rota animada).
+- Transições novas: `rgb`, `zoomblur`, `pixelate`, `clock`, `checker`; câmera `whip` com motion blur de verdade (`@remotion/motion-blur`).
+- Look de cor por marca (`brand.grade`: warm, cool, teal-orange, film, mono ou um `.cube` próprio), gerado por código e aplicado pelo ffmpeg no render, na thumb e nos stills.
+- `pnpm media gen`: imagens por IA grátis (FLUX schnell no Cloudflare Workers AI, ~170/dia, uso comercial), com a paleta da marca no prompt, nunca pessoas, variações com folha para escolher e registro em CREDITS.md. Chaves `CF_ACCOUNT_ID` e `CF_API_TOKEN` (também nas opções do plugin).
+- QC automático no fim do render e `pnpm video qc`: resolução, duração, áudio, tela preta, imagem parada, silêncio e loudness (com trilha ou locução), quatro quadros numa folha; problema faz o render sair com erro.
+- `check` avisa cara de slideshow (3+ cenas seguidas só de texto, ou pouco visual) e confere o `.json` do Lottie, a imagem do 3D e o `.cube` da marca.
+- Locução local `kokoro` (kokoro-onnx, CPU, modelo de ~120 MB baixado na 1ª vez): pt-BR pf_dora, pm_alex, pm_santa; `doctor` confere.
+- WebGL nos stills e no render: GPU (`angle`) no Windows e Mac, software (`swangle`) no Linux; `REEL_GL` troca.
+- O worker do MapLibre vai no bundle (copiado no `postinstall` para `public/vendor`), sem depender de CDN.
+
 ## 0.7.0 (2026-11-01)
 
 - O repositório é um plugin do Claude Code: `claude plugin marketplace add marcuswd/reel` e `claude plugin install reel@reel`; atualiza com `claude plugin marketplace update reel` e `claude plugin update reel@reel`.
