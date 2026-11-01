@@ -19,7 +19,7 @@ import { basename, extname, join, relative, resolve } from "node:path";
 import { FORMATS, type FormatKey, type VideoProps } from "../src/core/schema.ts";
 import { musicBrief } from "../src/core/timeline.ts";
 import { toSrt, toVtt } from "../src/core/srt.ts";
-import { browserExecutable, die, fmtId, has, hash, langId, log, p, parseArgs, python, readJson, run, spawnPlan, today, writeJson } from "./lib/env.ts";
+import { browserExecutable, die, fmtId, has, hash, langId, log, p, parseArgs, python, readJson, run, spawnPlan, today, userPath, writeJson } from "./lib/env.ts";
 import { sheetArgs } from "./lib/sheet.ts";
 import { applyI18n, buildFile, extractStrings, i18nFile, langsOf, loadBrand, loadJob, loadVoice, musicFile, planOf, resolveProps, writeIndex, writeResolved } from "./lib/resolve.ts";
 import { checkJob } from "./lib/check.ts";
@@ -110,7 +110,7 @@ const free = (f: string) => {
 };
 
 /** Entrega: --dest <pasta> ou <pasta do job>/entregas, sempre numa subpasta com a data. */
-const outDir = (_props: VideoProps) => resolve(str("dest") ?? join(ws().dir, "entregas"), today());
+const outDir = (_props: VideoProps) => resolve(str("dest") ? userPath(str("dest")!) : join(ws().dir, "entregas"), today());
 
 const renderOne = async (props: VideoProps, format: FormatKey) => {
   const { renderMedia, renderStill, selectComposition } = await import("@remotion/renderer");
@@ -252,7 +252,7 @@ const open = () => useWorkspace(pos[0] ?? die(`informe a pasta do job: pnpm vide
 const main = async () => {
   switch (cmd) {
     case "new": {
-      const dir = resolve(pos[0] ?? die('informe a pasta: pnpm video new "C:\\sites\\cliente\\videos\\promo" --brand <marca>'));
+      const dir = userPath(pos[0] ?? die('informe a pasta: pnpm video new "C:\\sites\\cliente\\videos\\promo" --brand <marca>'));
       const f = join(dir, "job.json");
       if (existsSync(f)) die(`${f} já existe`);
       const slug = str("slug") ?? basename(dir).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");

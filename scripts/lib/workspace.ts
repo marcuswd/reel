@@ -17,7 +17,7 @@
 import { cpSync, existsSync, mkdirSync, mkdtempSync, statSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
-import { die, p, readJson } from "./env.ts";
+import { die, p, readJson, userPath } from "./env.ts";
 
 export type Workspace = { dir: string; slug: string; brandFile: string; brandDir: string; brandPrefix: string };
 
@@ -29,7 +29,7 @@ export const brandCandidates = (dir: string, brand: string) =>
   (brand.endsWith(".json") ? [resolve(dir, brand)] : [join(dir, "brand.json"), join(dir, "..", "brand.json"), join(dir, "..", "brands", `${brand}.json`)]).map((f) => resolve(f));
 
 export const openWorkspace = (dirArg: string): Workspace => {
-  const dir = resolve(dirArg);
+  const dir = userPath(dirArg);
   const f = join(dir, "job.json");
   if (!existsSync(f)) die(`${f} não existe. Crie com: pnpm video new "${dir}" --brand <marca>`);
   const raw = readJson<{ slug?: unknown; brand?: unknown }>(f);

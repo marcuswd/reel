@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.1 (2026-10-31)
+
+- Caminhos passados pelo usuário (pasta do job, `brand new|font|show`, `--dest`, `transcribe`, `media get --out`, `audio:get --out`) são resolvidos a partir da pasta de onde o comando foi chamado. Assim a skill roda `pnpm --dir <motor> video stills ./videos/promo` de dentro do projeto do cliente (o pnpm muda para a pasta do motor, mas guarda a original em `INIT_CWD`).
+- README: instalação e atualização do motor e uso a partir do projeto do cliente.
+
 ## 0.6.0 (2026-10-31)
 
 - `pnpm video check <pasta>`: valida job e marca sem renderizar. Erros (saída 1): campo inválido do schema com o caminho exato, id de cena repetido, arquivo de mídia, legenda (por idioma), música, efeito ou fonte/logo da marca que não existe. Avisos: tradução ausente ou incompleta, locução faltando.

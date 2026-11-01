@@ -29,6 +29,11 @@ describe("pasta do job", () => {
     assert.equal(w.brandFile, join(videos, "brand.json"));
     assert.equal(w.brandPrefix, "_brand/");
   });
+  test("caminho relativo vale a partir de onde o comando foi chamado (pnpm --dir guarda em INIT_CWD)", () => {
+    const old = process.env.INIT_CWD;
+    process.env.INIT_CWD = videos;
+    try { assert.equal(openWorkspace("promo").dir, promo); } finally { if (old === undefined) delete process.env.INIT_CWD; else process.env.INIT_CWD = old; }
+  });
   test("brand.json na própria pasta usa o prefixo do job", () => {
     const solo = join(root, "solo");
     put(join(solo, "brand.json"), "{}");

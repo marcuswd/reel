@@ -7,7 +7,7 @@
 //   node scripts/audio.mjs get --source openverse|freesound|jamendo --id <id> --out <pasta do job>/audio/<nome>.mp3 [--no-normalize]
 
 import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
 // .env simples, sem dependência
@@ -108,7 +108,9 @@ async function search() {
 }
 
 async function get() {
-  const { source, id, out } = args;
+  const { source, id } = args;
+  // relativo à pasta de onde o comando foi chamado (pnpm --dir <motor> guarda em INIT_CWD)
+  const out = args.out && resolve(process.env.INIT_CWD ?? process.cwd(), args.out);
   if (!sources[source] || !id || !out) throw new Error("uso: get --source <s> --id <id> --out <arquivo.mp3>");
   const d = await sources[source].detail(id);
   if (!d.ok) throw new Error(`licença não permitida (${d.license}). Escolha outro.`);

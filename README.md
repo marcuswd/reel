@@ -6,16 +6,34 @@ e renderiza em qualquer formato.
 
 ## Instalação
 
-```bash
-git clone https://github.com/marcuswd/reel.git && cd reel
-cp .env.example .env                # preencha só as chaves que for usar
+O motor fica numa pasta fixa da máquina (padrão `C:\sites\remotion-base`); os vídeos ficam nas pastas dos clientes.
+
+```powershell
+git clone https://github.com/marcuswd/reel.git C:\sites\remotion-base
+cd C:\sites\remotion-base
+copy .env.example .env               # preencha só as chaves que for usar
 pnpm install
-pip install numpy scipy piper-tts   # trilha/efeitos gerados e locução local
-pnpm sfx                            # pack de efeitos (public/_lib/sfx), se ainda não existir
-pnpm video doctor                   # confere ferramentas, chaves e rede
+pip install numpy scipy piper-tts    # trilha/efeitos gerados e locução local
+pnpm video doctor                    # confere ferramentas, chaves e rede
 ```
 
-Requer Node 20+, ffmpeg e Python 3. Chaves opcionais no `.env` (veja `.env.example`).
+Requer Node 20+, pnpm, ffmpeg e Python 3. Se o motor ficar em outra pasta, defina a variável de ambiente
+`REEL_DIR` com o caminho (a skill `/equipa:video` usa ela; sem ela, usa `C:\sites\remotion-base`).
+
+Atualizar:
+
+```powershell
+cd C:\sites\remotion-base
+git pull
+pnpm install
+```
+
+De dentro do projeto de um cliente, chame o motor com `pnpm --dir`; caminhos relativos valem a partir da pasta atual:
+
+```powershell
+cd C:\sites\cliente
+pnpm --dir C:\sites\remotion-base video stills .\videos\promo
+```
 
 ## Em 5 comandos
 

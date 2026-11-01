@@ -10,7 +10,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, extname, join } from "node:path";
 import type { CaptionItem } from "../src/core/schema.ts";
 import { toSrt } from "../src/core/srt.ts";
-import { die, log, p, parseArgs, run } from "./lib/env.ts";
+import { die, log, p, parseArgs, run, userPath } from "./lib/env.ts";
 
 const { pos, opt } = parseArgs(process.argv.slice(2));
 const s = (k: string) => (typeof opt[k] === "string" ? (opt[k] as string) : undefined);
@@ -30,14 +30,14 @@ const fromSrt = async (file: string) => {
       t += d;
     }
   }
-  const dest = s("out") ?? file.replace(/\.srt$/i, ".captions.json");
+  const dest = s("out") ? userPath(s("out")!) : file.replace(/\.srt$/i, ".captions.json");
   writeFileSync(dest, JSON.stringify(out, null, 2));
   log(`${out.length} palavras → ${dest}`);
 };
 
 const main = async () => {
   if (s("srt")) return fromSrt(s("srt")!);
-  const input = pos[0] ?? die("arquivo de áudio/vídeo?");
+  const input = userPath(pos[0] ?? die("arquivo de áudio/vídeo?"));
   if (!existsSync(input)) die(`não existe: ${input}`);
   const lang = s("lang") ?? "pt";
   const model = (s("model") ?? "small") as "base" | "small" | "medium" | "large-v3-turbo";
@@ -53,7 +53,7 @@ const main = async () => {
   log(`transcrevendo (${model}, ${lang})…`);
   const out = await transcribe({ inputPath: wav, whisperPath: bin, whisperCppVersion: version, model, modelFolder: dir, tokenLevelTimestamps: true, language: lang as "pt", splitOnWord: true, printOutput: false });
   const { captions } = toCaptions({ whisperCppOutput: out });
-  const dest = s("out") ?? join(dirname(input), `${basename(input, extname(input))}.captions.json`);
+  const dest = s("out") ? userPath(s("out")!) : join(dirname(input), `${basename(input, extname(input))}.captions.json`);
   writeFileSync(dest, JSON.stringify(captions, null, 2));
   writeFileSync(dest.replace(/\.json$/, ".srt"), toSrt(captions as CaptionItem[]));
   log(`${captions.length} palavras → ${dest} (+ .srt)`);

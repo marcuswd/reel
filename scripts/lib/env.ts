@@ -6,6 +6,11 @@ import { spawnSync } from "node:child_process";
 
 export const ROOT = resolve(import.meta.dirname, "..", "..");
 export const p = (...parts: string[]) => resolve(ROOT, ...parts);
+/**
+ * Caminho dado pelo usuário, relativo à pasta de onde ele chamou o comando.
+ * `pnpm --dir <motor> video ...` roda os scripts na pasta do motor, mas guarda a original em INIT_CWD.
+ */
+export const userPath = (x: string) => resolve(process.env.INIT_CWD ?? process.cwd(), x);
 
 /** Carrega o .env sem imprimir valores. */
 export const loadEnv = () => {

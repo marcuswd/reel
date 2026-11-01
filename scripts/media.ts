@@ -8,7 +8,7 @@
 // (o render copia os créditos junto com o vídeo). No Unsplash, o `get` dispara o endpoint oficial de download.
 import { appendFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { die, has, log, p, parseArgs, readJson, run, writeJson } from "./lib/env.ts";
+import { die, has, log, p, parseArgs, readJson, run, userPath, writeJson } from "./lib/env.ts";
 import { sheetArgs } from "./lib/sheet.ts";
 
 type Item = {
@@ -168,7 +168,7 @@ const search = async () => {
 const get = async () => {
   const source = s("source") ?? die("--source");
   const id = s("id") ?? die("--id");
-  const out = s("out") ?? die("--out <pasta do job>/stock/<nome>.jpg");
+  const out = userPath(s("out") ?? die("--out <pasta do job>/stock/<nome>.jpg"));
   const type = (s("type") ?? (/\.(mp4|webm|mov)$/i.test(out) ? "video" : "photo")) as "photo" | "video";
   const prov = providers[source] ?? die(`fonte desconhecida: ${source}`);
   if (prov.key && !process.env[prov.key]) die(`${prov.key} não definida no .env`);

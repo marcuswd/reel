@@ -8,14 +8,14 @@ import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, writeFil
 import { tmpdir } from "node:os";
 import { basename, dirname, extname, join, relative, resolve } from "node:path";
 import { brandSchema } from "../src/core/schema.ts";
-import { die, log, p, parseArgs, readJson, run, writeJson } from "./lib/env.ts";
+import { die, log, p, parseArgs, readJson, run, userPath, writeJson } from "./lib/env.ts";
 
 const { pos, opt } = parseArgs(process.argv.slice(2));
 const s = (k: string) => (typeof opt[k] === "string" ? (opt[k] as string) : undefined);
 const UA = { "User-Agent": "Mozilla/5.0 (remotion-base brand extractor)" };
 /** <pasta> ou <pasta>/brand.json → caminho do brand.json */
 const brandPath = (arg: string | undefined) => {
-  const a = resolve(arg ?? die("informe a pasta da marca (ex.: C:\\sites\\cliente\\videos)"));
+  const a = userPath(arg ?? die("informe a pasta da marca (ex.: C:\\sites\\cliente\\videos)"));
   return a.endsWith(".json") ? a : join(a, "brand.json");
 };
 
