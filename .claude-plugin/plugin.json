@@ -1,0 +1,81 @@
+{
+  "name": "reel",
+  "displayName": "Reel (vídeos MARCUSWD)",
+  "version": "0.7.0",
+  "description": "Motor de vídeos em Remotion: um vídeo é um job em JSON na pasta do cliente; câmera, transições, trilha sincronizada, locução, legendas, idiomas e render em qualquer formato.",
+  "author": {
+    "name": "Marcus Sá",
+    "email": "marcus@marcuswd.dev"
+  },
+  "repository": "https://github.com/marcuswd/reel",
+  "keywords": [
+    "video",
+    "remotion",
+    "motion"
+  ],
+  "skills": [
+    "./.claude/skills/"
+  ],
+  "userConfig": {
+    "pixabay_api_key": {
+      "type": "string",
+      "title": "Pixabay",
+      "description": "Opcional: fotos e vídeos de banco (pnpm media). Fica só no .env do motor, nesta máquina.",
+      "sensitive": true
+    },
+    "unsplash_access_key": {
+      "type": "string",
+      "title": "Unsplash",
+      "description": "Opcional: fotos de banco. Fica só no .env do motor, nesta máquina.",
+      "sensitive": true
+    },
+    "pexels_api_key": {
+      "type": "string",
+      "title": "Pexels",
+      "description": "Opcional: fotos e vídeos de banco (emissão de chaves pausada). Fica só no .env do motor, nesta máquina.",
+      "sensitive": true
+    },
+    "freesound_token": {
+      "type": "string",
+      "title": "Freesound",
+      "description": "Opcional: efeitos e áudio de banco. Fica só no .env do motor, nesta máquina.",
+      "sensitive": true
+    },
+    "jamendo_client_id": {
+      "type": "string",
+      "title": "Jamendo",
+      "description": "Opcional: música de banco. Fica só no .env do motor, nesta máquina.",
+      "sensitive": true
+    },
+    "elevenlabs_api_key": {
+      "type": "string",
+      "title": "ElevenLabs",
+      "description": "Opcional: locução com tempos exatos por palavra. Fica só no .env do motor, nesta máquina.",
+      "sensitive": true
+    },
+    "elevenlabs_voice_id": {
+      "type": "string",
+      "title": "ElevenLabs: voz padrão",
+      "description": "Opcional: id da voz (opcional). Fica só no .env do motor, nesta máquina.",
+      "sensitive": false
+    },
+    "openai_api_key": {
+      "type": "string",
+      "title": "OpenAI",
+      "description": "Opcional: locução ou tradução. Fica só no .env do motor, nesta máquina.",
+      "sensitive": true
+    },
+    "deepl_api_key": {
+      "type": "string",
+      "title": "DeepL",
+      "description": "Opcional: tradução automática. Fica só no .env do motor, nesta máquina.",
+      "sensitive": true
+    },
+    "anthropic_api_key": {
+      "type": "string",
+      "title": "Anthropic",
+      "description": "Opcional: tradução automática pela API do Claude. Fica só no .env do motor, nesta máquina.",
+      "sensitive": true
+    }
+  }
+}

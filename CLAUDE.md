@@ -58,70 +58,20 @@ pnpm transcribe <job>/clips/fala.mp4 --lang pt   # Whisper local -> legendas por
 pnpm dev                          # Studio do motor (marca neutra)
 ```
 
-## Novo vídeo: fluxo
+## Uso (fluxo de um vídeo novo e referência do job)
 
-1. **Briefing curto** com `AskUserQuestion` (pule o que o pedido já respondeu; se o usuário disser
-   "você decide" ou estiver ausente, decida e diga o que decidiu):
-   objetivo, formato/canal (Reels 9:16 20 a 35 s; YouTube 16:9; feed 1:1 ou 4:5), roteiro (pronto, tópicos ou do site),
-   locução (sim/não, provedor), legendas (queimada, arquivo, ambos), idiomas, destino.
-2. **Material:** procure primeiro no que o usuário já tem (pastas dele, ex.: `C:\sites\<cliente>`; projetos com tokens
-   de cor e fontes; pastas `_FILES`, `FOTOS`). Depois site do cliente (WebFetch) e por último bancos (`pnpm media`).
-   Para escolher fotos, monte folhas de contato numeradas (ffmpeg) e olhe antes de decidir.
-3. **Marca:** `<cliente>\videos\brand.json` (`pnpm brand new`). Fonte condensada pede `"scale": 1.3` e talvez `"uppercase": true`.
-   Logo que não contrasta com o fundo: `"plate": "circle"|"rounded"`.
-4. **Job:** `pnpm video new <pasta do job> --brand <marca>` e edite o `job.json` (schema em `schemas/job.schema.json`).
-   Material na própria pasta do job, citado por caminho relativo. Todo texto fica no job; [colchetes] marcam o destaque.
-5. `pnpm video check` → `pnpm video voice` (se houver locução) → `pnpm video stills` → **olhe a folha de contato** e corrija
-   (texto cortado, legenda sobre conteúdo, contraste, foto ruim) → `pnpm video render`. `stills` e `render` rodam o
-   check antes e param se houver erro (campo inválido, arquivo que não existe, id repetido).
-6. Confira o mp4 extraindo quadros nas transições (ffmpeg) e o loudness informado (alvo -14 a -16 LUFS).
-7. Entregue: o render grava em `<job>/entregas/<data>/` (ou `--dest`). Informe o caminho e envie o mp4.
-   Se houver créditos CC-BY, avise.
+A fonte única é a skill do plugin: [skills/video/SKILL.md](skills/video/SKILL.md) (fluxo, comandos, regras) e
+[skills/video/referencia.md](skills/video/referencia.md) (tipos de cena, câmera, transições, fundos, mídia, trilha,
+efeitos, locução, legendas, idiomas, chaves). Ao produzir um vídeo a partir deste repositório, siga a skill trocando
+`pnpm --dir "<motor>"` por `pnpm`.
 
-## Tipos de cena (campo "type")
+## Plugin
 
-cover, statement, media (foto/vídeo tela cheia), split (texto + mídia), screen (print em browser/celular com push-in
-e pan), list, stats (números contando), gallery (grid, carousel, stack), quote, cta (botão + contatos), logo.
-Campos comuns: `id`, `voice`, `duration`, `transition`, `camera`, `background`, `sfx`.
-
-- **Câmera:** auto, static, in, out, left, right, up, down, push, pull, orbit, tilt, handheld, dolly, whip.
-- **Transições:** auto, none, fade, slide, push, wipe, zoom, whip, lift, dive, iris, bands, bubble, leak, glitch, flip.
-  "auto" usa `brand.motion.transitions` ou a energia da marca (calm, normal, playful).
-- **Fundos:** auto, solid, gradient, mesh, particles, grid, shapes, aurora, ou `{ "type": "media", "media": ..., "dim": 0.5 }`.
-- **Mídia:** caminho relativo à pasta do job ou `{ src, focus: {x,y}, fit, trim, muted: false, captions }`. Vídeo de banco ou
-  de celular: converta para h264 1080 sem áudio (o `pnpm media get` já faz; arquivos do cliente, faça com ffmpeg).
-
-## Tempo, música e efeitos
-
-- Duração por cena = tempo de leitura (ritmo `pace`) ou locução + respiro, arredondada aos tempos da música
-  (`music.bpm` ou `brand.audio.bpm`). Todo corte cai no tempo. `src/core/timeline.ts` é a fonte única.
-- `music.mode`: `generate` (trilha original por código, sincronizada, climas upbeat/corporate/tech/calm/epic),
-  `file` (arquivo na pasta do job, ex.: baixado com `pnpm audio:get`) ou `none`.
-- Efeitos automáticos do pack `public/_lib/sfx` (whoosh nas transições, impact na logo, pop em listas, tick em números,
-  chime no CTA, riser antes do fecho). No máximo 1 a cada 0,25 s. Para usar efeitos de banco, crie outro pack com os
-  mesmos nomes e aponte `sfx.pack`.
-- Áudio de banco: `pnpm audio:search` / `pnpm audio:get` (só CC0, CC-BY, PD; créditos em CREDITS.md).
-
-## Locução, legendas e idiomas
-
-- `voice.provider`: `piper` (local, grátis; vozes pt_BR-faber, pt_PT-tugão, en_US-lessac...; para Angola use
-  pt_PT-tugão), `elevenlabs` (melhor, tempos exatos por palavra), `openai`. `voiceId` pode ser `"pt-BR=x,en=y"`.
-- Legendas saem da locução (ou de `pnpm transcribe` para vídeo falado). `captions.mode` burn/file/both/none;
-  `style` pop/line/box. Com legenda queimada, o layout reserva uma faixa embaixo (conteúdo nunca fica sob ela).
-  A legenda da locução não é queimada quando repete o texto da tela (`captions.whenOnScreen: "show"` força);
-  toda legenda fica sobre placa escura com contraste AA e a palavra falada vira pílula na cor de destaque.
-- Idiomas: `langs` no job + `<job>/i18n/<lang>.json`. `pnpm video translate <job> --to en` cria as chaves;
-  preencha você mesmo (no chat) ou use `--auto` (DeepL/Claude/OpenAI se houver chave). Depois rode `voice --lang en`.
-
-## Rede, chaves e onde rodar
-
-- Chaves no `.env` (modelo em `.env.example`). **Nunca leia nem imprima o `.env`**; para checar, use
-  `pnpm video doctor` (mostra só presença) ou `grep -o '^[A-Z_]*='`. Nunca ponha chave no `.env.example`.
-- Pexels está com emissão de chaves pausada: use Pixabay (fotos e vídeos) e Unsplash (fotos).
-- Rodando no Claude (nuvem): o projeto vai para o container sem `node_modules`/`.env`, `pnpm install`, render com o
-  Chromium de `/opt/pw-browsers` (detectado sozinho). Chamadas de API que precisam de chave rodam no PC do usuário
-  (`node scripts/media.ts ...` no shell do dispositivo, que lê o `.env` local). Sites bloqueados por proxy: não
-  contorne; peça ao usuário para liberar o domínio em Settings > Capabilities ou use outra fonte.
+O repositório é também o plugin `reel` do Claude Code (`.claude-plugin/plugin.json` + `marketplace.json`):
+`claude plugin marketplace add marcuswd/reel` e `claude plugin install reel@reel`. Instalado, o motor roda de uma
+cópia em `${CLAUDE_PLUGIN_DATA}/motor` preparada por `scripts/plugin/setup.mjs` (hook `SessionStart` em segundo plano
+e passo 0 da skill): copia o código quando a versão muda e roda `pnpm install` só quando o lock muda.
+A versão do plugin acompanha a do `package.json` (as duas sobem juntas).
 
 ## Repositório (github.com/marcuswd/reel, privado)
 

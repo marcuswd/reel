@@ -1,0 +1,15 @@
+{
+  "name": "reel",
+  "description": "Reel: motor de vídeos da MARCUSWD para o Claude Code",
+  "owner": {
+    "name": "Marcus Sá",
+    "email": "marcus@marcuswd.dev"
+  },
+  "plugins": [
+    {
+      "name": "reel",
+      "source": "./",
+      "description": "Motor de vídeos em Remotion: job em JSON na pasta do cliente, render em qualquer formato."
+    }
+  ]
+}

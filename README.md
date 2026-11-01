@@ -4,40 +4,48 @@ Gerador de vídeos da MARCUSWD sobre Remotion 4. Um vídeo é um **job em JSON**
 (identidade). O motor monta cenas, câmera, transições, trilha sincronizada, efeitos, locução, legendas e idiomas,
 e renderiza em qualquer formato.
 
-## Instalação
-
-O motor fica numa pasta fixa da máquina (padrão `C:\sites\remotion-base`); os vídeos ficam nas pastas dos clientes.
+## Instalar como plugin do Claude Code
 
 ```powershell
-git clone https://github.com/marcuswd/reel.git C:\sites\remotion-base
-cd C:\sites\remotion-base
-copy .env.example .env               # preencha só as chaves que for usar
-pnpm install
-pip install numpy scipy piper-tts    # trilha/efeitos gerados e locução local
-pnpm video doctor                    # confere ferramentas, chaves e rede
+claude plugin marketplace add marcuswd/reel
+claude plugin install reel@reel
 ```
 
-Requer Node 20+, pnpm, ffmpeg e Python 3. Se o motor ficar em outra pasta, defina a variável de ambiente
-`REEL_DIR` com o caminho (a skill `/equipa:video` usa ela; sem ela, usa `C:\sites\remotion-base`).
+Ou, numa sessão do Claude Code: `/plugin install reel --marketplace marcuswd/reel`. O repositório é privado: o
+Claude Code usa as credenciais do git da máquina (as mesmas do `git clone`).
+
+Ao habilitar, o Claude Code pergunta as chaves de API (todas opcionais: Pixabay, Unsplash, ElevenLabs, OpenAI,
+DeepL…). Na primeira sessão o plugin copia o motor para a pasta persistente dele e roda `pnpm install` (1 a 2
+minutos, em segundo plano); se existir um `.env` em `C:\sites\remotion-base` (ou em `REEL_DIR`), as chaves dele são
+aproveitadas. Requer Node 20+, pnpm e ffmpeg; para trilha gerada e locução local, `pip install numpy scipy piper-tts`.
+
+Usar: abra o projeto do cliente e peça o vídeo, ou chame `/reel:video <pedido>`.
 
 Atualizar:
 
 ```powershell
-cd C:\sites\remotion-base
-git pull
-pnpm install
+claude plugin marketplace update reel
+claude plugin update reel@reel
 ```
 
-De dentro do projeto de um cliente, chame o motor com `pnpm --dir`; caminhos relativos valem a partir da pasta atual:
+Na sessão seguinte o motor novo é copiado; o `pnpm install` só roda de novo quando as dependências mudam.
+
+## Instalar para desenvolver o motor
 
 ```powershell
-cd C:\sites\cliente
-pnpm --dir C:\sites\remotion-base video stills .\videos\promo
+git clone https://github.com/marcuswd/reel.git C:\sites\remotion-base
+cd C:\sites\remotion-base
+copy .env.example .env
+pnpm install
+pnpm video doctor
 ```
 
-## Em 5 comandos
+Para testar o plugin a partir desta pasta: `claude plugin marketplace add C:\sites\remotion-base` (as edições
+valem na sessão seguinte ou com `/reload-plugins`).
 
-Tudo de um vídeo fica na pasta do cliente, fora deste repositório. Exemplo com `C:\sites\cliente\videos`:
+## Em 5 comandos (pasta do motor)
+
+Com o plugin, a skill roda estes comandos sozinha (`pnpm --dir <motor> ...`). À mão, da pasta do motor:
 
 ```bash
 pnpm brand new "C:\sites\cliente\videos" --from https://cliente.com      # brand.json + logo

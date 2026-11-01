@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0 (2026-11-01)
+
+- O repositório é um plugin do Claude Code: `claude plugin marketplace add marcuswd/reel` e `claude plugin install reel@reel`; atualiza com `claude plugin marketplace update reel` e `claude plugin update reel@reel`.
+- Skill `/reel:video`: fluxo completo de um vídeo (preparar o motor, briefing, material, marca, job, check, stills, render, QC, entrega), com a referência do job em `skills/video/referencia.md`. As 12 skills oficiais do Remotion vão junto (`reel:remotion-*`).
+- `scripts/plugin/setup.mjs` prepara o motor em `${CLAUDE_PLUGIN_DATA}/motor`, que sobrevive às atualizações: copia o código quando a versão muda, roda `pnpm install` só quando dependências ou lock mudam (senão refaz só o `postinstall`), trava contra duas preparações ao mesmo tempo e ignora `--data` vazio ou não substituído (nunca usa a pasta atual). Roda em segundo plano no `SessionStart` e como passo 0 da skill.
+- Chaves de API como opções do plugin (pedidas ao habilitar; sensíveis no cofre de credenciais), gravadas no `.env` do motor; na 1ª preparação, o `.env` de `C:\sites\remotion-base` (ou `REEL_DIR`) é aproveitado.
+- O fluxo e a referência de uso saem do `CLAUDE.md` (que fica para quem desenvolve o motor) e passam a morar na skill. Ícone do plugin.
+
 ## 0.6.1 (2026-10-31)
 
 - Caminhos passados pelo usuário (pasta do job, `brand new|font|show`, `--dest`, `transcribe`, `media get --out`, `audio:get --out`) são resolvidos a partir da pasta de onde o comando foi chamado. Assim a skill roda `pnpm --dir <motor> video stills ./videos/promo` de dentro do projeto do cliente (o pnpm muda para a pasta do motor, mas guarda a original em `INIT_CWD`).
