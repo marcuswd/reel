@@ -1,4 +1,4 @@
-// Tradução automática dos textos de um job (usada por `pnpm video translate <slug> --to en --auto`).
+// Tradução automática dos textos de um job (usada por `pnpm video translate <pasta> --to en --auto`).
 // Ordem: DEEPL_API_KEY (DeepL) > ANTHROPIC_API_KEY (Claude) > OPENAI_API_KEY.
 // Sem chave nenhuma, o arquivo i18n é criado com os campos vazios para o Claude (no chat) ou você preencher.
 // Trechos entre [colchetes] são mantidos: o destaque continua nas palavras traduzidas equivalentes.

@@ -1,9 +1,9 @@
 // Transcrição local (Whisper.cpp) de vídeo/áudio falado -> legendas com tempo por palavra.
-//   pnpm transcribe public/<slug>/clips/entrevista.mp4 [--lang pt] [--model base|small|medium|large-v3-turbo] [--out arquivo.json]
+//   pnpm transcribe <pasta do job>/clips/entrevista.mp4 [--lang pt] [--model base|small|medium|large-v3-turbo] [--out arquivo.json]
 //
 // Saída: JSON de legendas (formato Caption do @remotion/captions) ao lado do arquivo
 // (entrevista.captions.json) + .srt. Use no job: { "type": "media", "media": { "src": "...", "muted": false,
-// "captions": "<slug>/clips/entrevista.captions.json" } }. Para outro idioma, traduza o .srt
+// "captions": "clips/entrevista.captions.json" } }. Para outro idioma, traduza o .srt
 // e rode `pnpm transcribe --srt arquivo-en.srt` para converter em JSON (captions com {lang}).
 // Na 1ª vez instala o whisper.cpp e baixa o modelo em .cache/whisper (Windows: binário pronto; Linux/Mac: compila).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";

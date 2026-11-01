@@ -9,40 +9,52 @@ nesse caso, crie no template (genérico, configurável por props), nunca em uma 
 
 ## Estrutura
 
+Este repositório é só o motor. **Tudo de um vídeo mora na pasta do cliente** (ex.: `C:\sites\<cliente>\videos`),
+e todo comando recebe a pasta do job como primeiro argumento. Nada de cliente é gravado aqui.
+
 ```
-brands/<marca>.json        identidade: cores, fontes, logo, energia de movimento, BPM, contato   (não versionado)
-jobs/<slug>/job.json       roteiro: cenas, formatos, idiomas, trilha, locução, legendas, overlays (não versionado)
-jobs/<slug>/i18n/<lang>.json  traduções ("<idCena>.<campo>": "texto")
-jobs/<slug>/_build/        gerado pelo build (não editar)
-public/<slug>/             assets do job (img/, video/, stock/, voice/, audio/generated/)   (não versionado)
-public/_lib/sfx/           pack de efeitos próprio (pnpm sfx regera)
-src/core/                  motor: schema (zod), timeline (plano puro), câmera, transições, texto, mídia, legendas, áudio
-src/template/              composição "Video" + 11 tipos de cena
-src/jobs.generated.ts      gerado e não versionado: jobs no Studio (pasta "Jobs"); pnpm video index recria
+<cliente>\videos\brand.json      marca (cores, fontes, logo, energia, BPM, contato); fontes e logo na mesma pasta
+<cliente>\videos\<job>\         pasta do job:
+  job.json                       roteiro (caminhos de mídia relativos a esta pasta: "img/foto.jpg")
+  i18n/<lang>.json               traduções ("<idCena>.<campo>": "texto")
+  img/ video/ stock/ clips/      material
+  voice/ audio/generated/        locução e trilha geradas
+  _build/ out/                   gerados: props resolvidas, stills, folhas de contato, render temporário
+  entregas/<data>/               mp4, thumb, srt, vtt, CREDITOS.md (ou --dest)
+
+src/core/                  motor: schema (zod), timeline (plano puro), câmera, transições, texto, mídia, legendas, áudio, cor
+src/template/              composição "Video" + 11 tipos de cena; demo.ts = props padrão com marca neutra
 scripts/                   CLI (video, media, brand, transcribe), trilha (music.py), efeitos (sfx.py)
-clientes/<client>/<slug>/<data>/  entrega padrão sem --dest (não versionado; prefira --dest na pasta do cliente)
+scripts/lib/workspace.ts   pasta do job: acha a marca, traduz caminhos, põe o material no bundle
+public/_lib/sfx/           pack de efeitos próprio (pnpm sfx regera)
+src/jobs.generated.ts      gerado, não versionado: vazio, ou o job aberto por `pnpm video studio`
 docs/backlog.md            próximos itens (o modo autónomo da equipa lê daqui)
 ```
+
+`"brand"` no job: um nome (procura `brand.json` na pasta do job, depois na de cima, depois `../brands/<nome>.json`)
+ou um caminho para `.json`. Na composição o material aparece como `public/<slug>/` e a marca como `public/_brand/`;
+`workspace.ts` faz a tradução, então no job e na marca use sempre caminhos relativos.
 
 ## Comandos
 
 ```bash
-pnpm video new <slug> --brand <marca> --client <pasta> --format 9:16,16:9
-pnpm video plan <slug>            # timeline: durações, transições, câmera, efeitos, legendas
-pnpm video voice <slug> [--lang all]   # locução TTS por cena (gera tempos por palavra)
-pnpm video build [slug]           # valida, aplica idiomas/voz, gera a trilha, atualiza o Studio e os JSON Schemas
-pnpm video stills <slug> [--format all] [--lang all]   # 1 quadro por cena + folha de contato em out/<slug>/
-pnpm video render <slug> [--format all] [--lang all] [--draft] [--dest pasta]
-pnpm video translate <slug> --to en [--auto]
+pnpm brand new <pasta> --from https://site.com      # <pasta>/brand.json + logo (rascunho a partir do site)
+pnpm brand font <pasta> heading|body "Família" 700,800   # fonte do @fontsource em <pasta>/fonts
+pnpm video new <pasta do job> --brand <marca> --format 9:16,16:9
+pnpm video plan <job>             # timeline: durações, transições, câmera, efeitos, legendas
+pnpm video voice <job> [--lang all]   # locução TTS por cena (gera tempos por palavra)
+pnpm video build <job>            # valida, aplica idiomas/voz e gera a trilha
+pnpm video stills <job> [--format all] [--lang all]   # 1 quadro por cena + folha de contato em <job>/out/
+pnpm video render <job> [--format all] [--lang all] [--draft] [--dest pasta]   # entrega em <job>/entregas/<data>/
+pnpm video studio <job>           # Studio com o job (material servido direto da pasta do cliente)
+pnpm video translate <job> --to en [--auto]
 pnpm video doctor                 # ferramentas, chaves (só presença) e rede
-pnpm test                         # testes do motor (src/core) e dos scripts, runner do Node
+pnpm test                         # testes (REEL_E2E=1 inclui o ponta a ponta com render)
 
 pnpm media search --type photo|video --q "termo" --orientation portrait --sheet
-pnpm media get --source pixabay|unsplash|pexels|openverse --id <id> --out public/<slug>/stock/<nome>.jpg
-pnpm brand new <marca> --from https://site.com   # rascunho de marca a partir do site
-pnpm brand font <marca> heading|body "Família" 700,800   # fonte do @fontsource (npm)
-pnpm transcribe public/<slug>/video/fala.mp4 --lang pt   # Whisper local -> legendas por palavra
-pnpm dev                          # Studio
+pnpm media get --source pixabay|unsplash|pexels|openverse --id <id> --out <job>/stock/<nome>.jpg
+pnpm transcribe <job>/clips/fala.mp4 --lang pt   # Whisper local -> legendas por palavra
+pnpm dev                          # Studio do motor (marca neutra)
 ```
 
 ## Novo vídeo: fluxo
@@ -54,15 +66,15 @@ pnpm dev                          # Studio
 2. **Material:** procure primeiro no que o usuário já tem (pastas dele, ex.: `C:\sites\<cliente>`; projetos com tokens
    de cor e fontes; pastas `_FILES`, `FOTOS`). Depois site do cliente (WebFetch) e por último bancos (`pnpm media`).
    Para escolher fotos, monte folhas de contato numeradas (ffmpeg) e olhe antes de decidir.
-3. **Marca:** `brands/<marca>.json`. Fonte condensada pede `"scale": 1.3` e talvez `"uppercase": true`.
+3. **Marca:** `<cliente>\videos\brand.json` (`pnpm brand new`). Fonte condensada pede `"scale": 1.3` e talvez `"uppercase": true`.
    Logo que não contrasta com o fundo: `"plate": "circle"|"rounded"`.
-4. **Job:** escreva `jobs/<slug>/job.json` (schema em `schemas/job.schema.json`). Todo texto fica no job;
-   [colchetes] marcam o destaque.
+4. **Job:** `pnpm video new <pasta do job> --brand <marca>` e edite o `job.json` (schema em `schemas/job.schema.json`).
+   Material na própria pasta do job, citado por caminho relativo. Todo texto fica no job; [colchetes] marcam o destaque.
 5. `pnpm video voice` (se houver locução) → `pnpm video stills` → **olhe a folha de contato** e corrija
    (texto cortado, legenda sobre conteúdo, contraste, foto ruim) → `pnpm video render`.
 6. Confira o mp4 extraindo quadros nas transições (ffmpeg) e o loudness informado (alvo -14 a -16 LUFS).
-7. Entregue na pasta do cliente (`render --dest <pasta do cliente>`), informe o caminho e envie o mp4.
-   Se houver créditos CC-BY, avise. Depois da entrega, nada do cliente fica neste repositório.
+7. Entregue: o render grava em `<job>/entregas/<data>/` (ou `--dest`). Informe o caminho e envie o mp4.
+   Se houver créditos CC-BY, avise.
 
 ## Tipos de cena (campo "type")
 
@@ -74,7 +86,7 @@ Campos comuns: `id`, `voice`, `duration`, `transition`, `camera`, `background`, 
 - **Transições:** auto, none, fade, slide, push, wipe, zoom, whip, lift, dive, iris, bands, bubble, leak, glitch, flip.
   "auto" usa `brand.motion.transitions` ou a energia da marca (calm, normal, playful).
 - **Fundos:** auto, solid, gradient, mesh, particles, grid, shapes, aurora, ou `{ "type": "media", "media": ..., "dim": 0.5 }`.
-- **Mídia:** caminho em `public/` ou `{ src, focus: {x,y}, fit, trim, muted: false, captions }`. Vídeo de banco ou
+- **Mídia:** caminho relativo à pasta do job ou `{ src, focus: {x,y}, fit, trim, muted: false, captions }`. Vídeo de banco ou
   de celular: converta para h264 1080 sem áudio (o `pnpm media get` já faz; arquivos do cliente, faça com ffmpeg).
 
 ## Tempo, música e efeitos
@@ -82,7 +94,7 @@ Campos comuns: `id`, `voice`, `duration`, `transition`, `camera`, `background`, 
 - Duração por cena = tempo de leitura (ritmo `pace`) ou locução + respiro, arredondada aos tempos da música
   (`music.bpm` ou `brand.audio.bpm`). Todo corte cai no tempo. `src/core/timeline.ts` é a fonte única.
 - `music.mode`: `generate` (trilha original por código, sincronizada, climas upbeat/corporate/tech/calm/epic),
-  `file` (arquivo em public, ex.: baixado com `pnpm audio:get`) ou `none`.
+  `file` (arquivo na pasta do job, ex.: baixado com `pnpm audio:get`) ou `none`.
 - Efeitos automáticos do pack `public/_lib/sfx` (whoosh nas transições, impact na logo, pop em listas, tick em números,
   chime no CTA, riser antes do fecho). No máximo 1 a cada 0,25 s. Para usar efeitos de banco, crie outro pack com os
   mesmos nomes e aponte `sfx.pack`.
@@ -96,7 +108,7 @@ Campos comuns: `id`, `voice`, `duration`, `transition`, `camera`, `background`, 
   `style` pop/line/box. Com legenda queimada, o layout reserva uma faixa embaixo (conteúdo nunca fica sob ela).
   A legenda da locução não é queimada quando repete o texto da tela (`captions.whenOnScreen: "show"` força);
   toda legenda fica sobre placa escura com contraste AA e a palavra falada vira pílula na cor de destaque.
-- Idiomas: `langs` no job + `jobs/<slug>/i18n/<lang>.json`. `pnpm video translate <slug> --to en` cria as chaves;
+- Idiomas: `langs` no job + `<job>/i18n/<lang>.json`. `pnpm video translate <job> --to en` cria as chaves;
   preencha você mesmo (no chat) ou use `--auto` (DeepL/Claude/OpenAI se houver chave). Depois rode `voice --lang en`.
 
 ## Rede, chaves e onde rodar
@@ -112,8 +124,8 @@ Campos comuns: `id`, `voice`, `duration`, `transition`, `camera`, `background`, 
 ## Repositório (github.com/marcuswd/reel, privado)
 
 - Vai para o git só o motor: `src`, `scripts`, `schemas`, `public/_lib` (efeitos), docs e testes. Nenhuma marca, job,
-  material, render ou entrega, nem como exemplo. O `.gitignore` exclui `jobs/`, `brands/`, `public/*` (menos `_lib`),
-  `clientes/`, `out/` e `.env`.
+  material, render ou entrega, nem como exemplo; eles moram na pasta do cliente. O `.gitignore` ainda barra `jobs/`,
+  `brands/`, `public/*` (menos `_lib`), `clientes/`, `out/` e `.env` por segurança.
 - Mudança no motor: `pnpm typecheck`, `pnpm test` e um still da composição padrão (marca neutra de `src/template/demo.ts`):
   `pnpm exec remotion still src/index.ts Video out/smoke.png --frame=60 --scale=0.5`. Olhe a imagem.
 - Commits em inglês; registe a mudança no `CHANGELOG.md` e suba a versão do `package.json`.

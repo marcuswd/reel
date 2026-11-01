@@ -28,7 +28,6 @@ export const doctor = async () => {
     ["OPENAI_API_KEY", "locução/tradução (OpenAI)"],
     ["DEEPL_API_KEY", "tradução (DeepL)"],
     ["ANTHROPIC_API_KEY", "tradução (Claude)"],
-    ["EXPORT_DIR", "pasta de entrega (padrão: clientes/)"],
   ];
   for (const [k, d] of keys) console.log(`  ${ok(!!process.env[k])} ${k.padEnd(20)} ${d}`);
 

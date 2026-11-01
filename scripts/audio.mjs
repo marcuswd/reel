@@ -4,7 +4,7 @@
 // Aceita só CC0, CC-BY e Public Domain Mark (sem NC, sem ND, sem SA).
 //
 //   node scripts/audio.mjs search --type sfx|music --q "whoosh" [--source openverse|freesound|jamendo|all] [--max-dur 5] [--limit 10]
-//   node scripts/audio.mjs get --source openverse|freesound|jamendo --id <id> --out public/<slug>/audio/<nome>.mp3 [--no-normalize]
+//   node scripts/audio.mjs get --source openverse|freesound|jamendo --id <id> --out <pasta do job>/audio/<nome>.mp3 [--no-normalize]
 
 import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";

@@ -1,6 +1,6 @@
 // Banco de fotos e vídeos para composições genéricas.
 //   pnpm media search --type photo|video --q "acai bowl" [--orientation portrait|landscape|square] [--source all|pixabay|unsplash|pexels|openverse] [--limit 8] [--sheet]
-//   pnpm media get --source pixabay --id 123 --type photo|video --out public/<slug>/stock/<nome>.jpg
+//   pnpm media get --source pixabay --id 123 --type photo|video --out <pasta do job>/stock/<nome>.jpg
 //
 // Chaves no .env: PIXABAY_API_KEY (fotos e vídeos), UNSPLASH_ACCESS_KEY (fotos), PEXELS_API_KEY (fotos e vídeos).
 // Openverse não precisa de chave (fotos CC0/CC-BY). Licenças aceitas: Pixabay, Unsplash, Pexels, CC0, CC-BY.
@@ -168,7 +168,7 @@ const search = async () => {
 const get = async () => {
   const source = s("source") ?? die("--source");
   const id = s("id") ?? die("--id");
-  const out = s("out") ?? die("--out public/<slug>/stock/<nome>.jpg");
+  const out = s("out") ?? die("--out <pasta do job>/stock/<nome>.jpg");
   const type = (s("type") ?? (/\.(mp4|webm|mov)$/i.test(out) ? "video" : "photo")) as "photo" | "video";
   const prov = providers[source] ?? die(`fonte desconhecida: ${source}`);
   if (prov.key && !process.env[prov.key]) die(`${prov.key} não definida no .env`);

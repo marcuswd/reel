@@ -1,16 +1,23 @@
-// Marcas (brands/<slug>.json).
-//   pnpm brand new <slug> --name "Nome" [--from https://site.com.br]   rascunho da marca (cores, fontes e logo tirados do site)
-//   pnpm brand font <slug> heading|body "Montserrat" [700,800,900]     baixa a fonte do @fontsource (npm) para public/brands/<slug>/fonts
-//   pnpm brand show <slug>                                             valida e mostra a marca
+// Marca do cliente: <pasta>/brand.json, com fontes e logo na mesma pasta (caminhos relativos a ela).
+// Fica na pasta do cliente, fora deste repositório. Um job usa com "brand": "<nome>" (procura brand.json
+// na pasta do job ou na de cima) ou "brand": "caminho/brand.json".
+//   pnpm brand new <pasta> --name "Nome" [--from https://site.com.br]   rascunho (cores, fontes e logo tirados do site)
+//   pnpm brand font <pasta> heading|body "Montserrat" [700,800,900]     baixa a fonte do @fontsource (npm) para <pasta>/fonts
+//   pnpm brand show <pasta>                                             valida e mostra a marca
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { extname, join } from "node:path";
+import { basename, dirname, extname, join, relative, resolve } from "node:path";
 import { brandSchema } from "../src/core/schema.ts";
 import { die, log, p, parseArgs, readJson, run, writeJson } from "./lib/env.ts";
 
 const { pos, opt } = parseArgs(process.argv.slice(2));
 const s = (k: string) => (typeof opt[k] === "string" ? (opt[k] as string) : undefined);
 const UA = { "User-Agent": "Mozilla/5.0 (remotion-base brand extractor)" };
+/** <pasta> ou <pasta>/brand.json → caminho do brand.json */
+const brandPath = (arg: string | undefined) => {
+  const a = resolve(arg ?? die("informe a pasta da marca (ex.: C:\\sites\\cliente\\videos)"));
+  return a.endsWith(".json") ? a : join(a, "brand.json");
+};
 
 // ── cores ──
 const toRgb = (hex: string) => {
@@ -77,9 +84,10 @@ const extract = async (url: string) => {
 };
 
 const cmdNew = async () => {
-  const slug = pos[1] ?? die("slug?");
-  const f = p("brands", `${slug}.json`);
-  if (existsSync(f) && !opt.force) die(`brands/${slug}.json já existe (--force para sobrescrever)`);
+  const f = brandPath(pos[1]);
+  const dir = dirname(f);
+  const slug = (s("slug") ?? basename(dir)).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  if (existsSync(f) && !opt.force) die(`${f} já existe (--force para sobrescrever)`);
   const from = s("from");
   let colors: string[] = [];
   let fonts: string[] = [];
@@ -97,11 +105,10 @@ const cmdNew = async () => {
       try {
         const r = await fetch(x.logo, { headers: UA });
         const ext = (extname(new URL(x.logo).pathname) || ".png").slice(0, 5);
-        const dir = p("public", "brands", slug);
         mkdirSync(dir, { recursive: true });
-        logoFile = `brands/${slug}/logo${ext}`;
-        writeFileSync(p("public", logoFile), Buffer.from(await r.arrayBuffer()));
-        log(`logo: ${x.logo} → public/${logoFile}`);
+        logoFile = `logo${ext}`;
+        writeFileSync(join(dir, logoFile), Buffer.from(await r.arrayBuffer()));
+        log(`logo: ${x.logo} → ${join(dir, logoFile)}`);
       } catch (e) {
         log(`logo falhou: ${e}`);
       }
@@ -111,7 +118,7 @@ const cmdNew = async () => {
   const accent = colors[1] ?? "#ffb020";
   const dark = colors.find((c) => hsl(c).l < 0.3) ?? shade(primary, 0.25);
   const brand = {
-    $schema: "../schemas/brand.schema.json",
+    $schema: relative(dir, p("schemas", "brand.schema.json")).replace(/\\/g, "/"),
     slug,
     name,
     colors: {
@@ -134,16 +141,15 @@ const cmdNew = async () => {
     contact: from ? { site: new URL(from).hostname.replace(/^www\./, "") } : {},
   };
   writeJson(f, brand);
-  log(`brands/${slug}.json criado. Próximo: pnpm brand font ${slug} heading "${brand.fonts.heading.family}" e pnpm brand font ${slug} body "${brand.fonts.body.family}"`);
+  log(`${f} criado. Próximo: pnpm brand font "${dir}" heading "${brand.fonts.heading.family}" e pnpm brand font "${dir}" body "${brand.fonts.body.family}"`);
 };
 
 const cmdFont = async () => {
-  const slug = pos[1] ?? die("slug?");
+  const f = brandPath(pos[1]);
   const role = pos[2] as "heading" | "body";
   if (role !== "heading" && role !== "body") die("papel: heading ou body");
   const family = pos[3] ?? die('família, ex.: "Montserrat"');
   const weights = (pos[4] ?? (role === "heading" ? "700,800,900" : "400,500,700")).split(",");
-  const f = p("brands", `${slug}.json`);
   const brand = readJson<Record<string, any>>(f);
   const pkg = `@fontsource/${family.toLowerCase().replace(/\s+/g, "-")}`;
   const tmp = mkdtempSync(join(tmpdir(), "font-"));
@@ -153,24 +159,23 @@ const cmdFont = async () => {
   run("tar", ["-xzf", join(tmp, tgz), "-C", tmp], { quiet: true });
   const files = join(tmp, "package", "files");
   const id = pkg.split("/")[1];
-  const dir = p("public", "brands", slug, "fonts");
+  const dir = join(dirname(f), "fonts");
   mkdirSync(dir, { recursive: true });
   const map: Record<string, string> = {};
   for (const w of weights) {
     const name = `${id}-latin-${w}-normal.woff2`;
     if (!existsSync(join(files, name))) { log(`peso ${w} não existe em ${pkg}`); continue; }
     copyFileSync(join(files, name), join(dir, name));
-    map[w] = `brands/${slug}/fonts/${name}`;
+    map[w] = `fonts/${name}`;
   }
   if (!Object.keys(map).length) die("nenhum peso copiado");
   brand.fonts[role] = { family, files: map };
   writeJson(f, brand);
-  log(`${role}: ${family} ${Object.keys(map).join(", ")} → public/brands/${slug}/fonts`);
+  log(`${role}: ${family} ${Object.keys(map).join(", ")} → ${dir}`);
 };
 
 const cmdShow = () => {
-  const slug = pos[1] ?? die("slug?");
-  const r = brandSchema.safeParse(readJson(p("brands", `${slug}.json`)));
+  const r = brandSchema.safeParse(readJson(brandPath(pos[1])));
   if (!r.success) die(r.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("\n"));
   console.log(JSON.stringify(r.data, null, 2));
 };
@@ -179,6 +184,6 @@ const main = async () => {
   if (pos[0] === "new") return cmdNew();
   if (pos[0] === "font") return cmdFont();
   if (pos[0] === "show") return cmdShow();
-  console.log('uso: pnpm brand new <slug> [--from URL] | pnpm brand font <slug> heading|body "Família" [pesos] | pnpm brand show <slug>');
+  console.log('uso: pnpm brand new <pasta> [--from URL] | pnpm brand font <pasta> heading|body "Família" [pesos] | pnpm brand show <pasta>');
 };
 main().catch((e) => { console.error(e); process.exit(1); });

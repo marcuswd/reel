@@ -1,24 +1,26 @@
 // Monta as props finais de um job: roteiro + marca + idioma + locução + legendas + trilha.
-import { existsSync, readdirSync, writeFileSync } from "node:fs";
+// Tudo é lido da pasta do job aberta (workspace.ts).
+import { existsSync, writeFileSync } from "node:fs";
+import { join, relative } from "node:path";
 import { brandSchema, jobSchema, type Brand, type CaptionItem, type FormatKey, type Job, type Scene, type VideoProps, type VoiceClip } from "../../src/core/schema.ts";
 import { planTimeline } from "../../src/core/timeline.ts";
 import { die, fmtId, hash, langId, p, readJson, writeJson } from "./env.ts";
+import { fileOf, relocate, ws, type Workspace } from "./workspace.ts";
 
-export const listJobs = () => (existsSync(p("jobs")) ? readdirSync(p("jobs")).filter((d) => existsSync(p("jobs", d, "job.json"))) : []);
+const issues = (e: { issues: { path: PropertyKey[]; message: string }[] }) => e.issues.map((i) => `  ${i.path.join(".")}: ${i.message}`).join("\n");
 
-export const loadJob = (slug: string): Job => {
-  const f = p("jobs", slug, "job.json");
-  if (!existsSync(f)) die(`jobs/${slug}/job.json não existe (pnpm video new ${slug})`);
+/** job.json da pasta aberta, validado. */
+export const loadJob = (w: Workspace = ws()): Job => {
+  const f = join(w.dir, "job.json");
   const r = jobSchema.safeParse(readJson(f));
-  if (!r.success) die(`job inválido (${slug}):\n${r.error.issues.map((i) => `  ${i.path.join(".")}: ${i.message}`).join("\n")}`);
+  if (!r.success) die(`job inválido (${f}):\n${issues(r.error)}`);
   return r.data!;
 };
 
-export const loadBrand = (slug: string): Brand => {
-  const f = p("brands", `${slug}.json`);
-  if (!existsSync(f)) die(`brands/${slug}.json não existe`);
-  const r = brandSchema.safeParse(readJson(f));
-  if (!r.success) die(`marca inválida (${slug}):\n${r.error.issues.map((i) => `  ${i.path.join(".")}: ${i.message}`).join("\n")}`);
+/** Marca do job, validada. */
+export const loadBrand = (w: Workspace = ws()): Brand => {
+  const r = brandSchema.safeParse(readJson(w.brandFile));
+  if (!r.success) die(`marca inválida (${w.brandFile}):\n${issues(r.error)}`);
   return r.data!;
 };
 
@@ -60,10 +62,12 @@ const setPath = (obj: Record<string, unknown>, path: string[], value: string) =>
   return true;
 };
 
-/** Aplica jobs/<slug>/i18n/<lang>.json (chaves vazias caem no texto original). */
+export const i18nFile = (lang: string, w: Workspace = ws()) => join(w.dir, "i18n", `${lang}.json`);
+
+/** Aplica <pasta>/i18n/<lang>.json (chaves vazias caem no texto original). */
 export const applyI18n = (job: Job, lang: string): { job: Job; missing: string[] } => {
   if (lang === job.lang) return { job, missing: [] };
-  const f = p("jobs", job.slug, "i18n", `${lang}.json`);
+  const f = i18nFile(lang);
   const dict: Record<string, string> = existsSync(f) ? readJson(f) : {};
   const clone: Job = JSON.parse(JSON.stringify(job));
   const missing: string[] = [];
@@ -81,7 +85,7 @@ export const applyI18n = (job: Job, lang: string): { job: Job; missing: string[]
 };
 
 // ── Locução ──
-export const voiceDir = (slug: string, lang: string) => p("public", slug, "voice", langId(lang));
+export const voiceDir = (slug: string, lang: string) => fileOf(`${slug}/voice/${langId(lang)}`);
 export const voiceKey = (job: Job, s: Scene) => hash([s.voice, job.voice.provider, job.voice.voiceId ?? ""]);
 /** Manifest: { [sceneId]: { key, src, seconds, words } }. Só entra a fala cujo texto não mudou. */
 export const loadVoice = (job: Job, lang: string): Record<string, VoiceClip> => {
@@ -102,7 +106,8 @@ const loadClipCaptions = (job: Job, lang: string): Record<string, CaptionItem[]>
   for (const s of job.scenes) {
     if (s.type !== "media" || typeof s.media === "string" || !s.media.captions) continue;
     const rel = s.media.captions.replace("{lang}", langId(lang));
-    const f = p("public", rel);
+    // relativo à pasta do job ("clips/fala.{lang}.captions.json") ou já no formato público
+    const f = existsSync(join(ws().dir, rel)) ? join(ws().dir, rel) : fileOf(rel);
     if (existsSync(f)) out[s.id] = readJson<CaptionItem[]>(f);
   }
   return out;
@@ -112,8 +117,10 @@ export const musicFile = (slug: string, lang: string) => `${slug}/audio/generate
 
 /** Props completas (formato fica como o primeiro; o Root troca por composição). */
 export const resolveProps = (slug: string, lang: string, format?: FormatKey): { props: VideoProps; missing: string[] } => {
-  const base = loadJob(slug);
-  const brand = loadBrand(base.brand);
+  const w = ws();
+  // caminhos relativos à pasta do job e à pasta da marca viram caminhos da "public" do bundle
+  const base = relocate(loadJob(w), w.dir, `${w.slug}/`);
+  const brand = relocate(loadBrand(w), w.brandDir, w.brandPrefix);
   const { job, missing } = applyI18n(base, lang);
   const props: VideoProps = {
     job,
@@ -125,31 +132,33 @@ export const resolveProps = (slug: string, lang: string, format?: FormatKey): { 
     musicSrc: null,
   };
   if (job.music.mode === "file" && job.music.file) props.musicSrc = job.music.file;
-  if (job.music.mode === "generate" && existsSync(p("public", musicFile(slug, lang)))) props.musicSrc = musicFile(slug, lang);
+  if (job.music.mode === "generate" && existsSync(fileOf(musicFile(slug, lang)))) props.musicSrc = musicFile(slug, lang);
   return { props, missing };
 };
 
 export const planOf = (props: VideoProps) => planTimeline(props);
 
-/** Grava jobs/<slug>/_build/<lang>.json e regenera src/jobs.generated.ts. */
-export const writeResolved = (slug: string, lang: string, props: VideoProps) => writeJson(p("jobs", slug, "_build", `${langId(lang)}.json`), props);
+export const buildFile = (lang: string, w: Workspace = ws()) => join(w.dir, "_build", `${langId(lang)}.json`);
+/** Grava <pasta>/_build/<lang>.json. */
+export const writeResolved = (_slug: string, lang: string, props: VideoProps) => writeJson(buildFile(lang), props);
 
-export const writeIndex = () => {
+/** src/jobs.generated.ts: vazio, ou com o job aberto no Studio (pnpm video studio <pasta>). Não versionado. */
+export const writeIndex = (w?: Workspace) => {
   const entries: string[] = [];
   const imports: string[] = [];
   let n = 0;
-  for (const slug of listJobs()) {
-    let job: Job;
-    try { job = loadJob(slug); } catch { continue; }
+  if (w) {
+    const job = loadJob(w);
     for (const lang of langsOf(job)) {
-      const f = p("jobs", slug, "_build", `${langId(lang)}.json`);
+      const f = buildFile(lang, w);
       if (!existsSync(f)) continue;
       const v = `j${n++}`;
-      imports.push(`import ${v} from "../jobs/${slug}/_build/${langId(lang)}.json";`);
-      entries.push(`  { slug: ${JSON.stringify(slug)}, lang: ${JSON.stringify(lang)}, formats: ${JSON.stringify(job.formats)}, props: ${v} as unknown as VideoProps },`);
+      const rel = relative(p("src"), f).replace(/\\/g, "/");
+      imports.push(`import ${v} from ${JSON.stringify(rel.startsWith(".") ? rel : `./${rel}`)};`);
+      entries.push(`  { slug: ${JSON.stringify(w.slug)}, lang: ${JSON.stringify(lang)}, formats: ${JSON.stringify(job.formats)}, props: ${v} as unknown as VideoProps },`);
     }
   }
-  const src = `// GERADO por \`pnpm video build\`. Não edite: mude jobs/<slug>/job.json e rode o build.
+  const src = `// GERADO por \`pnpm video index\` / \`pnpm video studio <pasta>\`. Não edite nem versione.
 import type { FormatKey, VideoProps } from "./core/schema";
 ${imports.join("\n")}
 

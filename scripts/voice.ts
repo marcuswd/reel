@@ -1,5 +1,5 @@
 // Locução (TTS) por cena, com tempo de cada palavra para as legendas.
-//   pnpm video voice <slug> [--lang pt-BR|all] [--force]
+//   pnpm video voice <pasta> [--lang pt-BR|all] [--force]
 //
 // Provedores (job.voice.provider):
 //   piper       local e grátis. Baixa a voz do HuggingFace na 1ª vez (.cache/piper). Requer `pip install piper-tts`.
@@ -11,6 +11,7 @@ import { spawnSync } from "node:child_process";
 import type { CaptionItem, Job, Scene } from "../src/core/schema.ts";
 import { die, langId, log, p, python, readJson, run, writeJson } from "./lib/env.ts";
 import { applyI18n, loadJob, voiceDir, voiceKey } from "./lib/resolve.ts";
+import { fileOf } from "./lib/workspace.ts";
 
 const PIPER_VOICES: Record<string, string> = {
   "pt-br": "pt_BR-faber-medium",
@@ -132,7 +133,7 @@ const openai = async (text: string, lang: string, job: Job, out: string) => {
 };
 
 export const generateVoice = async (slug: string, lang: string, force = false) => {
-  const base = loadJob(slug);
+  const base = loadJob();
   if (base.voice.provider === "none") die(`job sem locução: defina "voice": { "provider": "piper" } (ou elevenlabs/openai) no job.json`);
   const { job } = applyI18n(base, lang);
   const dir = voiceDir(slug, lang);
@@ -144,14 +145,14 @@ export const generateVoice = async (slug: string, lang: string, force = false) =
   for (const s of scenes) {
     const key = voiceKey(job, s);
     const rel = `${slug}/voice/${langId(lang)}/${s.id}.mp3`;
-    if (!force && manifest[s.id]?.key === key && existsSync(p("public", rel))) continue;
+    if (!force && manifest[s.id]?.key === key && existsSync(fileOf(rel))) continue;
     const text = s.voice.replace(/[[\]]/g, "");
     const raw = `${dir}/${s.id}.raw`;
     let words: CaptionItem[] | null = null;
     if (job.voice.provider === "piper") words = await piper(text, lang, job, raw + ".wav");
     if (job.voice.provider === "elevenlabs") words = await elevenlabs(text, lang, job, raw + ".wav");
     if (job.voice.provider === "openai") words = await openai(text, lang, job, raw + ".wav");
-    const sec = job.voice.provider === "elevenlabs" ? (run("ffmpeg", ["-y", "-loglevel", "error", "-i", raw + ".wav", "-af", "loudnorm=I=-16:TP=-1.5", "-ar", "48000", "-ac", "1", "-b:a", "160k", p("public", rel)], { quiet: true }), seconds(p("public", rel))) : finish(raw + ".wav", p("public", rel));
+    const sec = job.voice.provider === "elevenlabs" ? (run("ffmpeg", ["-y", "-loglevel", "error", "-i", raw + ".wav", "-af", "loudnorm=I=-16:TP=-1.5", "-ar", "48000", "-ac", "1", "-b:a", "160k", fileOf(rel)], { quiet: true }), seconds(fileOf(rel))) : finish(raw + ".wav", fileOf(rel));
     unlinkSync(raw + ".wav");
     manifest[s.id] = { key, src: rel, seconds: sec, words: words ?? estimateWords(text, sec) };
     log(`${lang} ${s.id}: ${sec.toFixed(2)} s`);

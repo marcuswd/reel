@@ -34,9 +34,7 @@
       "Edit(out/**)",
       "Edit(README.md)",
       "Edit(CLAUDE.md)",
-      "Edit(package.json)",
-      "Bash(node scripts/export.mjs:*)",
-      "Bash(pnpm export:*)"
+      "Edit(package.json)"
     ],
     "deny": [
       "Read(./.env)",

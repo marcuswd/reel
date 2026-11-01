@@ -1,6 +1,6 @@
 {
   "name": "reel",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -16,8 +16,7 @@
     "doctor": "tsx scripts/video.ts doctor",
     "audio:search": "node scripts/audio.mjs search",
     "audio:get": "node scripts/audio.mjs get",
-    "skills": "npx -y skills add remotion-dev/skills --agent claude-code --yes",
-    "export": "node scripts/export.mjs"
+    "skills": "npx -y skills add remotion-dev/skills --agent claude-code --yes"
   },
   "dependencies": {
     "@fontsource/archivo": "^5.3.0",

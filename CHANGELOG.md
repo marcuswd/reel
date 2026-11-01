@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.0 (2026-10-31)
+
+- Tudo de um vídeo mora na pasta do cliente. Todo comando recebe a pasta do job: `pnpm video new|build|voice|music|translate|plan|stills|render|studio <pasta>`. Lá ficam `job.json`, `i18n/`, material, locução, trilha, `_build/`, `out/` (stills e folhas) e `entregas/<data>/` (ou `--dest`). Nada é gravado no repositório.
+- Marca: `brand.json` na pasta do job, na de cima (compartilhada pelos vídeos do cliente) ou em `../brands/<nome>.json`; ou `"brand": "caminho/brand.json"`. Fontes e logo ficam ao lado dela. `pnpm brand new|font|show <pasta>`.
+- Caminhos de mídia no job e na marca são relativos às suas pastas (`img/foto.jpg`, `fonts/x.woff2`); `scripts/lib/workspace.ts` os traduz para a `public` do bundle. No render o material é copiado só para o bundle temporário (da pasta da marca, só os arquivos que o `brand.json` usa); no Studio entra por junction, sem cópia e sem exigir admin no Windows.
+- `pnpm video studio <pasta>` abre o job no Studio e, ao fechar, esvazia de novo o `src/jobs.generated.ts`.
+- `pnpm video new` não gera a trilha (sai no build/render, com as cenas de verdade).
+- Saem `EXPORT_DIR`, `scripts/export.mjs` e `pnpm export`: a entrega já sai na pasta do job.
+- Testes da pasta do job e teste de ponta a ponta (`REEL_E2E=1`, ligado no CI): pasta temporária de cliente → new, stills e render, conferindo que o repositório não muda.
+
 ## 0.4.0 (2026-10-31)
 
 - O repositório passa a levar só o motor. Saem todas as marcas (`brands/*.json`), todos os jobs (`jobs/*`, inclusive os exemplos `demo-30s` e `showcase`) e o material versionado (`public/brands/marcuswd`, `public/demo-30s`, `public/showcase`). O `.gitignore` exclui `jobs/`, `brands/` e `public/*` (menos `_lib`).

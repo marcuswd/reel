@@ -19,44 +19,58 @@ Requer Node 20+, ffmpeg e Python 3. Chaves opcionais no `.env` (veja `.env.examp
 
 ## Em 5 comandos
 
+Tudo de um vídeo fica na pasta do cliente, fora deste repositório. Exemplo com `C:\sites\cliente\videos`:
+
 ```bash
-pnpm video new promo-x --brand <marca> --client cliente-x --format 9:16
-# edite jobs/promo-x/job.json (cenas) e coloque os assets em public/promo-x/
-pnpm video voice promo-x            # se tiver locução
-pnpm video stills promo-x           # confere um quadro por cena (out/promo-x/sheet-*.jpg)
-pnpm video render promo-x --format all --lang all
+pnpm brand new "C:\sites\cliente\videos" --from https://cliente.com      # brand.json + logo
+pnpm video new "C:\sites\cliente\videos\promo" --brand cliente --format 9:16
+# edite promo\job.json e coloque o material em promo\ (caminhos relativos: "img/foto.jpg")
+pnpm video voice "C:\sites\cliente\videos\promo"     # se tiver locução
+pnpm video stills "C:\sites\cliente\videos\promo"    # folha de contato em promo\out\
+pnpm video render "C:\sites\cliente\videos\promo" --format all --lang all
 ```
 
-O repositório leva só o motor. Marcas, jobs, material e entregas (`brands/`, `jobs/`, `public/<job>/`, `clientes/`, `out/`) nunca entram: o `.gitignore` já os exclui.
+A entrega vai para `promo\entregas\<AAAA-MM-DD>\` (ou `--dest <pasta>`): mp4, thumb, `.srt`, `.vtt` e créditos.
+Nada é sobrescrito (cria `-v2`). `pnpm video studio <pasta>` abre o job no Studio.
 
-A entrega vai para a pasta do cliente com `--dest` (sem ele, `clientes/<client>/<slug>/<AAAA-MM-DD>/` ou `EXPORT_DIR`): mp4, thumb, `.srt`, `.vtt` e créditos.
-Nada é sobrescrito (cria `-v2`).
+```
+C:\sites\cliente\videos\
+  brand.json, logo.svg, fonts\        marca (compartilhada pelos vídeos do cliente)
+  promo\
+    job.json, i18n\<lang>.json        roteiro e traduções
+    img\, video\, stock\              material
+    voice\, audio\generated\          locução e trilha geradas
+    _build\, out\                     gerados (props, stills, folhas)
+    entregas\<data>\                  vídeo final
+```
 
-## Job (jobs/<slug>/job.json)
+O repositório leva só o motor: nenhuma marca, job, material ou entrega entra nele.
+
+## Job (<pasta>/job.json)
 
 ```json
 {
-  "$schema": "../../schemas/job.schema.json",
-  "slug": "mais-sabor-reels",
-  "client": "mais_sabor",
-  "brand": "mais-sabor",
-  "lang": "pt-AO",
+  "$schema": "../../../remotion-base/schemas/job.schema.json",
+  "slug": "promo",
+  "brand": "cliente",
+  "lang": "pt-BR",
   "formats": ["9:16"],
   "music": { "mode": "generate", "mood": "upbeat", "bpm": 124 },
-  "voice": { "provider": "piper", "voiceId": "pt_PT-tugão-medium" },
+  "voice": { "provider": "piper" },
   "captions": { "mode": "both", "style": "pop" },
   "scenes": [
-    { "id": "abertura", "type": "cover", "logo": true, "title": "Salgados com [mais sabor]",
-      "media": { "src": "mais-sabor/video/maquina.mp4" }, "voice": "Mais Sabor..." },
-    { "id": "produtos", "type": "gallery", "title": "Escolha o seu [preferido]", "items": ["mais-sabor/img/a.jpg", "..."] },
+    { "id": "abertura", "type": "cover", "logo": true, "title": "Produto com [mais sabor]",
+      "media": { "src": "video/fabrica.mp4" }, "voice": "..." },
+    { "id": "produtos", "type": "gallery", "title": "Escolha o seu [preferido]", "items": ["img/a.jpg", "img/b.jpg"] },
     { "id": "pedido", "type": "cta", "title": "Peça [já]", "button": "WhatsApp",
-      "contact": [{ "kind": "whatsapp", "value": "+244 ..." }] }
+      "contact": [{ "kind": "whatsapp", "value": "+55 ..." }] }
   ]
 }
 ```
 
+`brand` é um nome (procura `brand.json` na pasta do job e na de cima) ou um caminho para `.json`.
 Tipos de cena: `cover`, `statement`, `media`, `split`, `screen`, `list`, `stats`, `gallery`, `quote`, `cta`, `logo`.
-O VS Code completa e valida os campos pelo `$schema` (gerado por `pnpm video build`).
+O VS Code completa e valida os campos pelo `$schema` (o `pnpm video new` já aponta para o schema do motor).
 
 ## Recursos
 
@@ -76,8 +90,8 @@ O VS Code completa e valida os campos pelo `$schema` (gerado por `pnpm video bui
 
 ## Repositório
 
-- O índice de jobs do Studio (`src/jobs.generated.ts`) e os `jobs/<slug>/_build/` são gerados: `pnpm install` cria o índice e `pnpm video build` atualiza.
-- As composições antigas feitas à mão (CmsTis, AcaiMg, Intro) saíram do motor; estão no ramo `legado`.
+- Só o motor: `src`, `scripts`, `schemas`, `public/_lib` (efeitos), docs e testes. `src/jobs.generated.ts` é gerado (vazio, ou com o job aberto pelo `pnpm video studio`).
+- As composições antigas feitas à mão saíram do motor; estão no ramo `legado`.
 - Próximos passos: [docs/backlog.md](docs/backlog.md). Mudanças: [CHANGELOG.md](CHANGELOG.md).
 
 ## Licença do Remotion

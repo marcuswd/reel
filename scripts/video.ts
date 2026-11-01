@@ -1,36 +1,39 @@
 #!/usr/bin/env tsx
-// CLI do gerador de vídeos.  pnpm video <comando> [...]
+// CLI do gerador de vídeos.  pnpm video <comando> <pasta do job> [...]
+// Tudo do vídeo fica na pasta do job (fora deste repositório); veja scripts/lib/workspace.ts.
 //
-//   new <slug> --brand <marca> [--client <pasta>] [--format 9:16,16:9] [--lang pt-BR]
-//   build [slug]                       valida, aplica idiomas/locução, gera trilha e atualiza o Studio
-//   voice <slug> [--lang x] [--force]  gera a locução (TTS) das cenas com "voice"
-//   music <slug> [--lang x] [--force]  (re)gera a trilha sincronizada aos cortes
-//   translate <slug> --to en [--auto]  cria/completa jobs/<slug>/i18n/<lang>.json
-//   stills <slug> [--lang x] [--format 9:16]   um quadro por cena em out/<slug>/stills (conferência)
-//   render <slug> [--lang x|all] [--format x|all] [--draft] [--dest pasta]
-//   plan <slug> [--lang x]             mostra a timeline (cenas, durações, transições, efeitos)
-//   doctor                             confere ffmpeg, python, chaves e rede
+//   new <pasta> --brand <marca|brand.json> [--format 9:16,16:9] [--lang pt-BR]
+//   build <pasta>                       valida, aplica idiomas/locução e gera a trilha
+//   voice <pasta> [--lang x] [--force]  gera a locução (TTS) das cenas com "voice"
+//   music <pasta> [--lang x] [--force]  (re)gera a trilha sincronizada aos cortes
+//   translate <pasta> --to en [--auto]  cria/completa <pasta>/i18n/<lang>.json
+//   stills <pasta> [--lang x] [--format 9:16]   um quadro por cena + folha de contato em <pasta>/out
+//   render <pasta> [--lang x|all] [--format x|all] [--draft] [--dest pasta]   entrega em <pasta>/entregas/<data>
+//   plan <pasta> [--lang x]             mostra a timeline (cenas, durações, transições, efeitos)
+//   studio <pasta>                      abre o Studio com o job
+//   doctor                              confere ffmpeg, python, chaves e rede
 import { spawnSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
-import { basename, extname, join, resolve } from "node:path";
+import { basename, extname, join, relative, resolve } from "node:path";
 import { FORMATS, type FormatKey, type VideoProps } from "../src/core/schema.ts";
 import { musicBrief } from "../src/core/timeline.ts";
 import { toSrt, toVtt } from "../src/core/srt.ts";
-import { browserExecutable, die, fmtId, has, hash, langId, log, p, parseArgs, python, readJson, run, today, writeJson } from "./lib/env.ts";
+import { browserExecutable, die, fmtId, has, hash, langId, log, p, parseArgs, python, readJson, run, spawnPlan, today, writeJson } from "./lib/env.ts";
 import { sheetArgs } from "./lib/sheet.ts";
-import { extractStrings, langsOf, listJobs, loadBrand, loadJob, musicFile, planOf, resolveProps, writeIndex, writeResolved } from "./lib/resolve.ts";
+import { buildFile, extractStrings, i18nFile, langsOf, loadBrand, loadJob, musicFile, planOf, resolveProps, writeIndex, writeResolved } from "./lib/resolve.ts";
+import { brandCandidates, fileOf, stage, studioPublic, useWorkspace, ws } from "./lib/workspace.ts";
 
 const [cmd, ...rest] = process.argv.slice(2);
 const { pos, opt } = parseArgs(rest);
 const str = (k: string) => (typeof opt[k] === "string" ? (opt[k] as string) : undefined);
 
-const pickLangs = (slug: string) => {
-  const job = loadJob(slug);
+const pickLangs = (_slug: string) => {
+  const job = loadJob();
   const l = str("lang");
   return !l ? [job.lang] : l === "all" ? langsOf(job) : l.split(",");
 };
-const pickFormats = (slug: string): FormatKey[] => {
-  const job = loadJob(slug);
+const pickFormats = (_slug: string): FormatKey[] => {
+  const job = loadJob();
   const f = str("format");
   return !f ? [job.formats[0]] : f === "all" ? job.formats : (f.split(",") as FormatKey[]);
 };
@@ -42,11 +45,11 @@ const ensureMusic = (props: VideoProps, force = false) => {
   const plan = planOf(props);
   const brief = musicBrief(props, plan);
   const rel = musicFile(job.slug, props.langCode);
-  const out = p("public", rel);
+  const out = fileOf(rel);
   const stamp = `${out}.json`;
   const h = hash(brief);
   if (!force && existsSync(out) && existsSync(stamp) && readJson<{ hash: string }>(stamp).hash === h) return { ...props, musicSrc: rel };
-  const briefFile = p("jobs", job.slug, "_build", `music-${langId(props.langCode)}.json`);
+  const briefFile = join(ws().dir, "_build", `music-${langId(props.langCode)}.json`);
   writeJson(briefFile, brief);
   log(`trilha (${brief.mood}, ${brief.bpm} BPM, ${(brief.totalFrames / brief.fps).toFixed(1)} s)`);
   run(python(), [p("scripts", "music.py"), briefFile, out]);
@@ -63,20 +66,19 @@ const writeSchemas = async () => {
 };
 
 const build = (slug: string, opts: { music?: boolean } = {}) => {
-  const job = loadJob(slug);
-  loadBrand(job.brand);
+  const job = loadJob();
+  loadBrand();
   const all: Record<string, VideoProps> = {};
   for (const lang of langsOf(job)) {
     let { props, missing } = resolveProps(slug, lang);
     if (missing.length && lang !== job.lang) log(`${lang}: ${missing.length} texto(s) sem tradução (usando o original): ${missing.slice(0, 6).join(", ")}${missing.length > 6 ? "…" : ""}`);
     const withVoice = job.scenes.filter((s) => s.voice).length;
-    if (job.voice.provider !== "none" && withVoice && Object.keys(props.voice).length < withVoice) log(`${lang}: locução faltando em ${withVoice - Object.keys(props.voice).length} cena(s). Rode: pnpm video voice ${slug} --lang ${lang}`);
+    if (job.voice.provider !== "none" && withVoice && Object.keys(props.voice).length < withVoice) log(`${lang}: locução faltando em ${withVoice - Object.keys(props.voice).length} cena(s). Rode: pnpm video voice "${ws().dir}" --lang ${lang}`);
     if (opts.music !== false) props = ensureMusic(props, opt.force === true);
     writeResolved(slug, lang, props);
     all[lang] = props;
   }
-  const n = writeIndex();
-  log(`build ok: ${slug} (${Object.keys(all).join(", ")}) · ${n} composição(ões) no Studio`);
+  log(`build ok: ${slug} (${Object.keys(all).join(", ")})`);
   return all;
 };
 
@@ -88,7 +90,9 @@ const bundleOnce = (() => {
       url = (async () => {
         const { bundle } = await import("@remotion/bundler");
         log("empacotando o projeto…");
-        return bundle({ entryPoint: p("src", "index.ts"), publicDir: p("public") });
+        const url = await bundle({ entryPoint: p("src", "index.ts"), publicDir: p("public") });
+        stage(join(url, "public"), "copy"); // material do job e da marca entram só no bundle temporário
+        return url;
       })();
     }
     return url;
@@ -102,10 +106,8 @@ const free = (f: string) => {
   for (let i = 2; ; i++) if (!existsSync(`${b}-v${i}${ext}`)) return `${b}-v${i}${ext}`;
 };
 
-const outDir = (props: VideoProps) => {
-  const root = str("dest") ?? process.env.EXPORT_DIR ?? p("clientes");
-  return resolve(root, props.job.client ?? props.job.slug, props.job.slug, today());
-};
+/** Entrega: --dest <pasta> ou <pasta do job>/entregas, sempre numa subpasta com a data. */
+const outDir = (_props: VideoProps) => resolve(str("dest") ?? join(ws().dir, "entregas"), today());
 
 const renderOne = async (props: VideoProps, format: FormatKey) => {
   const { renderMedia, renderStill, selectComposition } = await import("@remotion/renderer");
@@ -115,8 +117,9 @@ const renderOne = async (props: VideoProps, format: FormatKey) => {
   const composition = await selectComposition({ serveUrl, id: "Video", inputProps, browserExecutable: browser ?? undefined, logLevel: "error" });
   const plan = planOf({ ...props, format });
   const name = `${props.job.slug}-${fmtId(format)}-${langId(props.langCode)}`;
-  const tmp = p("out", `${name}.mp4`);
-  mkdirSync(p("out"), { recursive: true });
+  const work = join(ws().dir, "out");
+  const tmp = join(work, `${name}.mp4`);
+  mkdirSync(work, { recursive: true });
   const draft = opt.draft === true;
   log(`render ${name} · ${composition.width}x${composition.height} · ${(composition.durationInFrames / composition.fps).toFixed(1)} s${draft ? " (rascunho)" : ""}`);
   let last = -1;
@@ -141,7 +144,7 @@ const renderOne = async (props: VideoProps, format: FormatKey) => {
   // thumbnail: quadro da capa já assentada
   const first = plan.scenes[0];
   const thumbFrame = Math.min(composition.durationInFrames - 1, first.land + Math.round(first.frames * 0.55));
-  const thumb = p("out", `${name}-thumb.png`);
+  const thumb = join(work, `${name}-thumb.png`);
   await renderStill({ composition, serveUrl, output: thumb, frame: thumbFrame, inputProps, browserExecutable: browser ?? undefined, imageFormat: "png", logLevel: "error" });
 
   // exporta
@@ -157,7 +160,7 @@ const renderOne = async (props: VideoProps, format: FormatKey) => {
   }
   // créditos (áudio e mídia de terceiros)
   const credits: string[] = [];
-  for (const f of [p("public", props.job.slug, "audio", "CREDITS.md"), p("public", props.job.slug, "stock", "CREDITS.md")]) if (existsSync(f)) credits.push(readFileSync(f, "utf8"));
+  for (const f of [join(ws().dir, "audio", "CREDITS.md"), join(ws().dir, "stock", "CREDITS.md")]) if (existsSync(f)) credits.push(readFileSync(f, "utf8"));
   if (credits.length) writeFileSync(join(dir, "CREDITOS.md"), credits.join("\n\n"));
   log(`ok → ${mp4} (${(statSync(mp4).size / 1048576).toFixed(1)} MB)`);
   return mp4;
@@ -175,11 +178,11 @@ const stills = async (slug: string) => {
   const { renderStill, selectComposition } = await import("@remotion/renderer");
   const serveUrl = await bundleOnce();
   const browser = browserExecutable() ?? undefined;
-  const dir = p("out", slug, "stills");
+  const dir = join(ws().dir, "out", "stills");
   mkdirSync(dir, { recursive: true });
   const files: string[] = [];
   for (const lang of pickLangs(slug)) {
-    const props = readJson<VideoProps>(p("jobs", slug, "_build", `${langId(lang)}.json`));
+    const props = readJson<VideoProps>(buildFile(lang));
     for (const format of pickFormats(slug)) {
       const inputProps = { ...props, format } as unknown as Record<string, unknown>;
       const composition = await selectComposition({ serveUrl, id: "Video", inputProps, browserExecutable: browser, logLevel: "error" });
@@ -200,7 +203,7 @@ const stills = async (slug: string) => {
       const list = files.filter((f) => basename(f).startsWith(pre));
       const [fw, fh] = FORMATS[format];
       const w = format === "9:16" ? 270 : 480;
-      const sheet = p("out", slug, `sheet-${fmtId(format)}-${langId(lang)}.jpg`);
+      const sheet = join(ws().dir, "out", `sheet-${fmtId(format)}-${langId(lang)}.jpg`);
       try {
         run("ffmpeg", sheetArgs(list, sheet, { w, h: Math.round((w * fh) / fw / 2) * 2, cols: format === "9:16" ? 6 : 3 }), { quiet: true });
         log(`folha de contato → ${sheet}`);
@@ -213,21 +216,24 @@ const stills = async (slug: string) => {
 };
 
 // ── comandos ──
+/** Abre a pasta do job (1º argumento) e devolve o slug. */
+const open = () => useWorkspace(pos[0] ?? die(`informe a pasta do job: pnpm video ${cmd} <pasta>`)).slug;
+
 const main = async () => {
   switch (cmd) {
     case "new": {
-      const slug = pos[0] ?? die("informe o slug: pnpm video new <slug> --brand <marca>");
-      if (!/^[a-z0-9-]+$/.test(slug)) die("slug só com a-z, 0-9 e hífen");
-      const f = p("jobs", slug, "job.json");
-      if (existsSync(f)) die(`jobs/${slug}/job.json já existe`);
-      const brand = str("brand") ?? die("informe a marca: --brand <marca> (brands/<marca>.json)");
-      loadBrand(brand);
+      const dir = resolve(pos[0] ?? die('informe a pasta: pnpm video new "C:\\sites\\cliente\\videos\\promo" --brand <marca>'));
+      const f = join(dir, "job.json");
+      if (existsSync(f)) die(`${f} já existe`);
+      const slug = str("slug") ?? basename(dir).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      if (!/^[a-z0-9-]+$/.test(slug)) die("slug só com a-z, 0-9 e hífen (use --slug)");
+      const brand = str("brand") ?? die("informe a marca: --brand <nome> (procura brand.json na pasta ou acima) ou --brand caminho/brand.json");
+      if (!brandCandidates(dir, brand).some((c) => existsSync(c))) die(`marca "${brand}" não encontrada. Procurei:\n${brandCandidates(dir, brand).map((c) => `  ${c}`).join("\n")}\nCrie com: pnpm brand new <pasta> --from https://site.com`);
       const formats = (str("format") ?? "16:9").split(",");
       writeJson(f, {
-        $schema: "../../schemas/job.schema.json",
+        $schema: relative(dir, p("schemas", "job.schema.json")).replace(/\\/g, "/"),
         slug,
         title: str("title") ?? slug,
-        client: str("client") ?? slug,
         brand,
         lang: str("lang") ?? "pt-BR",
         formats,
@@ -241,42 +247,60 @@ const main = async () => {
           { id: "cta", type: "cta", title: "Fale com a [gente]", button: "Saiba mais" },
         ],
       });
-      mkdirSync(p("public", slug), { recursive: true });
-      log(`criado jobs/${slug}/job.json e public/${slug}/ (coloque os assets lá)`);
-      build(slug);
+      log(`criado ${f} (coloque o material na mesma pasta; caminhos no job são relativos a ela)`);
+      useWorkspace(dir);
+      build(slug, { music: false }); // valida; a trilha sai no build/render, com as cenas de verdade
       break;
     }
     case "index": {
-      // Índice dos jobs para o Studio (src/jobs.generated.ts, não versionado). Roda no postinstall.
-      log(`${writeIndex()} composição(ões) no índice`);
+      // Índice vazio para o Studio (src/jobs.generated.ts, não versionado). Roda no postinstall.
+      writeIndex();
+      log("índice do Studio recriado (vazio)");
+      break;
+    }
+    case "schemas": {
+      await writeSchemas();
+      log("schemas/job.schema.json e schemas/brand.schema.json atualizados");
       break;
     }
     case "build": {
+      const slug = open();
       await writeSchemas();
-      const slugs = pos[0] ? [pos[0]] : listJobs();
-      for (const s of slugs) build(s);
-      if (!slugs.length) writeIndex();
+      build(slug);
       break;
     }
+    case "studio": {
+      const slug = open();
+      build(slug);
+      const n = writeIndex(ws());
+      const pub = studioPublic();
+      log(`Studio com ${slug} (${n} composição(ões)); material servido de ${ws().dir}`);
+      // Ctrl+C fecha o Studio; este processo espera e depois esvazia o índice (nada do cliente fica no repositório)
+      for (const sig of ["SIGINT", "SIGTERM", "SIGBREAK"] as const) process.on(sig, () => {});
+      const sp = spawnPlan(process.platform === "win32" ? "pnpm.cmd" : "pnpm", ["exec", "remotion", "studio", "--public-dir", pub]);
+      const s = spawnSync(sp.cmd, sp.args, { cwd: p(), stdio: "inherit", shell: sp.shell });
+      writeIndex();
+      process.exit(s.status ?? 0);
+    }
     case "music": {
-      const slug = pos[0] ?? die("slug?");
+      const slug = open();
       for (const lang of pickLangs(slug)) ensureMusic(resolveProps(slug, lang).props, true);
       build(slug);
       break;
     }
     case "voice": {
-      const slug = pos[0] ?? die("slug?");
+      const slug = open();
       const { generateVoice } = await import("./voice.ts");
       for (const lang of pickLangs(slug)) await generateVoice(slug, lang, opt.force === true);
       build(slug);
       break;
     }
     case "translate": {
-      const slug = pos[0] ?? die("slug?");
+      const slug = open();
       const to = str("to") ?? die("--to <idioma>");
-      const job = loadJob(slug);
+      const job = loadJob();
       const src = extractStrings(job);
-      const f = p("jobs", slug, "i18n", `${to}.json`);
+      const f = i18nFile(to);
       const cur: Record<string, string> = existsSync(f) ? readJson(f) : {};
       const todo = Object.keys(src).filter((k) => !cur[k]);
       if (opt.auto) {
@@ -286,19 +310,20 @@ const main = async () => {
       } else for (const k of todo) cur[k] = "";
       const ordered = Object.fromEntries(Object.keys(src).map((k) => [k, cur[k] ?? ""]));
       writeJson(f, ordered);
-      writeJson(p("jobs", slug, "i18n", `${to}.source.json`), src);
+      writeJson(i18nFile(`${to}.source`), src);
       if (!job.langs?.includes(to)) {
-        const raw = readJson<Record<string, unknown>>(p("jobs", slug, "job.json"));
+        const jf = join(ws().dir, "job.json");
+        const raw = readJson<Record<string, unknown>>(jf);
         raw.langs = [...new Set([job.lang, ...(job.langs ?? []), to])];
-        writeJson(p("jobs", slug, "job.json"), raw);
+        writeJson(jf, raw);
       }
       const left = Object.values(ordered).filter((v) => !v).length;
-      log(`jobs/${slug}/i18n/${to}.json: ${Object.keys(ordered).length} textos, ${left} a traduzir (original em ${to}.source.json)`);
+      log(`${f}: ${Object.keys(ordered).length} textos, ${left} a traduzir (original em ${to}.source.json)`);
       build(slug);
       break;
     }
     case "plan": {
-      const slug = pos[0] ?? die("slug?");
+      const slug = open();
       for (const lang of pickLangs(slug)) {
         const { props } = resolveProps(slug, lang);
         const plan = planOf(props);
@@ -311,13 +336,13 @@ const main = async () => {
       break;
     }
     case "stills": {
-      const slug = pos[0] ?? die("slug?");
+      const slug = open();
       build(slug, { music: false });
       await stills(slug);
       break;
     }
     case "render": {
-      const slug = pos[0] ?? die("slug?");
+      const slug = open();
       const all = build(slug);
       const done: string[] = [];
       for (const lang of pickLangs(slug)) for (const format of pickFormats(slug)) done.push(await renderOne(all[lang], format));
@@ -330,7 +355,7 @@ const main = async () => {
       break;
     }
     default:
-      console.log(readFileSync(new URL(import.meta.url), "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 13).map((l) => l.slice(3)).join("\n"));
+      console.log(readFileSync(new URL(import.meta.url), "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 15).map((l) => l.slice(3)).join("\n"));
   }
 };
 
