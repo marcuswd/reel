@@ -41,6 +41,7 @@ ou um caminho para `.json`. Na composição o material aparece como `public/<slu
 pnpm brand new <pasta> --from https://site.com      # <pasta>/brand.json + logo (rascunho a partir do site)
 pnpm brand font <pasta> heading|body "Família" 700,800   # fonte do @fontsource em <pasta>/fonts
 pnpm video new <pasta do job> --brand <marca> --format 9:16,16:9
+pnpm video check <job>            # valida job, marca, material, traduções e locução, sem renderizar
 pnpm video plan <job>             # timeline: durações, transições, câmera, efeitos, legendas
 pnpm video voice <job> [--lang all]   # locução TTS por cena (gera tempos por palavra)
 pnpm video build <job>            # valida, aplica idiomas/voz e gera a trilha
@@ -70,8 +71,9 @@ pnpm dev                          # Studio do motor (marca neutra)
    Logo que não contrasta com o fundo: `"plate": "circle"|"rounded"`.
 4. **Job:** `pnpm video new <pasta do job> --brand <marca>` e edite o `job.json` (schema em `schemas/job.schema.json`).
    Material na própria pasta do job, citado por caminho relativo. Todo texto fica no job; [colchetes] marcam o destaque.
-5. `pnpm video voice` (se houver locução) → `pnpm video stills` → **olhe a folha de contato** e corrija
-   (texto cortado, legenda sobre conteúdo, contraste, foto ruim) → `pnpm video render`.
+5. `pnpm video check` → `pnpm video voice` (se houver locução) → `pnpm video stills` → **olhe a folha de contato** e corrija
+   (texto cortado, legenda sobre conteúdo, contraste, foto ruim) → `pnpm video render`. `stills` e `render` rodam o
+   check antes e param se houver erro (campo inválido, arquivo que não existe, id repetido).
 6. Confira o mp4 extraindo quadros nas transições (ffmpeg) e o loudness informado (alvo -14 a -16 LUFS).
 7. Entregue: o render grava em `<job>/entregas/<data>/` (ou `--dest`). Informe o caminho e envie o mp4.
    Se houver créditos CC-BY, avise.

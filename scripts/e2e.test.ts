@@ -34,6 +34,7 @@ describe("pasta do cliente → vídeo", { skip: process.env.REEL_E2E !== "1" && 
     job.scenes = job.scenes.slice(0, 2);
     writeFileSync(join(promo, "job.json"), JSON.stringify(job));
 
+    assert.match(tsx(["check", promo]), /0 erro\(s\)/);
     tsx(["stills", promo]);
     assert.ok(existsSync(join(promo, "out", "sheet-9x16-pt-br.jpg")), "folha de contato");
     assert.equal(readdirSync(join(promo, "out", "stills")).length, 2);

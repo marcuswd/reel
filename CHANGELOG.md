@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0 (2026-10-31)
+
+- `pnpm video check <pasta>`: valida job e marca sem renderizar. Erros (saída 1): campo inválido do schema com o caminho exato, id de cena repetido, arquivo de mídia, legenda (por idioma), música, efeito ou fonte/logo da marca que não existe. Avisos: tradução ausente ou incompleta, locução faltando.
+- `stills` e `render` rodam o check antes e param com a lista de erros, em vez de falhar no meio do render.
+- `scripts/lib/check.ts` é puro (disco injetado) e tem testes; o ponta a ponta também roda o check.
+
 ## 0.5.0 (2026-10-31)
 
 - Tudo de um vídeo mora na pasta do cliente. Todo comando recebe a pasta do job: `pnpm video new|build|voice|music|translate|plan|stills|render|studio <pasta>`. Lá ficam `job.json`, `i18n/`, material, locução, trilha, `_build/`, `out/` (stills e folhas) e `entregas/<data>/` (ou `--dest`). Nada é gravado no repositório.

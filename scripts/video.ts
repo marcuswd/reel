@@ -10,6 +10,7 @@
 //   stills <pasta> [--lang x] [--format 9:16]   um quadro por cena + folha de contato em <pasta>/out
 //   render <pasta> [--lang x|all] [--format x|all] [--draft] [--dest pasta]   entrega em <pasta>/entregas/<data>
 //   plan <pasta> [--lang x]             mostra a timeline (cenas, durações, transições, efeitos)
+//   check <pasta>                       valida job, marca, material, traduções e locução sem renderizar
 //   studio <pasta>                      abre o Studio com o job
 //   doctor                              confere ffmpeg, python, chaves e rede
 import { spawnSync } from "node:child_process";
@@ -20,7 +21,9 @@ import { musicBrief } from "../src/core/timeline.ts";
 import { toSrt, toVtt } from "../src/core/srt.ts";
 import { browserExecutable, die, fmtId, has, hash, langId, log, p, parseArgs, python, readJson, run, spawnPlan, today, writeJson } from "./lib/env.ts";
 import { sheetArgs } from "./lib/sheet.ts";
-import { buildFile, extractStrings, i18nFile, langsOf, loadBrand, loadJob, musicFile, planOf, resolveProps, writeIndex, writeResolved } from "./lib/resolve.ts";
+import { applyI18n, buildFile, extractStrings, i18nFile, langsOf, loadBrand, loadJob, loadVoice, musicFile, planOf, resolveProps, writeIndex, writeResolved } from "./lib/resolve.ts";
+import { checkJob } from "./lib/check.ts";
+import { jobSchema } from "../src/core/schema.ts";
 import { brandCandidates, fileOf, stage, studioPublic, useWorkspace, ws } from "./lib/workspace.ts";
 
 const [cmd, ...rest] = process.argv.slice(2);
@@ -215,6 +218,33 @@ const stills = async (slug: string) => {
   log(`${files.length} quadro(s) em ${dir}`);
 };
 
+// ── validação sem renderizar ──
+const check = (print: boolean) => {
+  const w = ws();
+  const rawJob = readJson(join(w.dir, "job.json"));
+  const at = (base: string) => (rel: string) => existsSync(join(base, rel));
+  const r = checkJob(rawJob, readJson(w.brandFile), {
+    job: at(w.dir),
+    brand: at(w.brandDir),
+    engine: at(p("public")),
+    i18n: (lang) => (existsSync(i18nFile(lang)) ? readJson(i18nFile(lang)) : null),
+    voiced: (lang) => Object.keys(loadVoice(applyI18n(jobSchema.parse(rawJob), lang).job, lang)),
+  }, w.slug);
+  if (print) {
+    for (const e of r.errors) console.log(`  ✗ ${e}`);
+    for (const x of r.warnings) console.log(`  ! ${x}`);
+  }
+  return r;
+};
+/** Antes de stills/render: erro de job, marca ou material para aqui, com o campo, em vez de falhar no meio do render. */
+const preflight = () => {
+  const r = check(false);
+  if (r.errors.length) {
+    for (const e of r.errors) console.log(`  ✗ ${e}`);
+    die(`${r.errors.length} erro(s) no job; nada foi renderizado`);
+  }
+};
+
 // ── comandos ──
 /** Abre a pasta do job (1º argumento) e devolve o slug. */
 const open = () => useWorkspace(pos[0] ?? die(`informe a pasta do job: pnpm video ${cmd} <pasta>`)).slug;
@@ -268,6 +298,12 @@ const main = async () => {
       await writeSchemas();
       build(slug);
       break;
+    }
+    case "check": {
+      const slug = open();
+      const r = check(true);
+      log(`${slug}: ${r.errors.length} erro(s), ${r.warnings.length} aviso(s) · marca ${ws().brandFile}`);
+      process.exit(r.errors.length ? 1 : 0);
     }
     case "studio": {
       const slug = open();
@@ -337,12 +373,14 @@ const main = async () => {
     }
     case "stills": {
       const slug = open();
+      preflight();
       build(slug, { music: false });
       await stills(slug);
       break;
     }
     case "render": {
       const slug = open();
+      preflight();
       const all = build(slug);
       const done: string[] = [];
       for (const lang of pickLangs(slug)) for (const format of pickFormats(slug)) done.push(await renderOne(all[lang], format));
@@ -355,7 +393,7 @@ const main = async () => {
       break;
     }
     default:
-      console.log(readFileSync(new URL(import.meta.url), "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 15).map((l) => l.slice(3)).join("\n"));
+      console.log(readFileSync(new URL(import.meta.url), "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 16).map((l) => l.slice(3)).join("\n"));
   }
 };
 

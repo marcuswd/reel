@@ -26,6 +26,7 @@ pnpm brand new "C:\sites\cliente\videos" --from https://cliente.com      # brand
 pnpm video new "C:\sites\cliente\videos\promo" --brand cliente --format 9:16
 # edite promo\job.json e coloque o material em promo\ (caminhos relativos: "img/foto.jpg")
 pnpm video voice "C:\sites\cliente\videos\promo"     # se tiver locução
+pnpm video check "C:\sites\cliente\videos\promo"     # valida sem renderizar (diz o campo e o arquivo)
 pnpm video stills "C:\sites\cliente\videos\promo"    # folha de contato em promo\out\
 pnpm video render "C:\sites\cliente\videos\promo" --format all --lang all
 ```
