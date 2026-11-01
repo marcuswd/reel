@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import { parseBlack, parseFrozen, parseLufs, parseSilence, review, samplePoints } from "./qc.ts";
+import { parseBlack, parseFrozen, parseLufs, parseSilence, parseYmax, review, samplePoints } from "./qc.ts";
 
 // trechos reais da saída do ffmpeg
 const black = "[blackdetect @ 0x1] black_start:0 black_end:0.2 black_duration:0.2\n[blackdetect @ 0x1] black_start:5.4 black_end:6.1 black_duration:0.7";
@@ -33,4 +33,16 @@ describe("QC: leitura do ffmpeg", () => {
     assert.deepEqual(review({ probe: a, expect: a, black: [], frozen: [], silent: parseSilence(silence), lufs: -22 }).warnings, []);
   });
   test("quatro pontos de amostra", () => assert.deepEqual(samplePoints(10), [1, 3.7, 6.3, 9]));
+  test("fundo escuro com texto não é tela preta, só aviso", () => {
+    const a = { duration: 80, width: 1, height: 1, audio: false };
+    const dark = review({ probe: a, expect: a, black: [{ start: 59.1, end: 59.5, ymax: 235 }], frozen: [], silent: [] });
+    assert.deepEqual(dark.problems, []);
+    assert.deepEqual(dark.warnings, ["quadro escuro e quase vazio de 59.1 s a 59.5 s"]);
+    const black = review({ probe: a, expect: a, black: [{ start: 30, end: 31, ymax: 18 }], frozen: [], silent: [] });
+    assert.deepEqual(black.problems, ["tela preta de 30.0 s a 31.0 s"]);
+  });
+  test("lê o YMAX do signalstats", () => {
+    assert.equal(parseYmax("[Parsed_metadata_1] frame:0 pts:0\nlavfi.signalstats.YMIN=16\nlavfi.signalstats.YMAX=235\n"), 235);
+    assert.equal(parseYmax("nada"), undefined);
+  });
 });

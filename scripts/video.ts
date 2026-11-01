@@ -23,7 +23,8 @@ import { toSrt, toVtt } from "../src/core/srt.ts";
 import { browserExecutable, die, fmtId, has, hash, langId, log, p, parseArgs, python, readJson, run, spawnPlan, today, userPath, writeJson } from "./lib/env.ts";
 import { sheetArgs } from "./lib/sheet.ts";
 import { cube, lutFilter } from "./lib/lut.ts";
-import { parseBlack, parseFrozen, parseLufs, parseSilence, review, samplePoints } from "./lib/qc.ts";
+import { parseBlack, parseFrozen, parseLufs, parseSilence, parseYmax, review, samplePoints } from "./lib/qc.ts";
+import { applyFilter, measureFilter, parseLoudnorm, TARGET, withinTarget } from "./lib/loudness.ts";
 import { applyI18n, buildFile, extractStrings, i18nFile, langsOf, loadBrand, loadJob, loadVoice, musicFile, planOf, resolveProps, writeIndex, writeResolved } from "./lib/resolve.ts";
 import { checkJob } from "./lib/check.ts";
 import { jobSchema } from "../src/core/schema.ts";
@@ -132,6 +133,18 @@ const applyLut = (lut: string, input: string, output: string, opts: { draft?: bo
     output], { quiet: true });
 };
 
+/** Normaliza o áudio da entrega para o alvo das redes (loudnorm em duas passadas; o vídeo é copiado, sem recodificar). */
+const normalizeAudio = (file: string, work: string) => {
+  const m1 = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-i", file, "-vn", "-af", measureFilter(), "-f", "null", "-"], { encoding: "utf8" });
+  const m = parseLoudnorm(m1.stderr ?? "");
+  if (!m) return log("loudness: sem medição (sem áudio ou silêncio), pulei");
+  if (withinTarget(m)) return log(`loudness: ${m.input_i} LUFS, já no alvo`);
+  const out = join(work, `${basename(file, ".mp4")}-loud.mp4`);
+  run("ffmpeg", ["-y", "-loglevel", "error", "-i", file, "-map", "0:v", "-map", "0:a", "-c:v", "copy", "-af", applyFilter(m), "-ar", "48000", "-ac", "2", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", out], { quiet: true });
+  copyFileSync(out, file);
+  log(`loudness: ${m.input_i} → ${TARGET.I} LUFS`);
+};
+
 /** Entrega: --dest <pasta> ou <pasta do job>/entregas, sempre numa subpasta com a data. */
 const outDir = (_props: VideoProps) => resolve(str("dest") ? userPath(str("dest")!) : join(ws().dir, "entregas"), today());
 
@@ -175,6 +188,7 @@ const renderOne = async (props: VideoProps, format: FormatKey) => {
     applyLut(lut, tmp, graded, { draft });
     copyFileSync(graded, tmp);
   }
+  if (has("ffmpeg")) normalizeAudio(tmp, work);
   // thumbnail: quadro da capa já assentada
   const first = plan.scenes[0];
   const thumbFrame = Math.min(composition.durationInFrames - 1, first.land + Math.round(first.frames * 0.55));
@@ -220,7 +234,12 @@ const qc = (file: string, props: VideoProps, format: FormatKey, draft = false) =
   const r = review({
     probe: { duration, width: v?.width ?? 0, height: v?.height ?? 0, audio },
     expect: { duration: plan.total / plan.fps, width: Math.round(fw * k), height: Math.round(fh * k), audio: expectAudio, continuous: props.musicSrc !== null || Object.keys(props.voice).length > 0 },
-    black: parseBlack(err), frozen: parseFrozen(err), silent: parseSilence(err), lufs: audio ? parseLufs(err) : undefined,
+    black: parseBlack(err).map((b) => {
+      // um quadro do meio do trecho: se tem algo claro (texto, logo), é fundo escuro, não tela preta
+      const at = (b.start + Math.min(b.end, duration)) / 2;
+      const s = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-ss", at.toFixed(2), "-i", file, "-frames:v", "1", "-vf", "signalstats,metadata=print", "-f", "null", "-"], { encoding: "utf8" });
+      return { ...b, ymax: parseYmax(s.stderr ?? "") };
+    }), frozen: parseFrozen(err), silent: parseSilence(err), lufs: audio ? parseLufs(err) : undefined,
   });
   // quatro quadros numa folha, para olhar
   const dir = join(ws().dir, "out", "qc");

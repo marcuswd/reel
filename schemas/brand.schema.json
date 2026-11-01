@@ -244,6 +244,32 @@
         }
       }
     },
+    "grade": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "none",
+            "warm",
+            "cool",
+            "teal-orange",
+            "film",
+            "mono"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lut": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "lut"
+          ]
+        }
+      ]
+    },
     "contact": {
       "default": {},
       "type": "object",

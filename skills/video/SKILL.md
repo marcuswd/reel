@@ -75,7 +75,7 @@ pnpm --dir "<motor>" transcribe ./videos/promo/clips/fala.mp4 --lang pt
    (`<job>/out/sheet-*.jpg`) e corrija texto cortado, legenda sobre conteúdo, contraste, foto ruim → `video render`.
    `stills` e `render` rodam o check antes e param se houver erro (o erro diz o campo e o arquivo).
 6. **QC**: o render termina com a revisão automática (resolução, duração, tela preta, imagem parada, silêncio,
-   loudness -14 a -16 LUFS, quatro quadros em `<job>/out/qc/`). Olhe a folha do QC; problema (✗) bloqueia a entrega.
+   loudness -14 a -16 LUFS, já normalizado em -15 no render, quatro quadros em `<job>/out/qc/`). Olhe a folha do QC; problema (✗) bloqueia a entrega.
 7. **Entrega**: o mp4 sai em `<job>/entregas/<data>/` (ou `--dest`). Informe o caminho, envie o mp4 e avise se
    houver créditos CC-BY (`CREDITOS.md`).
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.1 (2026-11-01)
+
+Correções vindas do primeiro vídeo completo renderizado com a 0.8.0.
+
+- O render normaliza o áudio da entrega para -15 LUFS e pico de -1,5 dBTP (ffmpeg loudnorm em duas passadas, linear quando possível, vídeo copiado sem recodificar). Antes a mixagem de trilha e locução saía perto de -19 LUFS e o QC reclamava.
+- QC: trecho que o `blackdetect` acusa como preto, mas tem texto ou logo claro (brilho máximo de um quadro do meio, via `signalstats`), deixa de ser problema e vira aviso de "quadro escuro e quase vazio". Marcas de fundo escuro não travam mais a entrega por alarme falso.
+- `schemas/job.schema.json` e `schemas/brand.schema.json` regenerados: a 0.8.0 subiu sem as cenas e campos novos (`grade` da marca, `chart`, `kinetic`, `lottie`, `object3d`, `map` e as transições novas). Um teste agora falha se os schemas ficarem para trás do zod.
+
 ## 0.8.0 (2026-11-01)
 
 Melhorias a partir da pesquisa de ferramentas parecidas (OpenMontage, claude-code-video-toolkit, APIs de vídeo por JSON e geradores por IA), todas sem custo.

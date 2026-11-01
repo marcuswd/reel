@@ -1,7 +1,7 @@
 {
   "name": "reel",
   "displayName": "Reel (vídeos MARCUSWD)",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Motor de vídeos em Remotion: um vídeo é um job em JSON na pasta do cliente; câmera, transições, trilha sincronizada, locução, legendas, idiomas e render em qualquer formato.",
   "author": {
     "name": "Marcus Sá",

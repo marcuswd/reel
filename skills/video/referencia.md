@@ -65,6 +65,8 @@ intercale mídia, gráfico, 3D, mapa, Lottie ou tipografia cinética.
 O render termina com uma revisão automática (também `video qc <job>`): resolução, duração, áudio, tela preta,
 imagem parada por 3 s ou mais, silêncio e loudness (com trilha ou locução), e quatro quadros numa folha em
 `<job>/out/qc/`. Problema (✗) faz o render sair com erro; aviso (!) é para olhar.
+Antes do QC o render normaliza o áudio para -15 LUFS (loudnorm em duas passadas, vídeo copiado sem recodificar).
+Trecho escuro que tem texto ou logo claro não conta como tela preta: vira aviso de quadro quase vazio.
 
 ## Rede e chaves
 
