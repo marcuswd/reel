@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.0 (2026-11-07)
+
+- Catálogo de referências por segmento para pequenas e médias empresas: `pnpm video modelos` lista e `pnpm video new <pasta> --brand <marca> --modelo <id>` cria o job a partir do roteiro (loja, restaurante, imovel, servico, lancamento), com ritmo, trilha e formatos do segmento, e diz o material a pedir ao cliente. Os modelos moram em `src/template/modelos.ts` e um teste garante que cada um vira um job válido terminando na chamada.
+
 ## 0.8.1 (2026-11-01)
 
 Correções vindas do primeiro vídeo completo renderizado com a 0.8.0.

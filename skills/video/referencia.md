@@ -37,6 +37,13 @@ intercale mídia, gráfico, 3D, mapa, Lottie ou tipografia cinética.
 - **Mídia:** caminho relativo à pasta do job ou `{ src, focus: {x,y}, fit, trim, muted: false, captions }`. Vídeo de banco ou
   de celular: converta para h264 1080 sem áudio (o `pnpm media get` já faz; arquivos do cliente, faça com ffmpeg).
 
+## Catálogo de referências
+
+`pnpm video modelos` lista roteiros prontos por segmento (loja, restaurante, imovel, servico, lancamento): cenas, ritmo, trilha e
+formatos pensados para pequenas e médias empresas, e o material a pedir. `video new <pasta> --brand <marca> --modelo <id>` cria
+o job a partir de um deles; troque os textos pelos do cliente e mantenha o ritmo. Os modelos ficam em `src/template/modelos.ts`
+(um teste garante que cada um vira um job válido); o laboratório da Produtora acrescenta um por semana.
+
 ## Tempo, música e efeitos
 
 - Duração por cena = tempo de leitura (ritmo `pace`) ou locução + respiro, arredondada aos tempos da música
