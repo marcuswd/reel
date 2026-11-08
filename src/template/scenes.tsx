@@ -9,6 +9,7 @@ import { itemAt } from "../core/timeline";
 import { Counter, Eyebrow, Words, autoSize, wordsFrames } from "../core/text";
 import { Body, Card, Logo, Pill, Safe, usePop } from "./ui";
 import { Object3DScene } from "./scene-3d";
+import { Dark3DScene } from "./scene-dark";
 import { MapScene } from "./scene-map";
 import { ChartScene, KineticScene, LottieScene } from "./scenes-extra";
 
@@ -525,6 +526,7 @@ export const SceneView: React.FC<{ scene: Scene }> = ({ scene }) => {
     case "kinetic": return <KineticScene scene={scene} />;
     case "lottie": return <LottieScene scene={scene} />;
     case "object3d": return <Object3DScene scene={scene} />;
+    case "dark3d": return <Dark3DScene scene={scene} />;
     case "map": return <MapScene scene={scene} />;
   }
 };

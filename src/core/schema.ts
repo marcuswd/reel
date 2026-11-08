@@ -132,6 +132,8 @@ export const sceneSchema = z.discriminatedUnion("type", [
   z.object({ ...base, type: z.literal("lottie"), src: z.string(), eyebrow: z.string().optional(), title: z.string().optional(), text: z.string().optional(), loop: z.boolean().optional(), speed: z.number().optional() }),
   // objeto 3D (Three.js) com a imagem como textura; "logo" extruda o SVG da marca
   z.object({ ...base, type: z.literal("object3d"), object: z.enum(["card", "phone", "box", "logo"]).optional(), media: z.string().optional(), eyebrow: z.string().optional(), title: z.string().optional(), text: z.string().optional() }),
+  // fundo 3D escuro (canal dark): corredor, poeira ou vazio, tudo pelo quadro e com semente
+  z.object({ ...base, type: z.literal("dark3d"), env: z.enum(["corredor", "poeira", "vazio"]), seed: z.number().int().optional(), eyebrow: z.string().optional(), title: z.string().optional(), text: z.string().optional(), lightColor: color.optional(), fogDensity: z.number().min(0).max(1).optional(), speed: z.number().min(0).max(10).optional(), depth: z.number().min(5).max(300).optional(), ribs: z.number().int().min(1).max(200).optional(), count: z.number().int().min(0).max(19000).optional(), size: z.number().min(0.005).max(1).optional(), drift: z.number().min(0).max(5).optional() }),
   // mapa (MapLibre + OpenFreeMap, sem chave) com marcadores e rota animada
   z.object({ ...base, type: z.literal("map"), points: z.array(z.object({ lat: z.number(), lng: z.number(), label: z.string().optional() })).min(1), route: z.boolean().optional(), zoom: z.number().optional(), eyebrow: z.string().optional(), title: z.string().optional() }),
 ]);
@@ -157,7 +159,7 @@ export const jobSchema = z.object({
     .object({
       mode: z.enum(["generate", "file", "none"]).default("generate"),
       file: z.string().optional(),
-      mood: z.string().optional(), // upbeat | corporate | tech | calm | epic
+      mood: z.string().optional(), // upbeat | corporate | tech | calm | epic | drone
       bpm: z.number().optional(),
       volume: z.number().default(0.9),
     })
