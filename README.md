@@ -16,7 +16,7 @@ Claude Code usa as credenciais do git da máquina (as mesmas do `git clone`).
 
 Ao habilitar, o Claude Code pergunta as chaves de API (todas opcionais: Pixabay, Unsplash, ElevenLabs, OpenAI,
 DeepL…). Na primeira sessão o plugin copia o motor para a pasta persistente dele e roda `pnpm install` (1 a 2
-minutos, em segundo plano); se existir um `.env` em `C:\sites\remotion-base` (ou em `REEL_DIR`), as chaves dele são
+minutos, em segundo plano); se existir um `.env` em `C:\Users\marcu\MARCUSWD\projetos\mwd-ai-video` (ou em `REEL_DIR`), as chaves dele são
 aproveitadas. Requer Node 20+, pnpm e ffmpeg; para trilha gerada e locução local, `pip install numpy scipy piper-tts`.
 
 Usar: abra o projeto do cliente e peça o vídeo, ou chame `/reel:video <pedido>`.
@@ -33,14 +33,14 @@ Na sessão seguinte o motor novo é copiado; o `pnpm install` só roda de novo q
 ## Instalar para desenvolver o motor
 
 ```powershell
-git clone https://github.com/marcuswd/reel.git C:\sites\remotion-base
-cd C:\sites\remotion-base
+git clone https://github.com/marcuswd/reel.git C:\Users\marcu\MARCUSWD\projetos\mwd-ai-video
+cd C:\Users\marcu\MARCUSWD\projetos\mwd-ai-video
 copy .env.example .env
 pnpm install
 pnpm video doctor
 ```
 
-Para testar o plugin a partir desta pasta: `claude plugin marketplace add C:\sites\remotion-base` (as edições
+Para testar o plugin a partir desta pasta: `claude plugin marketplace add C:\Users\marcu\MARCUSWD\projetos\mwd-ai-video` (as edições
 valem na sessão seguinte ou com `/reload-plugins`).
 
 ## Em 5 comandos (pasta do motor)
@@ -48,20 +48,20 @@ valem na sessão seguinte ou com `/reload-plugins`).
 Com o plugin, a skill roda estes comandos sozinha (`pnpm --dir <motor> ...`). À mão, da pasta do motor:
 
 ```bash
-pnpm brand new "C:\sites\cliente\videos" --from https://cliente.com      # brand.json + logo
-pnpm video new "C:\sites\cliente\videos\promo" --brand cliente --format 9:16
+pnpm brand new "C:\Users\marcu\MARCUSWD\clientes\cliente\videos" --from https://cliente.com      # brand.json + logo
+pnpm video new "C:\Users\marcu\MARCUSWD\clientes\cliente\videos\promo" --brand cliente --format 9:16
 # edite promo\job.json e coloque o material em promo\ (caminhos relativos: "img/foto.jpg")
-pnpm video voice "C:\sites\cliente\videos\promo"     # se tiver locução
-pnpm video check "C:\sites\cliente\videos\promo"     # valida sem renderizar (diz o campo e o arquivo)
-pnpm video stills "C:\sites\cliente\videos\promo"    # folha de contato em promo\out\
-pnpm video render "C:\sites\cliente\videos\promo" --format all --lang all
+pnpm video voice "C:\Users\marcu\MARCUSWD\clientes\cliente\videos\promo"     # se tiver locução
+pnpm video check "C:\Users\marcu\MARCUSWD\clientes\cliente\videos\promo"     # valida sem renderizar (diz o campo e o arquivo)
+pnpm video stills "C:\Users\marcu\MARCUSWD\clientes\cliente\videos\promo"    # folha de contato em promo\out\
+pnpm video render "C:\Users\marcu\MARCUSWD\clientes\cliente\videos\promo" --format all --lang all
 ```
 
 A entrega vai para `promo\entregas\<AAAA-MM-DD>\` (ou `--dest <pasta>`): mp4, thumb, `.srt`, `.vtt` e créditos.
 Nada é sobrescrito (cria `-v2`). `pnpm video studio <pasta>` abre o job no Studio.
 
 ```
-C:\sites\cliente\videos\
+C:\Users\marcu\MARCUSWD\clientes\cliente\videos\
   brand.json, logo.svg, fonts\        marca (compartilhada pelos vídeos do cliente)
   promo\
     job.json, i18n\<lang>.json        roteiro e traduções

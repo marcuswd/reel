@@ -7,7 +7,7 @@
 //   - código: copiado de novo quando a versão ou a pasta do plugin mudam (node_modules e .env ficam);
 //   - dependências: `pnpm install` só quando package.json ou pnpm-lock.yaml mudam;
 //   - chaves: as opções do plugin (CLAUDE_PLUGIN_OPTION_*, só no hook) vão para motor/.env; na 1ª vez,
-//     o .env de uma instalação antiga (REEL_DIR ou C:\sites\remotion-base) é aproveitado.
+//     o .env de uma instalação antiga (REEL_DIR, projetos\mwd-ai-video na pasta da empresa ou C:\sites\remotion-base) é aproveitado.
 //
 //   node setup.mjs [--data <pasta>] [--root <pasta>]   prepara (espera, se outra preparação estiver rodando)
 //   node setup.mjs --background                        hook SessionStart: dispara a preparação e sai na hora
@@ -102,7 +102,7 @@ function writeEnv() {
   mkdirSync(motor, { recursive: true });
   // 1ª vez: aproveita o .env de uma instalação antiga do reel (sem imprimir nada dele)
   if (!existsSync(envFile)) {
-    const old = [process.env.REEL_DIR, process.platform === "win32" ? "C:\\sites\\remotion-base" : undefined].filter(Boolean).map((d) => join(d, ".env")).find((f) => existsSync(f));
+    const old = [process.env.REEL_DIR, join(homedir(), "MARCUSWD", "projetos", "mwd-ai-video"), process.platform === "win32" ? "C:\\sites\\remotion-base" : undefined].filter(Boolean).map((d) => join(d, ".env")).find((f) => existsSync(f));
     if (old) { cpSync(old, envFile); say(`chaves copiadas de ${old}`); }
   }
   if (!opts.length) return;
