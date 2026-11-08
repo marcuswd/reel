@@ -2,7 +2,8 @@
 // CLI do gerador de vídeos.  pnpm video <comando> <pasta do job> [...]
 // Tudo do vídeo fica na pasta do job (fora deste repositório); veja scripts/lib/workspace.ts.
 //
-//   new <pasta> --brand <marca|brand.json> [--format 9:16,16:9] [--lang pt-BR]
+//   new <pasta> --brand <marca|brand.json> [--format 9:16,16:9] [--lang pt-BR] [--recipe dark/noir-frio+curiosidades]
+//   recipes                             lista as receitas (padrões de estilo + narração; --brand vira só cta/logo)
 //   build <pasta>                       valida, aplica idiomas/locução e gera a trilha
 //   voice <pasta> [--lang x] [--force]  gera a locução (TTS) das cenas com "voice"
 //   music <pasta> [--lang x] [--force]  (re)gera a trilha sincronizada aos cortes
@@ -16,8 +17,9 @@
 //   doctor                              confere ffmpeg, python, chaves e rede
 import { spawnSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from "node:fs";
-import { basename, extname, join, relative, resolve } from "node:path";
-import { FORMATS, type FormatKey, type VideoProps } from "../src/core/schema.ts";
+import { basename, dirname, extname, join, relative, resolve } from "node:path";
+import { brandSchema, FORMATS, type FormatKey, type VideoProps } from "../src/core/schema.ts";
+import { applyToJob, buildBrand, deepMerge, fontPlan, insideDir, mergeRecipes, parseRecipeSpec, stripWeights, type Recipe } from "./lib/recipe.ts";
 import { musicBrief } from "../src/core/timeline.ts";
 import { toSrt, toVtt } from "../src/core/srt.ts";
 import { browserExecutable, die, fmtId, has, hash, langId, log, p, parseArgs, python, readJson, run, spawnPlan, today, userPath, writeJson } from "./lib/env.ts";
@@ -346,10 +348,30 @@ const main = async () => {
       if (existsSync(f)) die(`${f} já existe`);
       const slug = str("slug") ?? basename(dir).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       if (!/^[a-z0-9-]+$/.test(slug)) die("slug só com a-z, 0-9 e hífen (use --slug)");
-      const brand = str("brand") ?? die("informe a marca: --brand <nome> (procura brand.json na pasta ou acima) ou --brand caminho/brand.json");
-      if (!brandCandidates(dir, brand).some((c) => existsSync(c))) die(`marca "${brand}" não encontrada. Procurei:\n${brandCandidates(dir, brand).map((c) => `  ${c}`).join("\n")}\nCrie com: pnpm brand new <pasta> --from https://site.com`);
+      // --recipe dark/noir-frio+curiosidades: padrões de estilo e narração (recipes/*.json); a marca do cliente
+      // (--brand, opcional) entra só com nome, logo e contato (nunca as cores), para o cta e o logo finais.
+      let recipe: ReturnType<typeof mergeRecipes> | undefined;
+      const recipeSpec = str("recipe");
+      if (recipeSpec) {
+        try {
+          recipe = mergeRecipes(parseRecipeSpec(recipeSpec).map((n) => {
+            const rf = p("recipes", `${n}.json`);
+            return existsSync(rf) ? readJson<Recipe>(rf) : die(`receita "${n}" não encontrada em ${rf}. Veja: pnpm video recipes`);
+          }));
+        } catch (e) { die((e as Error).message); }
+      }
+      const brandOpt = str("brand");
+      if (!brandOpt && !recipe) die("informe a marca: --brand <nome> (procura brand.json na pasta ou acima) ou --brand caminho/brand.json (ou --recipe dark/noir-frio+curiosidades)");
+      let brand = "brand";
+      let clientBrand: { file: string; data: Record<string, unknown> } | undefined;
+      if (brandOpt) {
+        const found = brandCandidates(dir, brandOpt).find((c) => existsSync(c));
+        if (!found) die(`marca "${brandOpt}" não encontrada. Procurei:\n${brandCandidates(dir, brandOpt).map((c) => `  ${c}`).join("\n")}\nCrie com: pnpm brand new <pasta> --from https://site.com`);
+        if (recipe) clientBrand = { file: found!, data: readJson<Record<string, unknown>>(found!) };
+        else brand = brandOpt;
+      }
       const formats = (str("format") ?? "16:9").split(",");
-      writeJson(f, {
+      const baseJob = {
         $schema: relative(dir, p("schemas", "job.schema.json")).replace(/\\/g, "/"),
         slug,
         title: str("title") ?? slug,
@@ -360,15 +382,61 @@ const main = async () => {
         voice: { provider: "none" },
         captions: { mode: "both", style: "pop" },
         scenes: [
-          { id: "capa", type: "cover", logo: true, title: "Título com [destaque]", subtitle: "Subtítulo curto" },
+          { id: "capa", type: "cover", ...(recipe ? {} : { logo: true }), title: "Título com [destaque]", subtitle: "Subtítulo curto" },
           { id: "ideia", type: "statement", text: "Uma frase de [impacto] sobre o produto" },
           { id: "lista", type: "list", title: "O que você [ganha]", items: ["Primeiro benefício", "Segundo benefício", "Terceiro benefício"] },
           { id: "cta", type: "cta", title: "Fale com a [gente]", button: "Saiba mais" },
         ],
-      });
+      };
+      if (recipe) {
+        const bf = join(dir, "brand.json");
+        if (existsSync(bf)) die(`${bf} já existe: a receita gera a marca do job nessa pasta`);
+        const title = str("title") ?? slug;
+        const merged = buildBrand(recipe.brand, clientBrand?.data, { slug, name: title });
+        mkdirSync(dir, { recursive: true });
+        // logo e arquivos do cliente: caminhos relativos à pasta da marca dele, copiados para a do job
+        if (clientBrand && merged.logo && typeof merged.logo === "object") {
+          for (const v of Object.values(merged.logo as Record<string, unknown>)) {
+            if (typeof v !== "string") continue;
+            const dest = insideDir(dir, v);
+            if (!dest) { log(`logo "${v}" ignorado: o caminho sai da pasta do job`); continue; }
+            const src = resolve(dirname(clientBrand.file), v);
+            if (existsSync(src) && statSync(src).isFile()) { mkdirSync(dirname(dest), { recursive: true }); copyFileSync(src, dest); }
+          }
+        }
+        const plan = fontPlan(merged);
+        writeJson(bf, stripWeights(merged));
+        for (const fp of opt["no-fonts"] ? [] : plan) {
+          try {
+            run(process.execPath, ["--import", "tsx", p("scripts", "brand.ts"), "font", dir, fp.role, fp.family, fp.weights.join(",") || "400,700"], { quiet: true });
+          } catch (e) { log(`aviso: fonte ${fp.family} não baixada: ${(e as Error).message.split(/\r?\n/)[0]} (sem rede?). Rode à mão: pnpm brand font "${dir}" ${fp.role} "${fp.family}" ${fp.weights.join(",") || "400,700"}`); }
+        }
+        // `brand font` regrava a família e os arquivos: devolve escala e caixa alta da receita
+        const keepFont: Record<string, unknown> = {};
+        for (const [role, fv] of Object.entries((recipe.brand.fonts ?? {}) as Record<string, Record<string, unknown>>)) keepFont[role] = { ...(fv.scale !== undefined && { scale: fv.scale }), ...(fv.uppercase !== undefined && { uppercase: fv.uppercase }) };
+        const withFonts = deepMerge(readJson<Record<string, unknown>>(bf), { fonts: keepFont });
+        const checked = brandSchema.safeParse(withFonts);
+        if (!checked.success) die(`marca da receita inválida: ${checked.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ")}`);
+        writeJson(bf, withFonts);
+        writeJson(join(dir, "recipe.json"), { recipes: recipe.names, notes: recipe.notes, licenses: recipe.licenses });
+        log(`receita ${recipe.names.join(" + ")}: marca em ${bf}; licenças em recipe.json (para o CREDITOS.md)`);
+      }
+      writeJson(f, recipe ? applyToJob(baseJob, recipe) : baseJob);
       log(`criado ${f} (coloque o material na mesma pasta; caminhos no job são relativos a ela)`);
       useWorkspace(dir);
       build(slug, { music: false }); // valida; a trilha sai no build/render, com as cenas de verdade
+      break;
+    }
+    case "recipes": {
+      const root = p("recipes");
+      for (const fam of existsSync(root) ? readdirSync(root) : []) {
+        if (!statSync(join(root, fam)).isDirectory()) continue;
+        for (const rf of readdirSync(join(root, fam)).filter((x) => x.endsWith(".json"))) {
+          const r = readJson<Recipe>(join(root, fam, rf));
+          log(`${fam}/${rf.replace(/\.json$/, "")} (${r.kind}): ${r.description ?? ""}`);
+        }
+      }
+      log('uso: pnpm video new <pasta> [--brand <marca>] --recipe <estilo>+<narração>, ex.: --recipe dark/noir-frio+curiosidades');
       break;
     }
     case "index": {
@@ -504,7 +572,7 @@ const main = async () => {
       break;
     }
     default:
-      console.log(readFileSync(new URL(import.meta.url), "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 17).map((l) => l.slice(3)).join("\n"));
+      console.log(readFileSync(new URL(import.meta.url), "utf8").split("\n").filter((l) => l.startsWith("//")).slice(0, 19).map((l) => l.slice(3)).join("\n"));
   }
 };
 

@@ -1,0 +1,30 @@
+{
+  "name": "dark/curiosidades",
+  "kind": "narration",
+  "description": "Tom seco e confiante, frases de 6 a 10 palavras, um fato por cena, voz local Kokoro pm_alex.",
+  "job": {
+    "voice": { "provider": "kokoro", "voiceId": "pm_alex", "volume": 1 }
+  },
+  "notes": [
+    "Frases de 6 a 10 palavras, um fato por cena.",
+    "Prefira cenas stats e list; capa e cta nas pontas (a marca do cliente entra só no cta e no logo finais).",
+    "Voz sintética: avisar na descrição quando a plataforma exigir."
+  ],
+  "licenses": [
+    {
+      "kind": "voice-engine",
+      "name": "Kokoro-82M (kokoro-onnx)",
+      "license": "Apache-2.0",
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M",
+      "source": "https://github.com/thewh1teagle/kokoro-onnx",
+      "notes": "Código e pesos Apache-2.0, uso comercial permitido, sem exigência de crédito pelo cartão (conferido em 2026-11-08). O cartão declara treino em áudio permissivo ou sem copyright (inclui Koniwa CC BY 3.0 e SIWIS CC BY 4.0, só nessas línguas). Locução sintética: declarar quando a plataforma exigir."
+    },
+    {
+      "kind": "voice",
+      "name": "pm_alex (pt-BR, Kokoro v1.0)",
+      "license": "Apache-2.0 (pacote de vozes do Kokoro-82M; o VOICES.md não lista dados de treino nem nota para esta voz)",
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md",
+      "notes": "Voz sintética, não clona pessoa real. Proveniência específica da voz não documentada no VOICES.md: risco residual baixo, aceito com a licença Apache-2.0 do cartão; reconferir antes de cada entrega comercial."
+    }
+  ]
+}

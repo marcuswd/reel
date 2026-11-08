@@ -1,0 +1,48 @@
+{
+  "name": "dark/noir-frio",
+  "kind": "style",
+  "description": "Preto azulado, luz ciano apagada, dolly lento, fade pelo preto, sans condensada em caixa alta, trilha drone grave.",
+  "job": {
+    "pace": "calm",
+    "music": { "mode": "generate", "mood": "drone", "volume": 0.8 },
+    "captions": { "mode": "both", "style": "pop", "whenOnScreen": "hide" },
+    "overlays": { "grain": true, "vignette": true },
+    "defaults": {
+      "camera": "dolly",
+      "transition": "fade",
+      "background": { "type": "solid", "colors": ["#07090d"] }
+    }
+  },
+  "brand": {
+    "colors": {
+      "bg": "#07090d",
+      "bg2": "#0c121a",
+      "surface": "#111a24",
+      "text": "#e8edf2",
+      "textOnSurface": "#e8edf2",
+      "muted": "#8a97a6",
+      "primary": "#4f9fb2",
+      "accent": "#3a7f90",
+      "highlight": "#7fd0e0",
+      "palette": ["#4f9fb2", "#3a7f90", "#7fd0e0", "#1b2a38"]
+    },
+    "fonts": {
+      "heading": { "family": "Barlow Condensed", "weights": ["700", "800"], "scale": 1.3, "uppercase": true },
+      "body": { "family": "Barlow Condensed", "weights": ["500", "700"], "scale": 1.2, "uppercase": true }
+    },
+    "motion": { "energy": "calm", "transitions": ["fade"] },
+    "audio": { "mood": "drone", "bpm": 60 },
+    "grade": "cool"
+  },
+  "licenses": [
+    {
+      "kind": "font",
+      "name": "Barlow Condensed",
+      "license": "OFL-1.1 (SIL Open Font License)",
+      "url": "https://fontsource.org/fonts/barlow-condensed",
+      "license_file": "https://unpkg.com/@fontsource/barlow-condensed/LICENSE",
+      "source": "https://github.com/jpt/barlow",
+      "notes": "Pacote @fontsource/barlow-condensed 5.3.0, OFL-1.1. Copyright 2017 The Barlow Project Authors. Uso comercial e embutir em vídeo permitidos, sem exigência de crédito no vídeo; a OFL pede manter o aviso de copyright e a licença se a fonte for redistribuída, e proíbe vender a fonte isolada ou usar o Nome Reservado em versão modificada."
+    }
+  ]
+}
