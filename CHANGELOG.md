@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.9.0 (2026-11-08)
+
+Dark mode, slice 1: a 9:16 short from one theme, with one recipe and three environments.
+
+- New `dark3d` scene (Three.js, deterministic, seeded) with three environments: `corredor` (corridor), `poeira` (dust) and `vazio` (void). Text is always 2D on top; fake glow by additive sprites.
+- Recipes `dark/noir-frio` and `dark/curiosidades`: style and narration defaults applied to the job. `pnpm video new <dir> --recipe dark/noir-frio+curiosidades` loads them (the client brand shrinks to cta/logo) and `pnpm video recipes` lists them. The narration recipe defaults to the Kokoro voice (`pm_alex`, pt-BR); licenses are kept in `recipe.json`.
+- Barlow Condensed for the noir-frio look, fetched through `@fontsource`.
+- Music mood `drone` in the generator (low, slow, around 60 bpm).
+- Skill `reel:dark`: asks the questions, writes `roteiro.md`, stops for review and builds `job.json` by hand.
+
 ## 0.8.1 (2026-11-01)
 
 Correções vindas do primeiro vídeo completo renderizado com a 0.8.0.

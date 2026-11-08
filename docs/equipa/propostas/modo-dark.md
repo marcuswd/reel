@@ -1,6 +1,6 @@
 # Proposta: modo dark (tema em uma frase vira vídeo narrado)
 
-Estado: desenho, não implementado. Funcionalidade do reel para uso interno e de clientes; não é produto à venda.
+Estado: fatia 1 implementada (0.9.0), resto em docs/backlog.md. Funcionalidade do reel para uso interno e de clientes; não é produto à venda.
 Referência de mecanismo: kits de "canal dark" (tema, roteiro, cenas 3D, narração, revisão, mp4). Copiamos só o
 mecanismo; nenhuma marca, texto ou visual de terceiros.
 

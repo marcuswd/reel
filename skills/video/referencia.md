@@ -18,6 +18,13 @@ que fogem do visual de slide:
   ou logo (extruda o logo SVG da marca; o SVG precisa ter o texto convertido em contorno, `<text>` não vira 3D).
 - **map**: mapa grátis (OpenFreeMap/OpenStreetMap, sem chave) com marcadores e rota animada.
   `points: [{ lat, lng, label }]`, `route` (padrão true), `zoom`, `eyebrow`, `title`. Precisa de internet no render.
+- **dark3d**: fundo 3D escuro do modo dark, com texto 2D por cima. `env` obrigatório: `corredor` (nervuras de luz em
+  profundidade, `depth` 5 a 300, `ribs` 1 a 120) | `poeira` (partículas à deriva, `count`, `size` 0,005 a 1, `drift` 0 a 5)
+  | `vazio` (névoa que respira, foco de luz atrás do texto). Comuns: `seed` (inteiro, mesmo valor dá o mesmo quadro),
+  `lightColor`, `fogDensity` 0 a 1, `speed` 0 a 10. `count` vai até 19000 (acima é cortado) e `poeira` não
+  dá a volta: em cena longa (acima de uns 20 s) as partículas acabam. **Texto:** `eyebrow` (linha pequena), `title`
+  (destaque) e `text`. Com `title`, o `text` vira subtítulo menor e mais apagado; só com `text` (sem `title`), ele
+  vira o destaque grande. Em 9:16 prefira poucas palavras por cena.
 
 Campos comuns: `id`, `voice`, `duration`, `transition`, `camera`, `background`, `sfx`.
 O `check` avisa quando o roteiro tem cara de slideshow (3 ou mais cenas seguidas só de texto, ou pouco visual):
@@ -37,11 +44,15 @@ intercale mídia, gráfico, 3D, mapa, Lottie ou tipografia cinética.
 - **Mídia:** caminho relativo à pasta do job ou `{ src, focus: {x,y}, fit, trim, muted: false, captions }`. Vídeo de banco ou
   de celular: converta para h264 1080 sem áudio (o `pnpm media get` já faz; arquivos do cliente, faça com ffmpeg).
 
+**Receitas** (`recipes/`): padrões de estilo e narração aplicados ao job. `pnpm video new <pasta> --recipe
+dark/noir-frio+curiosidades` (receitas somadas com `+`; `--brand` opcional, vira só cta/logo) grava marca, fontes,
+trilha `drone` e voz Kokoro, e as licenças em `recipe.json` (base do CREDITOS.md). `pnpm video recipes` lista.
+
 ## Tempo, música e efeitos
 
 - Duração por cena = tempo de leitura (ritmo `pace`) ou locução + respiro, arredondada aos tempos da música
   (`music.bpm` ou `brand.audio.bpm`). Todo corte cai no tempo. `src/core/timeline.ts` é a fonte única.
-- `music.mode`: `generate` (trilha original por código, sincronizada, climas upbeat/corporate/tech/calm/epic),
+- `music.mode`: `generate` (trilha original por código, sincronizada, climas upbeat/corporate/tech/calm/epic/drone (drone: cama grave sem bateria nem melodia, para voz)),
   `file` (arquivo na pasta do job, ex.: baixado com `pnpm audio:get`) ou `none`.
 - Efeitos automáticos do pack `public/_lib/sfx` (whoosh nas transições, impact na logo, pop em listas, tick em números,
   chime no CTA, riser antes do fecho). No máximo 1 a cada 0,25 s. Para usar efeitos de banco, crie outro pack com os
