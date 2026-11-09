@@ -139,7 +139,7 @@ const applyLut = (lut: string, input: string, output: string, opts: { draft?: bo
 
 /** Normaliza o áudio da entrega para o alvo das redes (loudnorm em duas passadas; o vídeo é copiado, sem recodificar). */
 const normalizeAudio = (file: string, work: string) => {
-  const m1 = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-i", file, "-vn", "-af", measureFilter(), "-f", "null", "-"], { encoding: "utf8" });
+  const m1 = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-i", file, "-vn", "-af", measureFilter(), "-f", "null", "-"], { windowsHide: true, encoding: "utf8" });
   const m = parseLoudnorm(m1.stderr ?? "");
   if (!m) return log("loudness: sem medição (sem áudio ou silêncio), pulei");
   if (withinTarget(m)) return log(`loudness: ${m.input_i} LUFS, já no alvo`);
@@ -223,7 +223,7 @@ const renderOne = async (props: VideoProps, format: FormatKey) => {
 /** Confere o mp4: resolução, duração, áudio, tela preta, imagem parada, silêncio, loudness; extrai 4 quadros. */
 const qc = (file: string, props: VideoProps, format: FormatKey, draft = false) => {
   if (!has("ffmpeg") || !has("ffprobe")) return log("QC: ffmpeg/ffprobe ausentes, pulei");
-  const pr = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration:stream=codec_type,width,height", "-of", "json", file], { encoding: "utf8" });
+  const pr = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration:stream=codec_type,width,height", "-of", "json", file], { windowsHide: true, encoding: "utf8" });
   const info = JSON.parse(pr.stdout || "{}") as { format?: { duration?: string }; streams?: { codec_type: string; width?: number; height?: number }[] };
   const v = info.streams?.find((x) => x.codec_type === "video");
   const audio = !!info.streams?.some((x) => x.codec_type === "audio");
@@ -233,7 +233,7 @@ const qc = (file: string, props: VideoProps, format: FormatKey, draft = false) =
   // rascunho (--draft) sai com metade da resolução; o qc avulso reconhece pelo tamanho
   const k = draft || (v?.width === Math.round(fw / 2) && v?.height === Math.round(fh / 2)) ? 0.5 : 1;
   const expectAudio = props.musicSrc !== null || Object.keys(props.voice).length > 0 || (props.job.sfx.enabled && plan.sfx.length > 0);
-  const ff = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-i", file, "-vf", "blackdetect=d=0.4:pix_th=0.08,freezedetect=n=0.002:d=3", ...(audio ? ["-af", "silencedetect=n=-45dB:d=1.5,ebur128"] : ["-an"]), "-f", "null", "-"], { encoding: "utf8" });
+  const ff = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-i", file, "-vf", "blackdetect=d=0.4:pix_th=0.08,freezedetect=n=0.002:d=3", ...(audio ? ["-af", "silencedetect=n=-45dB:d=1.5,ebur128"] : ["-an"]), "-f", "null", "-"], { windowsHide: true, encoding: "utf8" });
   const err = ff.stderr as string;
   const r = review({
     probe: { duration, width: v?.width ?? 0, height: v?.height ?? 0, audio },
@@ -241,7 +241,7 @@ const qc = (file: string, props: VideoProps, format: FormatKey, draft = false) =
     black: parseBlack(err).map((b) => {
       // um quadro do meio do trecho: se tem algo claro (texto, logo), é fundo escuro, não tela preta
       const at = (b.start + Math.min(b.end, duration)) / 2;
-      const s = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-ss", at.toFixed(2), "-i", file, "-frames:v", "1", "-vf", "signalstats,metadata=print", "-f", "null", "-"], { encoding: "utf8" });
+      const s = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-ss", at.toFixed(2), "-i", file, "-frames:v", "1", "-vf", "signalstats,metadata=print", "-f", "null", "-"], { windowsHide: true, encoding: "utf8" });
       return { ...b, ymax: parseYmax(s.stderr ?? "") };
     }), frozen: parseFrozen(err), silent: parseSilence(err), lufs: audio ? parseLufs(err) : undefined,
   });
@@ -501,7 +501,7 @@ const main = async () => {
       // Ctrl+C fecha o Studio; este processo espera e depois esvazia o índice (nada do cliente fica no repositório)
       for (const sig of ["SIGINT", "SIGTERM", "SIGBREAK"] as const) process.on(sig, () => {});
       const sp = spawnPlan(process.platform === "win32" ? "pnpm.cmd" : "pnpm", ["exec", "remotion", "studio", "--public-dir", pub]);
-      const s = spawnSync(sp.cmd, sp.args, { cwd: p(), stdio: "inherit", shell: sp.shell });
+      const s = spawnSync(sp.cmd, sp.args, { windowsHide: true, cwd: p(), stdio: "inherit", shell: sp.shell });
       writeIndex();
       process.exit(s.status ?? 0);
     }

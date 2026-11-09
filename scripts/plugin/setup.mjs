@@ -82,7 +82,7 @@ const sync = () => {
 // ── dependências ──
 const pnpm = (cmdArgs) => {
   const win = process.platform === "win32";
-  return spawnSync(win ? "pnpm.cmd" : "pnpm", cmdArgs, { cwd: motor, encoding: "utf8", shell: win, env: { ...process.env, INIT_CWD: motor } });
+  return spawnSync(win ? "pnpm.cmd" : "pnpm", cmdArgs, { windowsHide: true, cwd: motor, encoding: "utf8", shell: win, env: { ...process.env, INIT_CWD: motor } });
 };
 const install = () => {
   say("instalando dependências do motor (pnpm install, 1 a 2 minutos na 1ª vez)…");

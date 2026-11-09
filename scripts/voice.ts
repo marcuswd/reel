@@ -46,7 +46,7 @@ const voiceFor = (job: Job, lang: string, fallback: string) => {
 };
 
 const seconds = (file: string) => {
-  const r = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", file], { encoding: "utf8" });
+  const r = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", file], { windowsHide: true, encoding: "utf8" });
   return Number(r.stdout.trim());
 };
 

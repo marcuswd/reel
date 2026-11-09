@@ -122,7 +122,7 @@ async function get() {
   writeFileSync(raw, Buffer.from(await r.arrayBuffer()));
 
   // Normaliza para -16 LUFS e converte para mp3. O mix fica no código (volume do <Audio>).
-  const ff = spawnSync("ffmpeg", ["-v", "error", "-y", "-i", raw, ...(args["no-normalize"] ? [] : ["-af", "loudnorm=I=-16:TP=-1.5:LRA=11"]), "-ar", "48000", "-b:a", "192k", out]);
+  const ff = spawnSync("ffmpeg", ["-v", "error", "-y", "-i", raw, ...(args["no-normalize"] ? [] : ["-af", "loudnorm=I=-16:TP=-1.5:LRA=11"]), "-ar", "48000", "-b:a", "192k", out], { windowsHide: true });
   if (ff.status !== 0) {
     console.error("ffmpeg indisponível ou falhou; salvando o original sem normalizar");
     renameSync(raw, out);

@@ -66,13 +66,13 @@ export const spawnPlan = (cmd: string, args: string[], platform: NodeJS.Platform
 
 export const run = (cmd: string, args: string[], opts: { quiet?: boolean } = {}) => {
   const s = spawnPlan(cmd, args);
-  const r = spawnSync(s.cmd, s.args, { cwd: ROOT, stdio: opts.quiet ? "pipe" : "inherit", encoding: "utf8", shell: s.shell });
+  const r = spawnSync(s.cmd, s.args, { windowsHide: true, cwd: ROOT, stdio: opts.quiet ? "pipe" : "inherit", encoding: "utf8", shell: s.shell });
   if (r.status !== 0) throw new Error(`${cmd} ${args.join(" ")} falhou (${r.status ?? r.error?.message})\n${r.stderr ?? ""}`);
   return r.stdout ?? "";
 };
 export const has = (cmd: string, args = ["-version"]) => {
   const s = spawnPlan(cmd, args);
-  return spawnSync(s.cmd, s.args, { stdio: "ignore", shell: s.shell }).status === 0;
+  return spawnSync(s.cmd, s.args, { windowsHide: true, stdio: "ignore", shell: s.shell }).status === 0;
 };
 export const python = () => (has("python3", ["--version"]) ? "python3" : "python");
 
@@ -81,7 +81,7 @@ export const browserExecutable = (): string | null => {
   if (process.env.REMOTION_BROWSER && existsSync(process.env.REMOTION_BROWSER)) return process.env.REMOTION_BROWSER;
   const cloud = "/opt/pw-browsers";
   if (existsSync(cloud)) {
-    const r = spawnSync("bash", ["-lc", `ls -d ${cloud}/chromium_headless_shell-*/chrome-linux*/headless_shell 2>/dev/null | head -1`], { encoding: "utf8" });
+    const r = spawnSync("bash", ["-lc", `ls -d ${cloud}/chromium_headless_shell-*/chrome-linux*/headless_shell 2>/dev/null | head -1`], { windowsHide: true, encoding: "utf8" });
     const f = r.stdout.trim();
     if (f && existsSync(f)) return f;
   }
