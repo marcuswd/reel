@@ -8,7 +8,7 @@ Um item por linha, o primeiro não feito é o próximo. Critério de pronto em c
 - [x] Trabalhar a partir da pasta do cliente: `job.json`, marca, material e entregas ficam na pasta do cliente (ex.: `C:\sites\<cliente>\videos\<slug>`), e o motor só lê dela e grava nela. Pronto: `pnpm video <comando> <pasta>` faz voice, build, stills e render sem criar nada em `jobs/`, `brands/`, `public/` ou `out/` deste repositório.
 - [x] Validação de jobs e marcas sem renderizar (`pnpm video check <pasta>`), sobre a pasta do job. Pronto: job inválido falha com mensagem que diz o campo; material ausente é listado.
 - [ ] Revisar `scripts/video.ts` (arquivo grande) só se um item acima exigir; não refatorar por refatorar.
-- [x] Modo dark, fatia 1 (0.9.0): cena `dark3d` (corredor, poeira, vazio), receitas `noir-frio` e `curiosidades` com `video new --recipe`, mood `drone`, skill `reel:dark`. Desenho em `docs/equipa/propostas/modo-dark.md`.
+- [x] Modo dark, fatia 1 (0.10.0): cena `dark3d` (corredor, poeira, vazio), receitas `noir-frio` e `curiosidades` com `video new --recipe`, mood `drone`, skill `reel:dark`. Desenho em `docs/equipa/propostas/modo-dark.md`.
 - [ ] Modo dark, depois da fatia 1: ambientes `planeta`, `monolitos`, `linha-do-tempo`; receitas `brasa`, `neon-vazio`, `misterio`, `explicacao`.
 - [ ] Modo dark: formato longo 16:9 com esqueleto de capítulos.
 - [ ] Modo dark: comando `video dark-plan` (roteiro para job sem passar pela skill) e comandos de ajuste de cena.

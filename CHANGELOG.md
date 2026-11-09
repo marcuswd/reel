@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.0 (2026-11-08)
+## 0.10.0 (2026-11-08)
 
 Dark mode, slice 1: a 9:16 short from one theme, with one recipe and three environments.
 

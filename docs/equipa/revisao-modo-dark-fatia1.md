@@ -54,3 +54,5 @@ arquivos; sem travessão nos textos novos; varredura de vazamentos sem achado.
 ## Pendente do fecho (T8, não é achado)
 
 `CHANGELOG.md` e versão em `package.json` e `.claude-plugin/plugin.json` ainda sem a mudança.
+
+Os 3 avisos de quadro escuro do QC (8,6 s, 18,6 s, 39,5 s) foram aceitos.
