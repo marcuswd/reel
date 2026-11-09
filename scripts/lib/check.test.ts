@@ -52,4 +52,10 @@ describe("check", () => {
     assert.match(r.warnings[0], /3 cenas seguidas só de texto \(a, b, c\)/);
     assert.match(r.warnings[1], /só 1 de 5 cenas têm visual/);
   });
+  test("dark3d: cena válida passa; env inválido aponta o campo", () => {
+    const ok = checkJob(job([{ id: "a", type: "dark3d", env: "corredor", title: "x" }]), brand, disk(), "promo");
+    assert.deepEqual(ok.errors, []);
+    const bad = checkJob(job([{ id: "a", type: "dark3d", env: "planeta" }]), brand, disk(), "promo");
+    assert.match(bad.errors[0], /^job\.json: scenes\.0\.env: /);
+  });
 });

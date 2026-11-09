@@ -13,3 +13,6 @@ brands/
 public/*
 !public/_lib/
 src/jobs.generated.ts
+# pessoais do Claude Code
+CLAUDE.local.md
+.claude/settings.local.json

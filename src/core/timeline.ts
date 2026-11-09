@@ -64,6 +64,7 @@ export const sceneTexts = (s: Scene): (string | undefined)[] => {
     case "kinetic": return [s.text];
     case "lottie": return [s.eyebrow, s.title, s.text];
     case "object3d": return [s.eyebrow, s.title, s.text];
+    case "dark3d": return [s.eyebrow, s.title, s.text];
     case "map": return [s.eyebrow, s.title, ...s.points.map((p) => p.label)];
   }
 };
@@ -83,7 +84,7 @@ export const ON_SCREEN = 0.6;
 
 const MIN_SECONDS: Record<Scene["type"], number> = {
   cover: 2.6, statement: 2.4, media: 3, split: 3.5, screen: 4.5, list: 3, stats: 3.6, gallery: 3.2, quote: 4, cta: 4, logo: 2.6,
-  chart: 4, kinetic: 2.4, lottie: 3, object3d: 4, map: 4.5,
+  chart: 4, kinetic: 2.4, lottie: 3, object3d: 4, dark3d: 4, map: 4.5,
 };
 const WPS = { calm: 2.5, normal: 3, fast: 3.6 } as const;
 
@@ -116,6 +117,7 @@ const sceneEvents = (s: Scene, land: number, fps: number): { at: number; kind: s
     case "chart": return s.items.map((_, i) => ({ at: land + itemAt(i, s.items.length, fps), kind: "tick" }));
     case "map": return s.points.map((_, i) => ({ at: land + itemAt(i, s.points.length, fps) + Math.round(fps * 0.3), kind: "pop-soft" }));
     case "object3d": return [{ at: land, kind: "hit-soft" }];
+    case "dark3d": return [];
     default: return [];
   }
 };
@@ -141,7 +143,7 @@ export const pickCamera = (props: VideoProps, s: Scene, i: number): Camera => {
   const c = s.camera ?? props.job.defaults.camera ?? "auto";
   if (c !== "auto") return c;
   // cenas que já se movem por dentro (3D, mapa, gráfico, tipografia) não pedem câmera extra
-  if (["gallery", "stats", "chart", "kinetic", "object3d", "map", "lottie"].includes(s.type)) return "static";
+  if (["gallery", "stats", "chart", "kinetic", "object3d", "dark3d", "map", "lottie"].includes(s.type)) return "static";
   return AUTO_CAMERA[i % AUTO_CAMERA.length];
 };
 

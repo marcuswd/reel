@@ -108,7 +108,7 @@ O VS Code completa e valida os campos pelo `$schema` (o `pnpm video new` já apo
 | Cenas | capa, frase, mídia, split, tela, lista, números, galeria, citação, CTA, logo, gráfico (barra, coluna, linha, rosca), tipografia cinética, Lottie, objeto 3D (cartão, celular, caixa, logo extrudado) e mapa com rota |
 | Fundos e cor | mesh, aurora, partículas, grid 3D, formas, gradiente, foto/vídeo escurecido; grão, vinheta e look de cor por marca (LUT) |
 | Formatos | 16:9, 9:16, 1:1, 4:5 com layout responsivo e área segura configurável |
-| Trilha | gerada por código e sincronizada aos cortes (upbeat, corporate, tech, calm, epic) ou arquivo de banco |
+| Trilha | gerada por código e sincronizada aos cortes (upbeat, corporate, tech, calm, epic, drone) ou arquivo de banco |
 | Efeitos | pack próprio sem licença, mapeado aos eventos da timeline |
 | Locução | Kokoro e Piper (locais, grátis), ElevenLabs, OpenAI; duração das cenas segue a fala; ducking da trilha |
 | Legendas | palavra a palavra (pop, line, box) com contraste AA, só quando acrescentam; export `.srt`/`.vtt`; Whisper local para vídeo falado |

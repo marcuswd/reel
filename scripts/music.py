@@ -8,7 +8,8 @@ primeiro tempo forte (offsetFrames), duração, clima e as cenas com o frame em 
 uma "assenta". Cada corte cai num tempo da música; a intensidade muda por tipo de cena.
 
 Climas: upbeat (ukulele, palmas, marimba), corporate (piano, pad, batida leve),
-tech (arpejo synth, sub, hats), calm (pad e piano, sem bateria), epic (cordas, tímpanos).
+tech (arpejo synth, sub, hats), calm (pad e piano, sem bateria), epic (cordas, tímpanos),
+drone (pad grave com batimento, sub e ruído suave; sem bateria nem melodia; cama para voz).
 Sem licença de terceiros. Requer numpy, scipy e ffmpeg.
 """
 import json
@@ -16,6 +17,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import zlib
 
 import numpy as np
 from scipy.io import wavfile
@@ -30,10 +32,12 @@ BEAT = 60.0 / BPM
 T0 = brief["offsetFrames"] / FPS  # segundos do primeiro tempo forte
 TOTAL = brief["totalFrames"] / FPS
 MOOD = str(brief.get("mood", "corporate")).lower()
-if MOOD not in ("upbeat", "corporate", "tech", "calm", "epic"):
+if MOOD not in ("upbeat", "corporate", "tech", "calm", "epic", "drone"):
     MOOD = {"divertida": "upbeat", "fun": "upbeat", "energetic": "upbeat", "inspiring": "corporate", "electronic": "tech", "ambient": "calm", "cinematic": "epic"}.get(MOOD, "corporate")
 VOICE = bool(brief.get("hasVoice"))
-rng = np.random.default_rng(abs(hash((MOOD, BPM, brief["totalFrames"]))) % 2**32)
+# drone: semente estável (hash() de str muda a cada processo); mesmo brief, mesma trilha
+SEED = zlib.crc32(f"{MOOD}|{BPM}|{brief['totalFrames']}".encode()) if MOOD == "drone" else abs(hash((MOOD, BPM, brief["totalFrames"]))) % 2**32
+rng = np.random.default_rng(SEED)
 
 L = int((TOTAL + 0.05) * SR)
 mix = np.zeros((L, 2))
@@ -167,6 +171,57 @@ def swell(d):
     lo = filt(n[:, 0], "band", [300, 6000]) * env
     hi = filt(n[:, 1], "band", [600, 9000]) * env
     return np.stack([lo, hi], 1) * 0.18 + 0 * cutoff[:, None]
+
+
+# ── master ──
+def write_out(mix, lufs=-16):
+    mix /= np.max(np.abs(mix)) + 1e-9
+    mix = np.tanh(mix * 1.4) / np.tanh(1.4)
+    fade = int(0.15 * SR)
+    mix[-fade:] *= np.linspace(1, 0, fade)[:, None]
+
+    os.makedirs(os.path.dirname(OUT) or ".", exist_ok=True)
+    with tempfile.TemporaryDirectory() as d:
+        wav = os.path.join(d, "a.wav")
+        wavfile.write(wav, SR, (mix * 0.89 * 32767).astype(np.int16))
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-af", f"loudnorm=I={lufs}:TP=-1.5:LRA=11", "-ar", "48000", "-b:a", "192k", OUT], check=True)
+    print(f"trilha {MOOD} {BPM:.0f} BPM {TOTAL:.1f}s -> {OUT}")
+
+
+# ── drone: cama grave para voz ──
+def render_drone():
+    """Pad lento com batimento, sub constante, ruído suave e pulso sutil.
+    Tudo abaixo de ~700 Hz (sem energia em 1 a 4 kHz), sem bateria nem melodia."""
+    n = L
+    t = np.arange(n) / SR
+    f0 = midi(38)  # D1 (~37 Hz): sub
+    out = np.zeros((n, 2))
+    # sub constante com pulso muito sutil (profundidade ~10%, um pulso a cada 2 tempos)
+    pulse = 1 - 0.10 * (0.5 + 0.5 * np.sin(2 * np.pi * t / (2 * BEAT)))
+    sub = np.sin(2 * np.pi * f0 * t) * pulse * 0.9 + 0.25 * np.sin(2 * np.pi * 2 * f0 * t)
+    out += sub[:, None]
+    # pad: duas notas próximas (batimento 0,4 a 0,6 Hz) em tônica, quinta e oitava
+    beat_hz = 0.4 + 0.2 * rng.random()
+    for base, g in ((f0 * 2, 0.55), (f0 * 3, 0.35), (f0 * 4, 0.22)):
+        ph = rng.random(2) * 2 * np.pi
+        lfo = 0.75 + 0.25 * np.sin(2 * np.pi * (0.05 + 0.03 * rng.random()) * t + rng.random() * 6)
+        a = np.sin(2 * np.pi * base * t + ph[0])
+        b = np.sin(2 * np.pi * (base + beat_hz) * t + ph[1])
+        out[:, 0] += (a * 0.8 + b * 0.3) * g * lfo
+        out[:, 1] += (a * 0.3 + b * 0.8) * g * lfo
+    # ruído filtrado grave com respiração lenta
+    nz = np.stack([filt(rng.standard_normal(n), "low", 380, 4), filt(rng.standard_normal(n), "low", 380, 4)], 1)
+    breath = 0.5 + 0.5 * np.sin(2 * np.pi * 0.07 * t + 1.0)
+    out += nz * (breath[:, None] * 3.0 + 1.0)
+    # corta acima de ~700 Hz (nada em 1 a 4 kHz) e abaixo de 25 Hz
+    out = np.stack([filt(filt(out[:, c], "low", 700, 4), "high", 25) for c in (0, 1)], 1)
+    env = np.minimum(1, t / 2.5) * np.clip((TOTAL - t) / 2.5, 0, 1)
+    return out * env[:, None]
+
+
+if MOOD == "drone":
+    write_out(render_drone(), lufs=-24)
+    sys.exit(0)
 
 
 # ── harmonia ──
@@ -304,15 +359,4 @@ if MOOD != "calm":
     add(crash(0.22), outro_at, 1.0)
 add(bell(midi(root + 24), 2.5), outro_at, 0.3)
 
-# ── master ──
-mix /= np.max(np.abs(mix)) + 1e-9
-mix = np.tanh(mix * 1.4) / np.tanh(1.4)
-fade = int(0.15 * SR)
-mix[-fade:] *= np.linspace(1, 0, fade)[:, None]
-
-os.makedirs(os.path.dirname(OUT) or ".", exist_ok=True)
-with tempfile.TemporaryDirectory() as d:
-    wav = os.path.join(d, "a.wav")
-    wavfile.write(wav, SR, (mix * 0.89 * 32767).astype(np.int16))
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-af", "loudnorm=I=-16:TP=-1.5:LRA=11", "-ar", "48000", "-b:a", "192k", OUT], check=True)
-print(f"trilha {MOOD} {BPM:.0f} BPM {TOTAL:.1f}s -> {OUT}")
+write_out(mix)

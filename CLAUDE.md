@@ -41,6 +41,7 @@ ou um caminho para `.json`. Na composição o material aparece como `public/<slu
 pnpm brand new <pasta> --from https://site.com      # <pasta>/brand.json + logo (rascunho a partir do site)
 pnpm brand font <pasta> heading|body "Família" 700,800   # fonte do @fontsource em <pasta>/fonts
 pnpm video new <pasta do job> --brand <marca> --format 9:16,16:9
+pnpm video new <pasta> [--brand <marca>] --recipe dark/noir-frio+curiosidades   # padrões de estilo+narração (recipes/); lista: pnpm video recipes
 pnpm video check <job>            # valida job, marca, material, traduções e locução, sem renderizar
 pnpm video plan <job>             # timeline: durações, transições, câmera, efeitos, legendas
 pnpm video voice <job> [--lang all]   # locução TTS por cena (gera tempos por palavra)
