@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.2 (2026-11-09)
+## 0.10.1 (2026-11-09)
 
 - No Windows, os processos que o motor abre (pnpm na preparação do plugin, ffmpeg, ffprobe, Python) rodam escondidos (`windowsHide`): sem janelas de terminal piscando quando o Claude Code está aberto pelo app.
 
