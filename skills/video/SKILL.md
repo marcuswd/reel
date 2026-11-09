@@ -40,6 +40,8 @@ Comandos: rode da pasta do projeto, `pnpm --dir "<motor>" <comando>`; caminhos r
 pnpm --dir "<motor>" brand new ./videos --from https://site-do-cliente.com   # rascunho da marca (cores, fontes, logo)
 pnpm --dir "<motor>" brand font ./videos heading "Montserrat" 700,800        # fonte do @fontsource
 pnpm --dir "<motor>" video new ./videos/promo --brand <marca> --format 9:16,16:9
+pnpm --dir "<motor>" video modelos                 # catálogo: loja, restaurante, imovel, servico, lancamento
+pnpm --dir "<motor>" video new ./videos/promo --brand <marca> --modelo loja   # roteiro pronto do segmento
 pnpm --dir "<motor>" video check ./videos/promo     # valida job, marca e material, sem renderizar
 pnpm --dir "<motor>" video plan ./videos/promo      # durações, transições, efeitos, legendas
 pnpm --dir "<motor>" video voice ./videos/promo [--lang all]
@@ -67,7 +69,7 @@ pnpm --dir "<motor>" transcribe ./videos/promo/clips/fala.mp4 --lang pt
    cenas reais só de banco gratuito, com licença conferida; nunca gerar pessoas por IA.
 3. **Marca**: `videos/brand.json` (`brand new` + `brand font`). Fonte condensada pede `"scale": 1.3` e talvez
    `"uppercase": true`; logo que não contrasta com o fundo: `"plate": "circle"|"rounded"`.
-4. **Job**: `video new` e edite o `job.json` (schema no `$schema` que o `new` escreve). Todo texto fica no job;
+4. **Job**: `video new` (com `--modelo <segmento>` quando o pedido for de um segmento do catálogo; ele lista o material a pedir) e edite o `job.json` (schema no `$schema` que o `new` escreve). Todo texto fica no job;
    [colchetes] marcam o destaque. Evite cara de slideshow: alterne texto com gráfico (`chart`), tipografia cinética
    (`kinetic`), 3D (`object3d`), mapa (`map`), Lottie, mídia e telas; o `check` avisa quando há texto demais em sequência. Tipos de cena, câmera, transições, fundos, áudio e legendas: leia
    [referencia.md](referencia.md).

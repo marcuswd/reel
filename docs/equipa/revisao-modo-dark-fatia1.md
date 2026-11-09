@@ -53,6 +53,8 @@ arquivos; sem travessão nos textos novos; varredura de vazamentos sem achado.
 
 ## Pendente do fecho (T8, não é achado)
 
-`CHANGELOG.md` e versão em `package.json` e `.claude-plugin/plugin.json` ainda sem a mudança.
+Feito: `CHANGELOG.md`, `package.json` e `.claude-plugin/plugin.json` estão em 0.10.0. O main (0.9.0 de `video modelos` e 0.9.1 de docs de pastas) foi integrado ao ramo por merge, sem perder `video new --modelo`/`video modelos` nem `--recipe`/`recipes`; typecheck e 107 testes verdes.
 
 Os 3 avisos de quadro escuro do QC (8,6 s, 18,6 s, 39,5 s) foram aceitos.
+
+Falta só o merge do PR e a tag v0.10.0, que ficam com o Marcus.

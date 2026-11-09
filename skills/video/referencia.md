@@ -48,6 +48,13 @@ intercale mídia, gráfico, 3D, mapa, Lottie ou tipografia cinética.
 dark/noir-frio+curiosidades` (receitas somadas com `+`; `--brand` opcional, vira só cta/logo) grava marca, fontes,
 trilha `drone` e voz Kokoro, e as licenças em `recipe.json` (base do CREDITOS.md). `pnpm video recipes` lista.
 
+## Catálogo de referências
+
+`pnpm video modelos` lista roteiros prontos por segmento (loja, restaurante, imovel, servico, lancamento): cenas, ritmo, trilha e
+formatos pensados para pequenas e médias empresas, e o material a pedir. `video new <pasta> --brand <marca> --modelo <id>` cria
+o job a partir de um deles; troque os textos pelos do cliente e mantenha o ritmo. Os modelos ficam em `src/template/modelos.ts`
+(um teste garante que cada um vira um job válido); o laboratório da Produtora acrescenta um por semana.
+
 ## Tempo, música e efeitos
 
 - Duração por cena = tempo de leitura (ritmo `pace`) ou locução + respiro, arredondada aos tempos da música

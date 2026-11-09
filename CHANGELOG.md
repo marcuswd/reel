@@ -10,6 +10,14 @@ Dark mode, slice 1: a 9:16 short from one theme, with one recipe and three envir
 - Music mood `drone` in the generator (low, slow, around 60 bpm).
 - Skill `reel:dark`: asks the questions, writes `roteiro.md`, stops for review and builds `job.json` by hand.
 
+## 0.9.1 (2026-11-08)
+
+- Pastas novas da empresa nos exemplos e na documentação: os vídeos de um cliente moram em `C:\Users\marcu\MARCUSWD\clientes\<cliente>\videos` e o motor em `projetos\mwd-ai-video`. Na primeira instalação, o plugin também aproveita o `.env` dessa pasta nova.
+
+## 0.9.0 (2026-11-07)
+
+- Catálogo de referências por segmento para pequenas e médias empresas: `pnpm video modelos` lista e `pnpm video new <pasta> --brand <marca> --modelo <id>` cria o job a partir do roteiro (loja, restaurante, imovel, servico, lancamento), com ritmo, trilha e formatos do segmento, e diz o material a pedir ao cliente. Os modelos moram em `src/template/modelos.ts` e um teste garante que cada um vira um job válido terminando na chamada.
+
 ## 0.8.1 (2026-11-01)
 
 Correções vindas do primeiro vídeo completo renderizado com a 0.8.0.

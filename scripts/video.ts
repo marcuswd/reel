@@ -2,7 +2,8 @@
 // CLI do gerador de vídeos.  pnpm video <comando> <pasta do job> [...]
 // Tudo do vídeo fica na pasta do job (fora deste repositório); veja scripts/lib/workspace.ts.
 //
-//   new <pasta> --brand <marca|brand.json> [--format 9:16,16:9] [--lang pt-BR] [--recipe dark/noir-frio+curiosidades]
+//   new <pasta> --brand <marca|brand.json> [--modelo loja|restaurante|imovel|servico|lancamento] [--recipe dark/noir-frio+curiosidades] [--format 9:16,16:9] [--lang pt-BR]
+//   modelos                    catálogo de referências por segmento (roteiros prontos para pequenas e médias empresas)
 //   recipes                             lista as receitas (padrões de estilo + narração; --brand vira só cta/logo)
 //   build <pasta>                       valida, aplica idiomas/locução e gera a trilha
 //   voice <pasta> [--lang x] [--force]  gera a locução (TTS) das cenas com "voice"
@@ -29,6 +30,7 @@ import { parseBlack, parseFrozen, parseLufs, parseSilence, parseYmax, review, sa
 import { applyFilter, measureFilter, parseLoudnorm, TARGET, withinTarget } from "./lib/loudness.ts";
 import { applyI18n, buildFile, extractStrings, i18nFile, langsOf, loadBrand, loadJob, loadVoice, musicFile, planOf, resolveProps, writeIndex, writeResolved } from "./lib/resolve.ts";
 import { checkJob } from "./lib/check.ts";
+import { MODELOS, modelo } from "../src/template/modelos.ts";
 import { jobSchema } from "../src/core/schema.ts";
 import { brandCandidates, fileOf, stage, studioPublic, useWorkspace, ws } from "./lib/workspace.ts";
 
@@ -342,6 +344,11 @@ const open = () => useWorkspace(pos[0] ?? die(`informe a pasta do job: pnpm vide
 
 const main = async () => {
   switch (cmd) {
+    case "modelos": {
+      for (const m of MODELOS) log(`${m.id.padEnd(12)} ${m.nome} · ${m.duracao} · ${m.formatos.join(", ")} · ${m.para}`);
+      log('\nUso: pnpm video new <pasta> --brand <marca> --modelo <id>');
+      break;
+    }
     case "new": {
       const dir = userPath(pos[0] ?? die('informe a pasta: pnpm video new "C:\\sites\\cliente\\videos\\promo" --brand <marca>'));
       const f = join(dir, "job.json");
@@ -370,7 +377,8 @@ const main = async () => {
         if (recipe) clientBrand = { file: found!, data: readJson<Record<string, unknown>>(found!) };
         else brand = brandOpt;
       }
-      const formats = (str("format") ?? "16:9").split(",");
+      const ref = str("modelo") ? (modelo(str("modelo")!) ?? die(`modelo "${str("modelo")}" não existe. Modelos: ${MODELOS.map((m) => m.id).join(", ")} (pnpm video modelos)`)) : undefined;
+      const formats = (str("format") ?? ref?.formatos.join(",") ?? "16:9").split(",");
       const baseJob = {
         $schema: relative(dir, p("schemas", "job.schema.json")).replace(/\\/g, "/"),
         slug,
@@ -378,10 +386,11 @@ const main = async () => {
         brand,
         lang: str("lang") ?? "pt-BR",
         formats,
-        music: { mode: "generate" },
+        ...(ref ? { pace: ref.pace } : {}),
+        music: ref ? { mode: "generate", mood: ref.mood } : { mode: "generate" },
         voice: { provider: "none" },
         captions: { mode: "both", style: "pop" },
-        scenes: [
+        scenes: ref ? ref.cenas : [
           { id: "capa", type: "cover", ...(recipe ? {} : { logo: true }), title: "Título com [destaque]", subtitle: "Subtítulo curto" },
           { id: "ideia", type: "statement", text: "Uma frase de [impacto] sobre o produto" },
           { id: "lista", type: "list", title: "O que você [ganha]", items: ["Primeiro benefício", "Segundo benefício", "Terceiro benefício"] },
@@ -422,7 +431,8 @@ const main = async () => {
         log(`receita ${recipe.names.join(" + ")}: marca em ${bf}; licenças em recipe.json (para o CREDITOS.md)`);
       }
       writeJson(f, recipe ? applyToJob(baseJob, recipe) : baseJob);
-      log(`criado ${f} (coloque o material na mesma pasta; caminhos no job são relativos a ela)`);
+      log(`criado ${f}${ref ? ` a partir do modelo "${ref.nome}" (${ref.duracao})` : ""} (coloque o material na mesma pasta; caminhos no job são relativos a ela)`);
+      if (ref) log(`material a pedir ao cliente ou buscar em banco gratuito:\n${ref.material.map((x) => `  - ${x}`).join("\n")}`);
       useWorkspace(dir);
       build(slug, { music: false }); // valida; a trilha sai no build/render, com as cenas de verdade
       break;

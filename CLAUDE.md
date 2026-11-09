@@ -9,7 +9,7 @@ nesse caso, crie no template (genérico, configurável por props), nunca em uma 
 
 ## Estrutura
 
-Este repositório é só o motor. **Tudo de um vídeo mora na pasta do cliente** (ex.: `C:\sites\<cliente>\videos`),
+Este repositório é só o motor. **Tudo de um vídeo mora na pasta do cliente** (ex.: `C:\Users\marcu\MARCUSWD\clientes\<cliente>\videos`),
 e todo comando recebe a pasta do job como primeiro argumento. Nada de cliente é gravado aqui.
 
 ```
