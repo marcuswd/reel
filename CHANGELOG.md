@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.2 (2026-11-15)
+
+- Dependências: `zod` 4.5.4 para 4.6.7 (a mesma versão usada pelo Remotion 4.0.543) e `fast-uri` 3.1.8 para 3.1.9 ou mais nova, via `overrides` no `pnpm-workspace.yaml`. `pnpm audit --prod` volta a ficar limpo.
+
 ## 0.10.1 (2026-11-09)
 
 - No Windows, os processos que o motor abre (pnpm na preparação do plugin, ffmpeg, ffprobe, Python) rodam escondidos (`windowsHide`): sem janelas de terminal piscando quando o Claude Code está aberto pelo app.
