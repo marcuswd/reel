@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.3 (2026-11-20)
+
+- Remotion 4.0.534 para 4.0.545 (todos os `@remotion/*` na mesma versão). O `zod` continua numa cópia só, em 4.6.7, e o `pnpm audit --prod` segue limpo. Conferido com typecheck, testes com o ponta a ponta de render e o still da composição padrão.
+
 ## 0.10.2 (2026-11-15)
 
 - Dependências: `zod` 4.5.4 para 4.6.7 (a mesma versão usada pelo Remotion 4.0.543) e `fast-uri` 3.1.8 para 3.1.9 ou mais nova, via `overrides` no `pnpm-workspace.yaml`. `pnpm audit --prod` volta a ficar limpo.
