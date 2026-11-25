@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.10.3 (2026-11-24)
+## 0.10.3 (2026-11-25)
 
-- Remotion 4.0.534 para 4.0.546 (todos os `@remotion/*` na mesma versão). O `zod` continua numa cópia só, em 4.6.7, e o `pnpm audit --prod` segue limpo. Conferido com typecheck, testes com o ponta a ponta de render e o still da composição padrão.
+- Remotion 4.0.534 para 4.0.547 (todos os `@remotion/*` na mesma versão). O `zod` continua numa cópia só, em 4.6.7, e o `pnpm audit --prod` segue limpo. Conferido com typecheck, testes com o ponta a ponta de render e o still da composição padrão.
 
 ## 0.10.2 (2026-11-15)
 
