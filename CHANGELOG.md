@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.4 (2026-11-27)
+
+- CI: `actions/checkout`, `actions/setup-node` e `pnpm/action-setup` na v5, que rodam em Node 24. O GitHub avisava que as v4 (Node 20) estão obsoletas e já eram forçadas a rodar em Node 24.
+
 ## 0.10.2 (2026-11-15)
 
 - Dependências: `zod` 4.5.4 para 4.6.7 (a mesma versão usada pelo Remotion 4.0.543) e `fast-uri` 3.1.8 para 3.1.9 ou mais nova, via `overrides` no `pnpm-workspace.yaml`. `pnpm audit --prod` volta a ficar limpo.
